@@ -107,7 +107,7 @@ function Rung({ element, selected, dropReason, locked, onSelect, onPriority }: R
         aria-expanded={selected}
       >
         <span
-          className={`font-display text-sm font-medium ${
+          className={`text-sm font-semibold tracking-[-0.005em] ${
             dropped ? 'text-ink-3 line-through decoration-reg decoration-2' : 'text-ink'
           }`}
         >

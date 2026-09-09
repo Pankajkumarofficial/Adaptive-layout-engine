@@ -34,10 +34,23 @@ export default {
         mark: '#a3670c',
       },
       fontFamily: {
-        // Fraunces speaks; Archivo Narrow labels; Courier Prime only where the
-        // content is literally typed data.
-        display: ['Fraunces', 'Georgia', 'serif'],
-        sans: ['"Archivo Narrow"', 'system-ui', 'sans-serif'],
+        /**
+         * Two voices, used for different jobs.
+         *
+         * Bodoni is the face advertising layout was actually set in: a severe
+         * didone with real contrast. It is spent in one place — the masthead
+         * and the three panel headings — so it carries authority instead of
+         * decorating everything.
+         *
+         * Archivo does all the work: labels, controls, the trace, the numbers.
+         * It is a workmanlike grotesque that holds up at 11px, which is where
+         * most of this interface lives.
+         *
+         * Courier Prime appears only inside the raw JSON editor, where fixed
+         * advances are a functional requirement rather than a style.
+         */
+        display: ['"Bodoni Moda"', 'Didot', 'Georgia', 'serif'],
+        sans: ['Archivo', 'system-ui', 'sans-serif'],
         mono: ['"Courier Prime"', 'ui-monospace', 'monospace'],
       },
       borderRadius: { bench: '1px' },

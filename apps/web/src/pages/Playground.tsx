@@ -58,7 +58,7 @@ export function Playground() {
         </main>
 
         <aside className="flex w-[400px] shrink-0 flex-col border-l border-rule-2 bg-paper">
-          <h2 className="border-b border-rule px-4 py-2 font-display text-sm font-medium">
+          <h2 className="border-b border-rule px-4 py-2.5 font-display text-[17px] font-medium leading-none">
             What the engine decided
           </h2>
           <ErrorBoundary label="The inspector">
@@ -79,7 +79,7 @@ function TitleBar() {
   const surface = usePlayground((s) => s.surface);
   return (
     <header className="flex items-end gap-4 border-b-2 border-ink bg-paper px-4 pb-2 pt-2.5">
-      <h1 className="font-display text-[22px] font-bold leading-none tracking-[-0.01em]">
+      <h1 className="font-display text-[27px] font-bold leading-[0.92] tracking-[-0.018em]">
         Adaptive Layout Engine
       </h1>
       <p className="mb-px max-w-[42ch] text-tiny leading-snug text-ink-2">
@@ -89,7 +89,7 @@ function TitleBar() {
       <dl className="mb-px ml-auto flex items-end gap-5 text-right">
         <div>
           <dt className="text-micro leading-none text-ink-3">Piece</dt>
-          <dd className="font-display text-tiny font-medium">{spec.name}</dd>
+          <dd className="text-tiny font-semibold">{spec.name}</dd>
         </div>
         <div>
           <dt className="text-micro leading-none text-ink-3">Surface</dt>
@@ -116,7 +116,7 @@ function Tabs({ tab, onChange }: { tab: LeftTab; onChange: (t: LeftTab) => void 
           role="tab"
           aria-selected={tab === t.id}
           onClick={() => onChange(t.id)}
-          className={`flex-1 border-b-2 px-3 py-2 font-display text-tiny transition-colors ${
+          className={`flex-1 border-b-2 px-3 py-2 text-tiny font-medium transition-colors ${
             tab === t.id
               ? 'border-ink bg-card text-ink'
               : 'border-transparent text-ink-2 hover:bg-card/60 hover:text-ink'

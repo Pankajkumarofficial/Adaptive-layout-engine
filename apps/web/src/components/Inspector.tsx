@@ -60,7 +60,7 @@ function Stat({
     <div>
       <dt className="text-micro text-ink-3">{label}</dt>
       <dd
-        className={`${mono ? 'font-mono text-tiny' : 'font-display text-sm font-medium'} tabular ${
+        className={`${mono ? 'font-mono text-tiny' : 'text-sm font-semibold'} tabular ${
           accent ? 'text-guide' : 'text-ink'
         }`}
       >

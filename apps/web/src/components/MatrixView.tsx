@@ -54,7 +54,7 @@ export function MatrixView({ spec }: { spec: AdSpec }) {
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          className="font-display text-sm font-medium text-ink hover:text-guide"
+          className="font-display text-[17px] font-medium leading-none text-ink hover:text-guide"
         >
           <span aria-hidden className="mr-1.5 inline-block text-ink-3">
             {open ? '\u2212' : '+'}
