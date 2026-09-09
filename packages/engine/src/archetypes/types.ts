@@ -28,6 +28,12 @@ export interface Archetype {
   id: string;
   /** Human-readable rationale, shown in the trace when this archetype is picked. */
   rationale: string;
+  /**
+   * Regions whose contents are painted edge-to-edge and are therefore exempt
+   * from safe-area clamping. Always includes `bleed`; `overlay` also bleeds its
+   * media region, because a full-bleed hero is the entire point of it.
+   */
+  bleedRegions: readonly string[];
   regions(surface: Surface, ctx: ArchetypeContext): Record<string, Rect>;
   assign(elements: readonly NormalizedElement[], regions: Record<string, Rect>): Assignment[];
 }

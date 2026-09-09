@@ -154,6 +154,7 @@ export function budget(
   elements: readonly NormalizedElement[],
   klass: SurfaceClass,
   gutter: number,
+  bleeding: ReadonlySet<string>,
   tracer: Tracer,
 ): BudgetResult {
   const byId = new Map(elements.map((el) => [el.id, el]));
@@ -176,7 +177,7 @@ export function budget(
     if (regionElements.length === 1) {
       const only = regionElements[0];
       if (only !== undefined) {
-        frames[only.id] = fitInBand(only, region, klass);
+        frames[only.id] = fitInBand(only, region, klass, bleeding.has(only.id));
         continue;
       }
     }
@@ -196,13 +197,13 @@ export function budget(
     for (const el of regionElements) {
       const band = allocation.rects[el.id];
       if (band === undefined) continue;
-      frames[el.id] = fitInBand(el, band, klass);
+      frames[el.id] = fitInBand(el, band, klass, bleeding.has(el.id));
     }
   }
 
   for (const el of elements) {
     const frame = frames[el.id];
-    if (frame === undefined) continue;
+    if (frame === undefined || bleeding.has(el.id)) continue;
     const minH = minHeightOf(el, klass, gutter);
     const minW = minWidthOf(el, klass);
     if (frame.h + 0.01 < minH) {
@@ -223,8 +224,8 @@ export function budget(
 }
 
 /** Applies aspect lock and cross-axis alignment inside an allocated band. */
-function fitInBand(el: NormalizedElement, band: Rect, klass: SurfaceClass): Rect {
-  if (el.bleed) return band;
+function fitInBand(el: NormalizedElement, band: Rect, klass: SurfaceClass, bleeds: boolean): Rect {
+  if (bleeds) return band;
 
   let w = band.w;
   let h = band.h;
@@ -232,11 +233,6 @@ function fitInBand(el: NormalizedElement, band: Rect, klass: SurfaceClass): Rect
   if (el.aspectLock !== null && el.aspectLock > 0) {
     w = Math.min(band.w, band.h * el.aspectLock);
     h = w / el.aspectLock;
-  } else if (el.role === 'cta') {
-    // A CTA is a chip, not a full-bleed bar: cap it and centre it.
-    const maxW = Math.max(minWidthOf(el, klass), band.w * 0.85);
-    w = Math.min(band.w, maxW);
-    h = Math.max(band.h, 0);
   } else if (el.role === 'logo' || el.role === 'badge') {
     w = Math.min(band.w, Math.max(el.minSize.w, band.h * 3));
   }

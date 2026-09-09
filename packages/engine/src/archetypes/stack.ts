@@ -3,6 +3,7 @@ import { insetRect, rect } from '../geometry.js';
 import type { NormalizedElement } from '../steps/normalize.js';
 import type { ElementRole, Rect, Surface } from '../types.js';
 import { BLEED_REGION, type Archetype, type ArchetypeContext, type Assignment } from './types.js';
+import { byReadingOrder, groupByRegion } from './shared.js';
 
 /**
  * `stack` — vertical flow for portrait and square surfaces.
@@ -35,19 +36,6 @@ const ROLE_REGION: Readonly<Record<ElementRole, RegionKey | typeof BLEED_REGION>
   legal: 'footer',
 };
 
-/** Paint order within a region, low first. */
-const ROLE_RANK: Readonly<Record<ElementRole, number>> = {
-  background: 0,
-  logo: 1,
-  badge: 2,
-  hero: 3,
-  headline: 4,
-  subhead: 5,
-  body: 6,
-  cta: 7,
-  legal: 8,
-};
-
 /** Only chrome may be re-homed by `pinTo`; copy and hero keep their reading order. */
 const PINNABLE: ReadonlySet<ElementRole> = new Set<ElementRole>(['logo', 'badge', 'legal', 'cta']);
 
@@ -60,6 +48,7 @@ export function regionKeyFor(el: NormalizedElement): string {
 export const stackArchetype: Archetype = {
   id: 'stack',
   rationale: 'vertical reading order suits portrait and square surfaces with room to breathe',
+  bleedRegions: [BLEED_REGION],
 
   regions(surface: Surface, ctx: ArchetypeContext): Record<string, Rect> {
     const inner = insetRect(ctx.content, {
@@ -69,14 +58,7 @@ export const stackArchetype: Archetype = {
       left: ctx.gutter,
     });
 
-    const occupancy = new Map<string, NormalizedElement[]>();
-    for (const el of ctx.elements) {
-      const key = regionKeyFor(el);
-      if (key === BLEED_REGION) continue;
-      const list = occupancy.get(key);
-      if (list === undefined) occupancy.set(key, [el]);
-      else list.push(el);
-    }
+    const occupancy = groupByRegion(ctx.elements, regionKeyFor, BLEED_REGION);
 
     const bands = REGION_ORDER.filter((key) => occupancy.has(key)).map((key) => {
       const members = occupancy.get(key) ?? [];
@@ -97,12 +79,7 @@ export const stackArchetype: Archetype = {
     return elements
       .filter((el) => regions[regionKeyFor(el)] !== undefined)
       .slice()
-      .sort(
-        (a, b) =>
-          ROLE_RANK[a.role] - ROLE_RANK[b.role] ||
-          a.priority - b.priority ||
-          a.id.localeCompare(b.id),
-      )
+      .sort(byReadingOrder)
       .map((el) => ({ elementId: el.id, region: regionKeyFor(el) }));
   },
 };

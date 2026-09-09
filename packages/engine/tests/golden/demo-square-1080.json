@@ -144,12 +144,30 @@
       "color": "#f8fafc"
     },
     {
+      "id": "badge",
+      "frame": {
+        "x": 951.6,
+        "y": 526.44,
+        "w": 104.4,
+        "h": 19.2
+      },
+      "opacity": 1,
+      "z": 30,
+      "fontSizePx": 16,
+      "lineHeightPx": 19.2,
+      "lines": [
+        "New season"
+      ],
+      "textAlign": "right",
+      "color": "#f8fafc"
+    },
+    {
       "id": "logo",
       "frame": {
         "x": 24,
-        "y": 459.84,
-        "w": 280.8,
-        "h": 93.6
+        "y": 467.64,
+        "w": 104.4,
+        "h": 34.8
       },
       "opacity": 1,
       "z": 30,
@@ -190,7 +208,7 @@
       "pass": 0,
       "message": "spec \"Trailhead — Spring Launch\" accepted",
       "data": {
-        "elements": 7,
+        "elements": 8,
         "neverDrop": 3,
         "pairs": 1,
         "minContrastRatio": 4.5
@@ -201,7 +219,7 @@
       "step": "normalize",
       "level": "info",
       "pass": 0,
-      "message": "priority order: bg > headline > cta > logo > hero > subhead > legal"
+      "message": "priority order: bg > headline > cta > logo > hero > subhead > badge > legal"
     },
     {
       "seq": 3,
@@ -236,7 +254,7 @@
       "step": "budget",
       "level": "info",
       "pass": 0,
-      "message": "7 frames placed",
+      "message": "8 frames placed",
       "data": {
         "deficitPx": 0,
         "shortfalls": 0
@@ -292,6 +310,21 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
+      "message": "\"badge\" set at 16px over 1 line",
+      "subject": "badge",
+      "data": {
+        "freeSizePx": 17,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 19.2
+      }
+    },
+    {
+      "seq": 10,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
       "message": "\"legal\" set at 25px over 1 line",
       "subject": "legal",
       "data": {
@@ -303,7 +336,7 @@
       }
     },
     {
-      "seq": 10,
+      "seq": 11,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -319,7 +352,7 @@
       }
     },
     {
-      "seq": 11,
+      "seq": 12,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -335,16 +368,16 @@
       }
     },
     {
-      "seq": 12,
+      "seq": 13,
       "step": "fingerprint",
       "level": "info",
       "pass": 0,
-      "message": "layout hashes to fp_ecf6722d",
+      "message": "layout hashes to fp_1420f27f",
       "data": {
-        "placed": 7,
+        "placed": 8,
         "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_ecf6722d"
+  "fingerprint": "fp_1420f27f"
 }

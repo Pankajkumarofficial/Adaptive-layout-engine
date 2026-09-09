@@ -103,22 +103,26 @@ export function fitText(el: NormalizedElement, box: Rect, theme: Theme, tracer: 
   }
 
   if (bestUnits < 0) {
-    // Nothing fits, not even the floor. Render at the floor, truncate, and let
-    // `degrade` decide whether this element deserves the space at all.
+    // Nothing fits, not even the floor. Render at the floor and truncate to the
+    // lines that genuinely fit the box — a clamped frame that still renders four
+    // lines of text would overlap whatever sits below it. `overflow` stays true
+    // so `degrade` can still decide this element does not deserve the space.
     const style = styleAt(text.minFontPx);
+    const lineHeightPx = roundTo(text.minFontPx * text.leading, 2);
+    const linesThatFit = Math.max(1, Math.floor((box.h + 0.01) / lineHeightPx));
     const wrapped = wrap(text.value, style, {
       maxWidthPx: maxWidth,
-      maxLines: text.maxLines,
+      maxLines: Math.min(text.maxLines, linesThatFit),
     });
-    const lineHeightPx = roundTo(text.minFontPx * text.leading, 2);
     tracer.warn('fitText', `"${el.id}" does not fit at its ${text.minFontPx}px floor`, {
       subject: el.id,
       data: {
         minFontPx: text.minFontPx,
         boxW: roundTo(box.w),
         boxH: roundTo(box.h),
-        neededLines: wrapped.lines.length,
+        renderedLines: wrapped.lines.length,
         maxLines: text.maxLines,
+        truncated: wrapped.truncated,
       },
     });
     return {

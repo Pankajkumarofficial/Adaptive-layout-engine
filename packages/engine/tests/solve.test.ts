@@ -62,13 +62,34 @@ describe('solve — contract', () => {
 
   it('drops the highest priority number first', () => {
     const result = solve(DEMO_SPEC, banner);
-    expect(result.dropped[0]?.id).toBe('legal');
+    // `legal` is priority 90, the highest in the spec. It is bound to `badge`,
+    // so the first round removes the pair — both are ordered together.
+    const firstRound = result.dropped.slice(0, 2).map((d) => d.id);
+    expect(firstRound).toContain('legal');
+    expect(firstRound).toContain('badge');
   });
 
   it('honours alwaysPairs by dropping bound elements together', () => {
     const result = solve(DEMO_SPEC, banner);
     const droppedIds = new Set(result.dropped.map((d) => d.id));
-    expect(droppedIds.has('legal')).toBe(droppedIds.has('logo'));
+    expect(droppedIds.has('legal')).toBe(droppedIds.has('badge'));
+  });
+
+  it('keeps a low-priority logo that nothing binds to a doomed element', () => {
+    // Regression: pairing the logo to the legal line made every non-square
+    // surface lose the brand mark for a reason that had nothing to do with it.
+    const result = solve(DEMO_SPEC, presetSurface('leaderboard-728x90'));
+    expect(result.dropped.map((d) => d.id)).not.toContain('logo');
+  });
+
+  it('only reports warnings about the layout it actually delivered', () => {
+    const result = solve(DEMO_SPEC, banner);
+    const droppedIds = new Set(result.dropped.map((d) => d.id));
+    for (const warning of result.warnings) {
+      for (const id of droppedIds) {
+        expect(warning).not.toContain(`"${id}"`);
+      }
+    }
   });
 
   it('records a reason for every drop', () => {

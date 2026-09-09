@@ -13,6 +13,8 @@ const TABLE: Readonly<Record<AspectBucket, Readonly<Record<DensityClass, string>
   landscape: { micro: 'strip', small: 'split', medium: 'split', large: 'split' },
   square: { micro: 'strip', small: 'stack', medium: 'stack', large: 'stack' },
   portrait: { micro: 'strip', small: 'stack', medium: 'stack', large: 'stack' },
+  // `tall` is skyscraper territory (<0.45); a 9:16 story is 0.5625 and lands in
+  // `portrait`. Without a hero there is nothing to overlay, so it stacks.
   tall: { micro: 'strip', small: 'stack', medium: 'stack', large: 'stack' },
 };
 

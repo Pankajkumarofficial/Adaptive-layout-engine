@@ -1,56 +1,68 @@
 {
   "surface": {
-    "id": "leaderboard-728x90",
-    "label": "Leaderboard 728x90",
-    "width": 728,
-    "height": 90,
-    "dpr": 1,
-    "interactionHint": "click"
+    "id": "skyscraper-160x600",
+    "label": "Skyscraper 160x600",
+    "width": 160,
+    "height": 600,
+    "dpr": 2,
+    "interactionHint": "tap"
   },
   "surfaceClass": {
-    "aspect": 8.088888888888889,
-    "aspectBucket": "ultrawide",
-    "area": 65520,
+    "aspect": 0.26666666666666666,
+    "aspectBucket": "tall",
+    "area": 96000,
     "densityClass": "small",
-    "minTouchTarget": 24,
+    "minTouchTarget": 44,
     "contentBox": {
       "x": 0,
       "y": 0,
-      "w": 728,
-      "h": 90
+      "w": 160,
+      "h": 600
     }
   },
-  "archetype": "strip",
+  "archetype": "overlay",
   "regions": {
     "bleed": {
       "x": 0,
       "y": 0,
-      "w": 728,
-      "h": 90
+      "w": 160,
+      "h": 600
     },
     "media": {
+      "x": 0,
+      "y": 0,
+      "w": 160,
+      "h": 600
+    },
+    "header": {
       "x": 8,
       "y": 8,
-      "w": 88.76,
-      "h": 74
+      "w": 144,
+      "h": 55.2
     },
-    "brand": {
-      "x": 104.76,
-      "y": 8,
-      "w": 222,
-      "h": 74
+    "spacer": {
+      "x": 8,
+      "y": 71.2,
+      "w": 144,
+      "h": 287.04
     },
     "copy": {
-      "x": 334.76,
-      "y": 8,
-      "w": 244.1,
-      "h": 74
+      "x": 8,
+      "y": 366.24,
+      "w": 144,
+      "h": 110.4
     },
     "action": {
-      "x": 586.86,
-      "y": 8,
-      "w": 133.14,
-      "h": 74
+      "x": 8,
+      "y": 484.64,
+      "w": 144,
+      "h": 71.76
+    },
+    "footer": {
+      "x": 8,
+      "y": 564.4,
+      "w": 144,
+      "h": 27.6
     }
   },
   "placed": [
@@ -59,8 +71,8 @@
       "frame": {
         "x": 0,
         "y": 0,
-        "w": 728,
-        "h": 90
+        "w": 160,
+        "h": 600
       },
       "opacity": 1,
       "z": 0,
@@ -69,99 +81,118 @@
     {
       "id": "hero",
       "frame": {
-        "x": 8,
-        "y": 8,
-        "w": 88.76,
-        "h": 74
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 600
       },
       "opacity": 1,
       "z": 10,
       "imageCrop": {
-        "sx": 480.82,
+        "sx": 1274.67,
         "sy": 0,
-        "sw": 1919.18,
+        "sw": 426.67,
         "sh": 1600
       }
     },
     {
       "id": "headline",
       "frame": {
-        "x": 334.76,
-        "y": 14.98,
-        "w": 244.1,
-        "h": 18.4
+        "x": 8,
+        "y": 384.04,
+        "w": 144,
+        "h": 36.8
       },
       "opacity": 1,
       "z": 20,
       "fontSizePx": 16,
       "lineHeightPx": 18.4,
       "lines": [
-        "Every trail starts somewhere"
+        "Every trail starts",
+        "somewhere"
       ],
       "textAlign": "center",
-      "color": "#f8fafc"
+      "color": "#f8fafc",
+      "scrim": {
+        "fill": "#000000",
+        "opacity": 0.1
+      }
     },
     {
       "id": "legal",
       "frame": {
-        "x": 334.76,
-        "y": 64.38,
-        "w": 244.1,
-        "h": 10.65
+        "x": 8,
+        "y": 564.89,
+        "w": 144,
+        "h": 26.62
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 8.19,
-      "lineHeightPx": 10.65,
+      "fontSizePx": 10.24,
+      "lineHeightPx": 13.31,
       "lines": [
-        "Free returns within 30 days. Terms apply."
+        "Free returns within 30 days.",
+        "Terms apply."
       ],
       "textAlign": "center",
-      "color": "#f8fafc"
+      "color": "#f8fafc",
+      "scrim": {
+        "fill": "#000000",
+        "opacity": 0.1
+      }
     },
     {
       "id": "subhead",
       "frame": {
-        "x": 334.76,
-        "y": 41.38,
-        "w": 244.1,
-        "h": 15
+        "x": 8,
+        "y": 428.84,
+        "w": 144,
+        "h": 30
       },
       "opacity": 1,
       "z": 20,
       "fontSizePx": 12,
       "lineHeightPx": 15,
       "lines": [
-        "Boots, packs and layers built for the lon…"
+        "Boots, packs and layers",
+        "built for the long way…"
       ],
       "textAlign": "center",
-      "color": "#f8fafc"
+      "color": "#f8fafc",
+      "scrim": {
+        "fill": "#000000",
+        "opacity": 0.1
+      }
     },
     {
       "id": "badge",
       "frame": {
-        "x": 227.76,
-        "y": 55.9,
-        "w": 99,
-        "h": 19.2
+        "x": 81.2,
+        "y": 45.26,
+        "w": 70.8,
+        "h": 12.29
       },
       "opacity": 1,
       "z": 30,
-      "fontSizePx": 16,
-      "lineHeightPx": 19.2,
+      "fontSizePx": 10.24,
+      "lineHeightPx": 12.29,
       "lines": [
         "New season"
       ],
       "textAlign": "right",
-      "color": "#f8fafc"
+      "color": "#f8fafc",
+      "scrim": {
+        "fill": "#000000",
+        "opacity": 0.1
+      }
     },
     {
       "id": "logo",
       "frame": {
-        "x": 104.76,
-        "y": 14.9,
-        "w": 99,
-        "h": 33
+        "x": 8,
+        "y": 13.66,
+        "w": 70.8,
+        "h": 23.6
       },
       "opacity": 1,
       "z": 30,
@@ -175,15 +206,15 @@
     {
       "id": "cta",
       "frame": {
-        "x": 598.26,
-        "y": 29,
-        "w": 110.34,
-        "h": 32
+        "x": 13.04,
+        "y": 498.52,
+        "w": 133.92,
+        "h": 44
       },
       "opacity": 1,
       "z": 40,
-      "fontSizePx": 12.8,
-      "lineHeightPx": 15.36,
+      "fontSizePx": 16,
+      "lineHeightPx": 19.2,
       "lines": [
         "Shop the range"
       ],
@@ -195,7 +226,11 @@
   "dropped": [],
   "warnings": [
     "\"subhead\" does not fit at its 12px floor",
-    "layout still overflows by 15px with only protected elements left; clamping"
+    "layout still overflows by 30px with only protected elements left; clamping",
+    "\"headline\" sits over image \"hero\"; added a 10% dark scrim to hold 4.5:1",
+    "\"legal\" sits over image \"hero\"; added a 10% dark scrim to hold 4.5:1",
+    "\"subhead\" sits over image \"hero\"; added a 10% dark scrim to hold 4.5:1",
+    "\"badge\" sits over image \"hero\"; added a 10% dark scrim to hold 4.5:1"
   ],
   "trace": [
     {
@@ -223,15 +258,15 @@
       "step": "classify",
       "level": "decision",
       "pass": 0,
-      "message": "728x90 is ultrawide/small",
-      "subject": "leaderboard-728x90",
+      "message": "160x600 is tall/small",
+      "subject": "skyscraper-160x600",
       "data": {
-        "aspect": 8.089,
-        "area": 65520,
-        "dpr": 1,
-        "minTouchTarget": 24,
-        "contentW": 728,
-        "contentH": 90
+        "aspect": 0.267,
+        "area": 96000,
+        "dpr": 2,
+        "minTouchTarget": 44,
+        "contentW": 160,
+        "contentH": 600
       }
     },
     {
@@ -239,9 +274,9 @@
       "step": "selectArchetype",
       "level": "decision",
       "pass": 0,
-      "message": "chose \"strip\" — a single row is the only composition that fits when height is the scarce axis",
+      "message": "chose \"overlay\" — a very tall canvas cannot afford to divide image from type, so the type sits on the image",
       "data": {
-        "aspectBucket": "ultrawide",
+        "aspectBucket": "tall",
         "densityClass": "small",
         "hasHero": true
       }
@@ -262,12 +297,12 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"headline\" set at 16px over 1 line",
+      "message": "\"headline\" set at 16px over 2 lines",
       "subject": "headline",
       "data": {
-        "freeSizePx": 17,
+        "freeSizePx": 17.5,
         "snapped": true,
-        "lines": 1,
+        "lines": 2,
         "maxLines": 3,
         "lineHeightPx": 18.4
       }
@@ -277,14 +312,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"cta\" set at 12.8px over 1 line",
+      "message": "\"cta\" set at 16px over 1 line",
       "subject": "cta",
       "data": {
-        "freeSizePx": 15,
+        "freeSizePx": 16.5,
         "snapped": true,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 15.36
+        "lineHeightPx": 19.2
       }
     },
     {
@@ -296,9 +331,9 @@
       "subject": "subhead",
       "data": {
         "minFontPx": 12,
-        "boxW": 244.1,
-        "boxH": 19.33,
-        "renderedLines": 1,
+        "boxW": 144,
+        "boxH": 42.16,
+        "renderedLines": 2,
         "maxLines": 2,
         "truncated": true
       }
@@ -308,14 +343,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"badge\" set at 16px over 1 line",
+      "message": "\"badge\" set at 10.24px over 1 line",
       "subject": "badge",
       "data": {
-        "freeSizePx": 16,
+        "freeSizePx": 11.5,
         "snapped": true,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 19.2
+        "lineHeightPx": 12.29
       }
     },
     {
@@ -323,14 +358,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"legal\" set at 8.19px over 1 line",
+      "message": "\"legal\" set at 10.24px over 2 lines",
       "subject": "legal",
       "data": {
-        "freeSizePx": 8.5,
+        "freeSizePx": 10.5,
         "snapped": true,
-        "lines": 1,
+        "lines": 2,
         "maxLines": 2,
-        "lineHeightPx": 10.65
+        "lineHeightPx": 13.31
       }
     },
     {
@@ -338,11 +373,11 @@
       "step": "degrade",
       "level": "decision",
       "pass": 0,
-      "message": "dropping badge + legal — priority 90 to recover 15px of unmet minimums",
+      "message": "dropping badge + legal — priority 90 to recover 30px of unmet minimums",
       "subject": "legal",
       "data": {
         "priority": 90,
-        "deficitPx": 15,
+        "deficitPx": 30,
         "group": 2
       }
     },
@@ -362,12 +397,12 @@
       "step": "fitText",
       "level": "info",
       "pass": 1,
-      "message": "\"headline\" set at 16px over 1 line",
+      "message": "\"headline\" set at 16px over 2 lines",
       "subject": "headline",
       "data": {
-        "freeSizePx": 17,
+        "freeSizePx": 18.5,
         "snapped": true,
-        "lines": 1,
+        "lines": 2,
         "maxLines": 3,
         "lineHeightPx": 18.4
       }
@@ -377,14 +412,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 1,
-      "message": "\"cta\" set at 12.8px over 1 line",
+      "message": "\"cta\" set at 16px over 1 line",
       "subject": "cta",
       "data": {
-        "freeSizePx": 15,
+        "freeSizePx": 16.5,
         "snapped": true,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 15.36
+        "lineHeightPx": 19.2
       }
     },
     {
@@ -396,9 +431,9 @@
       "subject": "subhead",
       "data": {
         "minFontPx": 12,
-        "boxW": 244.1,
-        "boxH": 27.18,
-        "renderedLines": 1,
+        "boxW": 144,
+        "boxH": 45.25,
+        "renderedLines": 2,
         "maxLines": 2,
         "truncated": true
       }
@@ -411,8 +446,8 @@
       "message": "dropping badge + legal did not reduce the deficit, so it is kept and the layout is clamped instead",
       "subject": "badge",
       "data": {
-        "deficitBefore": 15,
-        "deficitAfter": 15
+        "deficitBefore": 30,
+        "deficitAfter": 30
       }
     },
     {
@@ -420,9 +455,9 @@
       "step": "degrade",
       "level": "warn",
       "pass": 0,
-      "message": "layout still overflows by 15px with only protected elements left; clamping",
+      "message": "layout still overflows by 30px with only protected elements left; clamping",
       "data": {
-        "deficitPx": 15,
+        "deficitPx": 30,
         "remaining": 8
       }
     },
@@ -431,12 +466,12 @@
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
-      "message": "cropped \"hero\" to 1919x1600 around focal 0.62,0.38",
+      "message": "cropped \"hero\" to 427x1600 around focal 0.62,0.38",
       "subject": "hero",
       "data": {
-        "sx": 480.82,
+        "sx": 1274.67,
         "sy": 0,
-        "sw": 1919.18,
+        "sw": 426.67,
         "sh": 1600,
         "intrinsicW": 2400,
         "intrinsicH": 1600
@@ -444,6 +479,62 @@
     },
     {
       "seq": 19,
+      "step": "contrast",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"headline\" sits over image \"hero\"; added a 10% dark scrim to hold 4.5:1",
+      "subject": "headline",
+      "data": {
+        "required": 4.5,
+        "unscrimmed": 3.77,
+        "opacity": 0.1,
+        "assumedBackdrop": "#808080"
+      }
+    },
+    {
+      "seq": 20,
+      "step": "contrast",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"legal\" sits over image \"hero\"; added a 10% dark scrim to hold 4.5:1",
+      "subject": "legal",
+      "data": {
+        "required": 4.5,
+        "unscrimmed": 3.77,
+        "opacity": 0.1,
+        "assumedBackdrop": "#808080"
+      }
+    },
+    {
+      "seq": 21,
+      "step": "contrast",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"subhead\" sits over image \"hero\"; added a 10% dark scrim to hold 4.5:1",
+      "subject": "subhead",
+      "data": {
+        "required": 4.5,
+        "unscrimmed": 3.77,
+        "opacity": 0.1,
+        "assumedBackdrop": "#808080"
+      }
+    },
+    {
+      "seq": 22,
+      "step": "contrast",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"badge\" sits over image \"hero\"; added a 10% dark scrim to hold 4.5:1",
+      "subject": "badge",
+      "data": {
+        "required": 4.5,
+        "unscrimmed": 3.77,
+        "opacity": 0.1,
+        "assumedBackdrop": "#808080"
+      }
+    },
+    {
+      "seq": 23,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -459,16 +550,16 @@
       }
     },
     {
-      "seq": 20,
+      "seq": 24,
       "step": "fingerprint",
       "level": "info",
       "pass": 0,
-      "message": "layout hashes to fp_afc51d33",
+      "message": "layout hashes to fp_3410c341",
       "data": {
         "placed": 8,
         "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_afc51d33"
+  "fingerprint": "fp_3410c341"
 }

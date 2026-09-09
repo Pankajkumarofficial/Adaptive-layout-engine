@@ -30,6 +30,14 @@ export const PRESET_SURFACES: readonly Surface[] = [
     interactionHint: 'tap',
   },
   {
+    id: 'skyscraper-160x600',
+    label: 'Skyscraper 160x600',
+    width: 160,
+    height: 600,
+    dpr: 2,
+    interactionHint: 'tap',
+  },
+  {
     id: 'square-1080',
     label: 'Social Square 1:1',
     width: 1080,

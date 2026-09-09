@@ -1,9 +1,4 @@
-import {
-  BLEED_REGION,
-  type Archetype,
-  type ArchetypeContext,
-  type Assignment,
-} from './archetypes/index.js';
+import type { Archetype, ArchetypeContext, Assignment } from './archetypes/index.js';
 import { fingerprint } from './fingerprint.js';
 import { roundRect, roundTo } from './geometry.js';
 import { Tracer } from './trace.js';
@@ -77,6 +72,7 @@ export function solve(spec: AdSpec, surface: Surface): LayoutResult {
     const plan = chooseDrop(active, attempt.shortfalls, norm.neverDrop, norm.alwaysPairs, tracer);
     if (plan === null) break;
 
+    const previous = { active, attempt, dropped: dropped.slice(), pass };
     const removing = new Set(plan.ids);
     active = active.filter((el) => !removing.has(el.id));
     for (const id of plan.ids) {
@@ -86,6 +82,30 @@ export function solve(spec: AdSpec, surface: Surface): LayoutResult {
     pass += 1;
     tracer.setPass(pass);
     attempt = runAttempt(archetype, norm, klass, gutter, active, tracer);
+
+    // A drop that buys nothing will not be redeemed by dropping more: the
+    // constraint is somewhere this element was never competing for. Put it
+    // back and stop, rather than stripping the ad down to nothing for free.
+    if (attempt.deficitPx >= previous.attempt.deficitPx - DEFICIT_EPSILON) {
+      tracer.warn(
+        'degrade',
+        `dropping ${plan.ids.join(' + ')} did not reduce the deficit, so it is kept and the layout is clamped instead`,
+        {
+          subject: plan.ids[0],
+          data: {
+            deficitBefore: Math.round(previous.attempt.deficitPx),
+            deficitAfter: Math.round(attempt.deficitPx),
+          },
+        },
+      );
+      active = previous.active;
+      attempt = previous.attempt;
+      dropped.length = 0;
+      dropped.push(...previous.dropped);
+      pass = previous.pass;
+      tracer.setPass(pass);
+      break;
+    }
   }
 
   if (attempt.deficitPx > DEFICIT_EPSILON) {
@@ -152,7 +172,15 @@ function runAttempt(
   const regions = archetype.regions(norm.surface, ctx);
   const assignments = archetype.assign(active, regions);
 
-  const budgeted = budget(regions, assignments, active, klass, gutter, tracer);
+  // Which elements paint edge-to-edge is a property of the composition, not of
+  // the element: a hero is inset in `stack` and full-bleed in `overlay`.
+  const bleedRegions = new Set(archetype.bleedRegions);
+  const bleeding = new Set<string>();
+  for (const a of assignments) {
+    if (bleedRegions.has(a.region)) bleeding.add(a.elementId);
+  }
+
+  const budgeted = budget(regions, assignments, active, klass, gutter, bleeding, tracer);
   const shortfalls: Shortfall[] = [...budgeted.shortfalls];
 
   // Step 5 — fit text, then shrink each text frame onto its real line box.
@@ -178,7 +206,7 @@ function runAttempt(
   // Second half of step 4 — restack each region now that heights are real.
   const byRegion = new Map<string, { id: string; frame: Rect }[]>();
   for (const a of assignments) {
-    if (a.region === BLEED_REGION) continue;
+    if (bleedRegions.has(a.region)) continue;
     const frame = frames[a.elementId];
     if (frame === undefined) continue;
     const list = byRegion.get(a.region);
@@ -187,13 +215,14 @@ function runAttempt(
   }
   for (const [regionKey, items] of byRegion) {
     const region = regions[regionKey];
-    if (region === undefined) continue;
+    // Bleed regions are not compacted: their contents are meant to fill them.
+    if (region === undefined || bleedRegions.has(regionKey)) continue;
     const compacted = compactRegion(region, items, gutter);
     for (const [id, frame] of Object.entries(compacted)) frames[id] = frame;
   }
 
   // Step 7 — safe area and touch targets.
-  const safe = enforceSafeArea(frames, active, klass, tracer);
+  const safe = enforceSafeArea(frames, active, klass, bleeding, tracer);
   let deficitPx = shortfalls.reduce((acc, s) => acc + (s.required - s.available), 0);
 
   // A CTA that had to grow took space nobody budgeted for. Rather than a

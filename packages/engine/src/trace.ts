@@ -1,5 +1,12 @@
 import type { TraceEntry, TraceLevel, TraceStep, TraceValue } from './types.js';
 
+/** Steps that run once, outside the degradation loop, so never go stale. */
+const PRE_LOOP_STEPS: ReadonlySet<TraceStep> = new Set<TraceStep>([
+  'normalize',
+  'classify',
+  'selectArchetype',
+]);
+
 export interface TracePayload {
   subject?: string;
   data?: Record<string, TraceValue>;
@@ -37,15 +44,23 @@ export class Tracer {
     this.push('warn', step, message, payload);
   }
 
-  /** Warnings surfaced to `LayoutResult.warnings`, in trace order, de-duplicated. */
-  warnings(): string[] {
+  /**
+   * Warnings surfaced to `LayoutResult.warnings`, in trace order, de-duplicated.
+   *
+   * Only the final pass counts. An earlier pass complaining that a headline
+   * would not fit is not a warning about the delivered layout — degradation
+   * dropped something and the headline fits now. Steps that run once, before
+   * the degradation loop, are always kept: their warnings can never be stale.
+   */
+  warnings(finalPass = this.currentPass): string[] {
     const seen = new Set<string>();
     const out: string[] = [];
     for (const e of this.entries) {
-      if (e.level === 'warn' && !seen.has(e.message)) {
-        seen.add(e.message);
-        out.push(e.message);
-      }
+      if (e.level !== 'warn') continue;
+      if (e.pass !== finalPass && !PRE_LOOP_STEPS.has(e.step)) continue;
+      if (seen.has(e.message)) continue;
+      seen.add(e.message);
+      out.push(e.message);
     }
     return out;
   }

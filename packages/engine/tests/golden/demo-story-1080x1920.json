@@ -152,12 +152,30 @@
       "color": "#f8fafc"
     },
     {
+      "id": "badge",
+      "frame": {
+        "x": 848.4,
+        "y": 921.96,
+        "w": 183.6,
+        "h": 36
+      },
+      "opacity": 1,
+      "z": 30,
+      "fontSizePx": 30,
+      "lineHeightPx": 36,
+      "lines": [
+        "New season"
+      ],
+      "textAlign": "right",
+      "color": "#f8fafc"
+    },
+    {
       "id": "logo",
       "frame": {
         "x": 48,
-        "y": 824.16,
-        "w": 439.2,
-        "h": 146.4
+        "y": 836.76,
+        "w": 183.6,
+        "h": 61.2
       },
       "opacity": 1,
       "z": 30,
@@ -171,15 +189,15 @@
     {
       "id": "cta",
       "frame": {
-        "x": 164.56,
-        "y": 1470.38,
-        "w": 750.88,
-        "h": 150.44
+        "x": 88.54,
+        "y": 1458,
+        "w": 902.93,
+        "h": 175.2
       },
       "opacity": 1,
       "z": 40,
-      "fontSizePx": 95.37,
-      "lineHeightPx": 114.44,
+      "fontSizePx": 116,
+      "lineHeightPx": 139.2,
       "lines": [
         "Shop the range"
       ],
@@ -198,7 +216,7 @@
       "pass": 0,
       "message": "spec \"Trailhead — Spring Launch\" accepted",
       "data": {
-        "elements": 7,
+        "elements": 8,
         "neverDrop": 3,
         "pairs": 1,
         "minContrastRatio": 4.5
@@ -209,7 +227,7 @@
       "step": "normalize",
       "level": "info",
       "pass": 0,
-      "message": "priority order: bg > headline > cta > logo > hero > subhead > legal"
+      "message": "priority order: bg > headline > cta > logo > hero > subhead > badge > legal"
     },
     {
       "seq": 3,
@@ -244,7 +262,7 @@
       "step": "budget",
       "level": "info",
       "pass": 0,
-      "message": "7 frames placed",
+      "message": "8 frames placed",
       "data": {
         "deficitPx": 0,
         "shortfalls": 0
@@ -270,14 +288,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"cta\" set at 95.37px over 1 line",
+      "message": "\"cta\" set at 116px over 1 line",
       "subject": "cta",
       "data": {
-        "freeSizePx": 103.5,
-        "snapped": true,
+        "freeSizePx": 116,
+        "snapped": false,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 114.44
+        "lineHeightPx": 139.2
       }
     },
     {
@@ -300,6 +318,21 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
+      "message": "\"badge\" set at 30px over 1 line",
+      "subject": "badge",
+      "data": {
+        "freeSizePx": 30,
+        "snapped": false,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 36
+      }
+    },
+    {
+      "seq": 10,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
       "message": "\"legal\" set at 39.06px over 1 line",
       "subject": "legal",
       "data": {
@@ -311,7 +344,7 @@
       }
     },
     {
-      "seq": 10,
+      "seq": 11,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -327,7 +360,7 @@
       }
     },
     {
-      "seq": 11,
+      "seq": 12,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -343,16 +376,16 @@
       }
     },
     {
-      "seq": 12,
+      "seq": 13,
       "step": "fingerprint",
       "level": "info",
       "pass": 0,
-      "message": "layout hashes to fp_0bfce5b3",
+      "message": "layout hashes to fp_ac4211db",
       "data": {
-        "placed": 7,
+        "placed": 8,
         "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_0bfce5b3"
+  "fingerprint": "fp_ac4211db"
 }

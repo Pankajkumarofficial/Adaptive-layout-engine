@@ -1,6 +1,21 @@
 import type { AdSpec } from '../types.js';
 
 /**
+ * Inlined so the demo renders with no network at all. Real specs point at
+ * uploaded assets; this one has to work in a golden test and on a plane.
+ */
+const LOGO_DATA_URI =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 160">' +
+      '<rect width="480" height="160" rx="16" fill="#f97316"/>' +
+      '<path d="M56 112 L96 48 L136 112 Z" fill="#1c1917"/>' +
+      '<text x="168" y="104" font-family="Inter,system-ui,sans-serif" font-size="56" ' +
+      'font-weight="700" fill="#1c1917">TRAILHEAD</text>' +
+      '</svg>',
+  );
+
+/**
  * The showcase spec: five elements with a clean priority gradient, so the
  * degradation ladder is visible as the surface shrinks.
  */
@@ -20,7 +35,7 @@ export const DEMO_SPEC: AdSpec = {
       priority: 40,
       content: {
         kind: 'image',
-        url: 'https://images.example.com/trailhead-hero.jpg',
+        url: 'https://picsum.photos/id/1015/2400/1600',
         focalPoint: { x: 0.62, y: 0.38 },
         intrinsic: { w: 2400, h: 1600 },
       },
@@ -32,12 +47,20 @@ export const DEMO_SPEC: AdSpec = {
       priority: 10,
       content: {
         kind: 'image',
-        url: 'https://images.example.com/trailhead-logo.svg',
+        url: LOGO_DATA_URI,
         intrinsic: { w: 480, h: 160 },
       },
       aspectLock: 3,
       minSize: { w: 48, h: 16 },
       pinTo: 'top',
+    },
+    {
+      id: 'badge',
+      role: 'badge',
+      priority: 70,
+      content: { kind: 'text', value: 'New season', maxLines: 1, minFontPx: 10 },
+      minSize: { w: 56, h: 18 },
+      pinTo: 'right',
     },
     {
       id: 'headline',
@@ -94,7 +117,9 @@ export const DEMO_SPEC: AdSpec = {
   },
   rules: {
     neverDrop: ['headline', 'cta'],
-    alwaysPairs: [['logo', 'legal']],
+    // The badge makes a claim and the legal line qualifies it. Shipping either
+    // one alone would be a compliance problem, so they live and die together.
+    alwaysPairs: [['badge', 'legal']],
     minContrastRatio: 4.5,
   },
 };

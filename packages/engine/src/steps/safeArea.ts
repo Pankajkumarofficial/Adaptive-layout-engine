@@ -23,6 +23,7 @@ export function enforceSafeArea(
   frames: Readonly<Record<string, Rect>>,
   elements: readonly NormalizedElement[],
   klass: SurfaceClass,
+  bleeding: ReadonlySet<string>,
   tracer: Tracer,
 ): SafeAreaResult {
   const out: Record<string, Rect> = {};
@@ -33,8 +34,9 @@ export function enforceSafeArea(
     const frame = frames[el.id];
     if (frame === undefined) continue;
 
-    if (el.bleed) {
-      // Backgrounds are meant to run under the notch; that is the whole point.
+    if (bleeding.has(el.id)) {
+      // Backgrounds and full-bleed heroes are meant to run under the notch;
+      // that is the whole point of them.
       out[el.id] = frame;
       continue;
     }

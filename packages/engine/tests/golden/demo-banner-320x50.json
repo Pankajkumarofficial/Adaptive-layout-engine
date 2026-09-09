@@ -20,7 +20,7 @@
       "h": 50
     }
   },
-  "archetype": "stack",
+  "archetype": "strip",
   "regions": {
     "bleed": {
       "x": 0,
@@ -31,14 +31,14 @@
     "copy": {
       "x": 4,
       "y": 4,
-      "w": 312,
-      "h": 10.18
+      "w": 199.29,
+      "h": 42
     },
     "action": {
-      "x": 4,
-      "y": 18.18,
-      "w": 312,
-      "h": 27.82
+      "x": 207.29,
+      "y": 4,
+      "w": 108.71,
+      "h": 42
     }
   },
   "placed": [
@@ -58,16 +58,17 @@
       "id": "headline",
       "frame": {
         "x": 4,
-        "y": 4,
-        "w": 312,
-        "h": 10.18
+        "y": 6.6,
+        "w": 199.29,
+        "h": 36.8
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 14,
-      "lineHeightPx": 16.1,
+      "fontSizePx": 16,
+      "lineHeightPx": 18.4,
       "lines": [
-        "Every trail starts somewhere"
+        "Every trail starts",
+        "somewhere"
       ],
       "textAlign": "center",
       "color": "#f8fafc"
@@ -75,15 +76,15 @@
     {
       "id": "cta",
       "frame": {
-        "x": 95.04,
-        "y": 6,
-        "w": 129.92,
+        "x": 209.58,
+        "y": 4,
+        "w": 104.13,
         "h": 44
       },
       "opacity": 1,
       "z": 40,
-      "fontSizePx": 16,
-      "lineHeightPx": 19.2,
+      "fontSizePx": 12.5,
+      "lineHeightPx": 15,
       "lines": [
         "Shop the range"
       ],
@@ -94,30 +95,29 @@
   ],
   "dropped": [
     {
-      "id": "legal",
-      "reason": "priority 90; bound to logo, dropped together to recover 236px of unmet minimums"
+      "id": "badge",
+      "reason": "priority 70; bound to legal, dropped together to recover 146px of unmet minimums"
     },
     {
-      "id": "logo",
-      "reason": "priority 10; bound to legal, dropped together to recover 236px of unmet minimums"
+      "id": "legal",
+      "reason": "priority 90; bound to badge, dropped together to recover 146px of unmet minimums"
     },
     {
       "id": "subhead",
-      "reason": "priority 60; dropped to recover 151px of unmet minimums"
+      "reason": "priority 60; dropped to recover 116px of unmet minimums"
     },
     {
       "id": "hero",
-      "reason": "priority 40; dropped to recover 117px of unmet minimums"
+      "reason": "priority 40; dropped to recover 107px of unmet minimums"
+    },
+    {
+      "id": "logo",
+      "reason": "priority 10; dropped to recover 49px of unmet minimums"
     }
   ],
   "warnings": [
-    "archetype \"strip\" is not implemented yet; falling back to \"stack\"",
-    "\"headline\" does not fit at its 14px floor",
-    "\"cta\" does not fit at its 12px floor",
-    "\"subhead\" does not fit at its 12px floor",
-    "\"legal\" does not fit at its 8px floor",
     "nothing left to drop; only protected elements remain",
-    "layout still overflows by 38px with only protected elements left; clamping"
+    "layout still overflows by 2px with only protected elements left; clamping"
   ],
   "trace": [
     {
@@ -127,7 +127,7 @@
       "pass": 0,
       "message": "spec \"Trailhead — Spring Launch\" accepted",
       "data": {
-        "elements": 7,
+        "elements": 8,
         "neverDrop": 3,
         "pairs": 1,
         "minContrastRatio": 4.5
@@ -138,7 +138,7 @@
       "step": "normalize",
       "level": "info",
       "pass": 0,
-      "message": "priority order: bg > headline > cta > logo > hero > subhead > legal"
+      "message": "priority order: bg > headline > cta > logo > hero > subhead > badge > legal"
     },
     {
       "seq": 3,
@@ -159,12 +159,13 @@
     {
       "seq": 4,
       "step": "selectArchetype",
-      "level": "warn",
+      "level": "decision",
       "pass": 0,
-      "message": "archetype \"strip\" is not implemented yet; falling back to \"stack\"",
+      "message": "chose \"strip\" — a single row is the only composition that fits when height is the scarce axis",
       "data": {
         "aspectBucket": "ultrawide",
-        "densityClass": "micro"
+        "densityClass": "micro",
+        "hasHero": true
       }
     },
     {
@@ -172,10 +173,10 @@
       "step": "budget",
       "level": "info",
       "pass": 0,
-      "message": "region \"copy\" is 29.6px short",
+      "message": "region \"copy\" is 7.5px short",
       "subject": "copy",
       "data": {
-        "shortfallPx": 29.6
+        "shortfallPx": 7.5
       }
     },
     {
@@ -183,10 +184,10 @@
       "step": "budget",
       "level": "info",
       "pass": 0,
-      "message": "7 frames placed",
+      "message": "8 frames placed",
       "data": {
-        "deficitPx": 180,
-        "shortfalls": 7
+        "deficitPx": 78.2,
+        "shortfalls": 9
       }
     },
     {
@@ -198,10 +199,11 @@
       "subject": "headline",
       "data": {
         "minFontPx": 14,
-        "boxW": 312,
-        "boxH": 0.78,
-        "neededLines": 1,
-        "maxLines": 3
+        "boxW": 49.72,
+        "boxH": 13.19,
+        "renderedLines": 1,
+        "maxLines": 3,
+        "truncated": true
       }
     },
     {
@@ -213,10 +215,11 @@
       "subject": "cta",
       "data": {
         "minFontPx": 12,
-        "boxW": 253.2,
-        "boxH": 1,
-        "neededLines": 1,
-        "maxLines": 1
+        "boxW": 67.56,
+        "boxH": 34,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
       }
     },
     {
@@ -228,10 +231,11 @@
       "subject": "subhead",
       "data": {
         "minFontPx": 12,
-        "boxW": 312,
-        "boxH": 0.73,
-        "neededLines": 1,
-        "maxLines": 2
+        "boxW": 49.72,
+        "boxH": 12.29,
+        "renderedLines": 1,
+        "maxLines": 2,
+        "truncated": true
       }
     },
     {
@@ -239,38 +243,44 @@
       "step": "fitText",
       "level": "warn",
       "pass": 0,
-      "message": "\"legal\" does not fit at its 8px floor",
-      "subject": "legal",
+      "message": "\"badge\" does not fit at its 10px floor",
+      "subject": "badge",
       "data": {
-        "minFontPx": 8,
-        "boxW": 312,
-        "boxH": 1.63,
-        "neededLines": 1,
-        "maxLines": 2
+        "minFontPx": 10,
+        "boxW": 57,
+        "boxH": 19,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
       }
     },
     {
       "seq": 11,
-      "step": "degrade",
-      "level": "decision",
+      "step": "fitText",
+      "level": "warn",
       "pass": 0,
-      "message": "dropping legal + logo — priority 90 to recover 236px of unmet minimums",
+      "message": "\"legal\" does not fit at its 8px floor",
       "subject": "legal",
       "data": {
-        "priority": 90,
-        "deficitPx": 236,
-        "group": 2
+        "minFontPx": 8,
+        "boxW": 49.72,
+        "boxH": 8.52,
+        "renderedLines": 1,
+        "maxLines": 2,
+        "truncated": true
       }
     },
     {
       "seq": 12,
-      "step": "budget",
-      "level": "info",
-      "pass": 1,
-      "message": "region \"copy\" is 26.5px short",
-      "subject": "copy",
+      "step": "degrade",
+      "level": "decision",
+      "pass": 0,
+      "message": "dropping badge + legal — priority 90 to recover 146px of unmet minimums",
+      "subject": "legal",
       "data": {
-        "shortfallPx": 26.5
+        "priority": 90,
+        "deficitPx": 146,
+        "group": 2
       }
     },
     {
@@ -278,10 +288,10 @@
       "step": "budget",
       "level": "info",
       "pass": 1,
-      "message": "5 frames placed",
+      "message": "6 frames placed",
       "data": {
-        "deficitPx": 105.1,
-        "shortfalls": 4
+        "deficitPx": 70.7,
+        "shortfalls": 6
       }
     },
     {
@@ -293,10 +303,11 @@
       "subject": "headline",
       "data": {
         "minFontPx": 14,
-        "boxW": 312,
-        "boxH": 2.37,
-        "neededLines": 1,
-        "maxLines": 3
+        "boxW": 49.72,
+        "boxH": 22.35,
+        "renderedLines": 1,
+        "maxLines": 3,
+        "truncated": true
       }
     },
     {
@@ -308,10 +319,11 @@
       "subject": "cta",
       "data": {
         "minFontPx": 12,
-        "boxW": 253.2,
-        "boxH": 2.75,
-        "neededLines": 1,
-        "maxLines": 1
+        "boxW": 67.56,
+        "boxH": 34,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
       }
     },
     {
@@ -323,10 +335,11 @@
       "subject": "subhead",
       "data": {
         "minFontPx": 12,
-        "boxW": 312,
-        "boxH": 2.21,
-        "neededLines": 1,
-        "maxLines": 2
+        "boxW": 49.72,
+        "boxH": 15.65,
+        "renderedLines": 1,
+        "maxLines": 2,
+        "truncated": true
       }
     },
     {
@@ -334,11 +347,11 @@
       "step": "degrade",
       "level": "decision",
       "pass": 1,
-      "message": "dropping subhead — priority 60 to recover 151px of unmet minimums",
+      "message": "dropping subhead — priority 60 to recover 116px of unmet minimums",
       "subject": "subhead",
       "data": {
         "priority": 60,
-        "deficitPx": 151,
+        "deficitPx": 116,
         "group": 1
       }
     },
@@ -347,10 +360,10 @@
       "step": "budget",
       "level": "info",
       "pass": 2,
-      "message": "4 frames placed",
+      "message": "5 frames placed",
       "data": {
-        "deficitPx": 86.1,
-        "shortfalls": 3
+        "deficitPx": 60.4,
+        "shortfalls": 5
       }
     },
     {
@@ -362,10 +375,11 @@
       "subject": "headline",
       "data": {
         "minFontPx": 14,
-        "boxW": 312,
-        "boxH": 4.56,
-        "neededLines": 1,
-        "maxLines": 3
+        "boxW": 49.72,
+        "boxH": 42,
+        "renderedLines": 2,
+        "maxLines": 3,
+        "truncated": true
       }
     },
     {
@@ -377,10 +391,11 @@
       "subject": "cta",
       "data": {
         "minFontPx": 12,
-        "boxW": 253.2,
-        "boxH": 4.46,
-        "neededLines": 1,
-        "maxLines": 1
+        "boxW": 67.56,
+        "boxH": 34,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
       }
     },
     {
@@ -388,11 +403,11 @@
       "step": "degrade",
       "level": "decision",
       "pass": 2,
-      "message": "dropping hero — priority 40 to recover 117px of unmet minimums",
+      "message": "dropping hero — priority 40 to recover 107px of unmet minimums",
       "subject": "hero",
       "data": {
         "priority": 40,
-        "deficitPx": 117,
+        "deficitPx": 107,
         "group": 1
       }
     },
@@ -401,10 +416,10 @@
       "step": "budget",
       "level": "info",
       "pass": 3,
-      "message": "3 frames placed",
+      "message": "4 frames placed",
       "data": {
-        "deficitPx": 22.1,
-        "shortfalls": 2
+        "deficitPx": 2,
+        "shortfalls": 1
       }
     },
     {
@@ -416,56 +431,112 @@
       "subject": "headline",
       "data": {
         "minFontPx": 14,
-        "boxW": 312,
-        "boxH": 10.18,
-        "neededLines": 1,
-        "maxLines": 3
+        "boxW": 82,
+        "boxH": 42,
+        "renderedLines": 2,
+        "maxLines": 3,
+        "truncated": true
       }
     },
     {
       "seq": 24,
       "step": "fitText",
-      "level": "info",
+      "level": "warn",
       "pass": 3,
-      "message": "\"cta\" set at 16px over 1 line",
+      "message": "\"cta\" does not fit at its 12px floor",
       "subject": "cta",
       "data": {
-        "freeSizePx": 16.5,
-        "snapped": true,
-        "lines": 1,
+        "minFontPx": 12,
+        "boxW": 84,
+        "boxH": 34,
+        "renderedLines": 1,
         "maxLines": 1,
-        "lineHeightPx": 19.2
+        "truncated": true
       }
     },
     {
       "seq": 25,
       "step": "degrade",
-      "level": "warn",
+      "level": "decision",
       "pass": 3,
-      "message": "nothing left to drop; only protected elements remain"
+      "message": "dropping logo — priority 10 to recover 49px of unmet minimums",
+      "subject": "logo",
+      "data": {
+        "priority": 10,
+        "deficitPx": 49,
+        "group": 1
+      }
     },
     {
       "seq": 26,
-      "step": "degrade",
-      "level": "warn",
-      "pass": 3,
-      "message": "layout still overflows by 38px with only protected elements left; clamping",
+      "step": "budget",
+      "level": "info",
+      "pass": 4,
+      "message": "3 frames placed",
       "data": {
-        "deficitPx": 38,
-        "remaining": 3
+        "deficitPx": 2,
+        "shortfalls": 1
       }
     },
     {
       "seq": 27,
+      "step": "fitText",
+      "level": "info",
+      "pass": 4,
+      "message": "\"headline\" set at 16px over 2 lines",
+      "subject": "headline",
+      "data": {
+        "freeSizePx": 18,
+        "snapped": true,
+        "lines": 2,
+        "maxLines": 3,
+        "lineHeightPx": 18.4
+      }
+    },
+    {
+      "seq": 28,
+      "step": "fitText",
+      "level": "info",
+      "pass": 4,
+      "message": "\"cta\" set at 12.5px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 12.5,
+        "snapped": false,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 15
+      }
+    },
+    {
+      "seq": 29,
+      "step": "degrade",
+      "level": "warn",
+      "pass": 4,
+      "message": "nothing left to drop; only protected elements remain"
+    },
+    {
+      "seq": 30,
+      "step": "degrade",
+      "level": "warn",
+      "pass": 4,
+      "message": "layout still overflows by 2px with only protected elements left; clamping",
+      "data": {
+        "deficitPx": 2,
+        "remaining": 3
+      }
+    },
+    {
+      "seq": 31,
       "step": "fingerprint",
       "level": "info",
-      "pass": 3,
-      "message": "layout hashes to fp_6c5d077a",
+      "pass": 4,
+      "message": "layout hashes to fp_aa8c349c",
       "data": {
         "placed": 3,
-        "dropped": 4
+        "dropped": 5
       }
     }
   ],
-  "fingerprint": "fp_6c5d077a"
+  "fingerprint": "fp_aa8c349c"
 }
