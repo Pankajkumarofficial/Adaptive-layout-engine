@@ -21,11 +21,18 @@ scripts/            font-metric capture tooling
 
 ```bash
 npm install
-npm test          # 163 engine tests
+npm run demo              # solve the demo spec across every preset surface
+npm run demo -- --trace   # the same, with the full decision trace
+npm run demo -- banner    # just one preset
+
+npm test                  # 163 engine tests
+npm run bench             # solve-time distribution
 npm run typecheck
 npm run lint
-npm run bench     # prints the solve-time distribution
 ```
+
+`npm run dev` is aliased to `npm run demo` until milestone 3, when it will start the React
+playground instead. There is no browser app yet — `apps/` is empty by design.
 
 ## The pipeline
 
