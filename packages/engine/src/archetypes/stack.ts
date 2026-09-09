@@ -1,0 +1,108 @@
+import { allocateBands, minHeightOf } from '../steps/budget.js';
+import { insetRect, rect } from '../geometry.js';
+import type { NormalizedElement } from '../steps/normalize.js';
+import type { ElementRole, Rect, Surface } from '../types.js';
+import { BLEED_REGION, type Archetype, type ArchetypeContext, type Assignment } from './types.js';
+
+/**
+ * `stack` — vertical flow for portrait and square surfaces.
+ *
+ * Reading order top to bottom: hero, brand, copy, action, legal. This is the
+ * default composition and the one every other archetype is measured against.
+ */
+
+const REGION_ORDER = ['media', 'header', 'copy', 'action', 'footer'] as const;
+type RegionKey = (typeof REGION_ORDER)[number];
+
+/** Share of the vertical axis each region asks for before minimums apply. */
+const REGION_WEIGHTS: Readonly<Record<RegionKey, number>> = {
+  media: 0.44,
+  header: 0.1,
+  copy: 0.3,
+  action: 0.12,
+  footer: 0.04,
+};
+
+const ROLE_REGION: Readonly<Record<ElementRole, RegionKey | typeof BLEED_REGION>> = {
+  background: BLEED_REGION,
+  hero: 'media',
+  logo: 'header',
+  badge: 'header',
+  headline: 'copy',
+  subhead: 'copy',
+  body: 'copy',
+  cta: 'action',
+  legal: 'footer',
+};
+
+/** Paint order within a region, low first. */
+const ROLE_RANK: Readonly<Record<ElementRole, number>> = {
+  background: 0,
+  logo: 1,
+  badge: 2,
+  hero: 3,
+  headline: 4,
+  subhead: 5,
+  body: 6,
+  cta: 7,
+  legal: 8,
+};
+
+/** Only chrome may be re-homed by `pinTo`; copy and hero keep their reading order. */
+const PINNABLE: ReadonlySet<ElementRole> = new Set<ElementRole>(['logo', 'badge', 'legal', 'cta']);
+
+export function regionKeyFor(el: NormalizedElement): string {
+  if (el.pinTo === 'top' && PINNABLE.has(el.role)) return 'header';
+  if (el.pinTo === 'bottom' && PINNABLE.has(el.role)) return 'footer';
+  return ROLE_REGION[el.role];
+}
+
+export const stackArchetype: Archetype = {
+  id: 'stack',
+  rationale: 'vertical reading order suits portrait and square surfaces with room to breathe',
+
+  regions(surface: Surface, ctx: ArchetypeContext): Record<string, Rect> {
+    const inner = insetRect(ctx.content, {
+      top: ctx.gutter,
+      right: ctx.gutter,
+      bottom: ctx.gutter,
+      left: ctx.gutter,
+    });
+
+    const occupancy = new Map<string, NormalizedElement[]>();
+    for (const el of ctx.elements) {
+      const key = regionKeyFor(el);
+      if (key === BLEED_REGION) continue;
+      const list = occupancy.get(key);
+      if (list === undefined) occupancy.set(key, [el]);
+      else list.push(el);
+    }
+
+    const bands = REGION_ORDER.filter((key) => occupancy.has(key)).map((key) => {
+      const members = occupancy.get(key) ?? [];
+      const mins = members.map((el) => minHeightOf(el, ctx.klass, ctx.gutter));
+      // A region must be at least as tall as everything it has to stack.
+      const min = mins.reduce((a, b) => a + b, 0) + ctx.gutter * Math.max(0, members.length - 1);
+      return { key, weight: REGION_WEIGHTS[key], min };
+    });
+
+    const allocation = allocateBands(inner, bands, ctx.gutter, 'vertical');
+    return {
+      [BLEED_REGION]: rect(0, 0, surface.width, surface.height),
+      ...allocation.rects,
+    };
+  },
+
+  assign(elements: readonly NormalizedElement[], regions: Record<string, Rect>): Assignment[] {
+    return elements
+      .filter((el) => regions[regionKeyFor(el)] !== undefined)
+      .slice()
+      .sort(
+        (a, b) =>
+          ROLE_RANK[a.role] - ROLE_RANK[b.role] ||
+          a.priority - b.priority ||
+          a.id.localeCompare(b.id),
+      )
+      .map((el) => ({ elementId: el.id, region: regionKeyFor(el) }));
+  },
+};
