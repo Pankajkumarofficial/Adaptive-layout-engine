@@ -1,0 +1,192 @@
+{
+  "provenance": {
+    "capturedWith": "canvas.measureText in Chrome on macOS 15 (Darwin 25.6), 2026-09-09",
+    "page": "https://rsms.me/inter/ — self-hosts the real Inter webfont; Georgia and Menlo are macOS system fonts",
+    "regenerateWith": "scripts/measure-fonts.html",
+    "note": "These are independent of the engine's advance tables and are what the ±3% error margin is measured against."
+  },
+  "samples": [
+    {
+      "family": "Inter, sans-serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Every trail starts somewhere",
+      "measuredPx": 214.984
+    },
+    {
+      "family": "Inter, sans-serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Shop the range",
+      "measuredPx": 115.742
+    },
+    {
+      "family": "Inter, sans-serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Boots, packs and layers built for the long way round.",
+      "measuredPx": 396.742
+    },
+    {
+      "family": "Inter, sans-serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Free returns within 30 days. Terms apply.",
+      "measuredPx": 312.477
+    },
+    {
+      "family": "Inter, sans-serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Hello world",
+      "measuredPx": 85.406
+    },
+    {
+      "family": "Inter, sans-serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "ADAPTIVE LAYOUT ENGINE",
+      "measuredPx": 210.852
+    },
+    {
+      "family": "Inter, sans-serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "1080 x 1920",
+      "measuredPx": 90.609
+    },
+    {
+      "family": "Inter, sans-serif",
+      "weight": 700,
+      "fontSizePx": 24,
+      "text": "Every trail starts somewhere",
+      "measuredPx": 335.391
+    },
+    {
+      "family": "Inter, sans-serif",
+      "weight": 700,
+      "fontSizePx": 24,
+      "text": "Shop the range",
+      "measuredPx": 177.738
+    },
+    {
+      "family": "Inter, sans-serif",
+      "weight": 700,
+      "fontSizePx": 24,
+      "text": "Boots, packs and layers built for the long way round.",
+      "measuredPx": 613.289
+    },
+    {
+      "family": "Georgia, serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Every trail starts somewhere",
+      "measuredPx": 201.539
+    },
+    {
+      "family": "Georgia, serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Shop the range",
+      "measuredPx": 106.297
+    },
+    {
+      "family": "Georgia, serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Boots, packs and layers built for the long way round.",
+      "measuredPx": 369.352
+    },
+    {
+      "family": "Georgia, serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Free returns within 30 days. Terms apply.",
+      "measuredPx": 295.469
+    },
+    {
+      "family": "Georgia, serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Hello world",
+      "measuredPx": 83.156
+    },
+    {
+      "family": "Georgia, serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "ADAPTIVE LAYOUT ENGINE",
+      "measuredPx": 215.609
+    },
+    {
+      "family": "Georgia, serif",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "1080 x 1920",
+      "measuredPx": 86.539
+    },
+    {
+      "family": "Georgia, serif",
+      "weight": 700,
+      "fontSizePx": 20,
+      "text": "Every trail starts somewhere",
+      "measuredPx": 295.859
+    },
+    {
+      "family": "Georgia, serif",
+      "weight": 700,
+      "fontSizePx": 20,
+      "text": "Shop the range",
+      "measuredPx": 154.658
+    },
+    {
+      "family": "Menlo, monospace",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Every trail starts somewhere",
+      "measuredPx": 269.719
+    },
+    {
+      "family": "Menlo, monospace",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Shop the range",
+      "measuredPx": 134.859
+    },
+    {
+      "family": "Menlo, monospace",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Boots, packs and layers built for the long way round.",
+      "measuredPx": 510.539
+    },
+    {
+      "family": "Menlo, monospace",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Free returns within 30 days. Terms apply.",
+      "measuredPx": 394.945
+    },
+    {
+      "family": "Menlo, monospace",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "Hello world",
+      "measuredPx": 105.961
+    },
+    {
+      "family": "Menlo, monospace",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "ADAPTIVE LAYOUT ENGINE",
+      "measuredPx": 211.922
+    },
+    {
+      "family": "Menlo, monospace",
+      "weight": 400,
+      "fontSizePx": 16,
+      "text": "1080 x 1920",
+      "measuredPx": 105.961
+    }
+  ]
+}

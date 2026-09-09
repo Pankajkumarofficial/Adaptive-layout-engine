@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Regenerate engine font metrics</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <style>
+      body { font: 14px system-ui, sans-serif; margin: 2rem; max-width: 62rem; }
+      textarea { width: 100%; height: 18rem; font-family: Menlo, monospace; font-size: 12px; }
+      h2 { margin-top: 2rem; font-size: 1rem; }
+      code { background: #f1f5f9; padding: 0 0.25em; border-radius: 3px; }
+    </style>
+  </head>
+  <body>
+    <h1>Font metric capture</h1>
+    <p>
+      Everything the engine knows about text width comes from this page. Open it in Chrome, wait
+      for Inter to load, then paste each block where it says to. The engine must never call
+      <code>measureText</code> itself — that is the whole point of the tables.
+    </p>
+
+    <h2>1. Packed advance tables → <code>packages/engine/src/measure/fontTables.ts</code></h2>
+    <p>
+      Advances of each character measured in isolation, as integers of 1/10000 em, positionally
+      aligned to <code>CHARSET</code>. Isolated characters carry no kerning, so these are exact.
+    </p>
+    <textarea id="tables" readonly></textarea>
+
+    <h2>2. Reference widths → <code>packages/engine/tests/fixtures/reference-widths.json</code></h2>
+    <p>
+      Whole-string measurements. These are what the ±3% margin is asserted against: the gap
+      between them and the sum of the advances above is exactly the kerning and bold-model error
+      that <code>stringFitScale</code> corrects.
+    </p>
+    <textarea id="widths" readonly></textarea>
+
+    <script type="module">
+      const CHARS = [];
+      for (let c = 32; c <= 126; c += 1) CHARS.push(String.fromCharCode(c));
+      for (const ch of ['–', '—', '’', '‘', '“', '”', '•', '…', '×']) CHARS.push(ch);
+
+      const TEXTS = [
+        'Every trail starts somewhere',
+        'Shop the range',
+        'Boots, packs and layers built for the long way round.',
+        'Free returns within 30 days. Terms apply.',
+        'Hello world',
+        'ADAPTIVE LAYOUT ENGINE',
+        '1080 x 1920',
+      ];
+
+      const FAMILIES = [
+        { stack: 'Inter, sans-serif', canvas: 'Inter', key: 'INTER' },
+        { stack: 'Georgia, serif', canvas: 'Georgia', key: 'GEORGIA' },
+        { stack: 'Menlo, monospace', canvas: 'Menlo', key: 'MONO' },
+      ];
+
+      const WEIGHTS = [300, 400, 500, 600, 700, 800];
+
+      await Promise.all(WEIGHTS.map((w) => document.fonts.load(`${w} 100px Inter`)));
+      await document.fonts.ready;
+
+      const ctx = document.createElement('canvas').getContext('2d');
+      const advance = (canvasFamily, weight, ch, size = 100) => {
+        ctx.font = `${weight} ${size}px ${canvasFamily}`;
+        return ctx.measureText(ch).width / size;
+      };
+
+      // --- 1. packed tables + weight scales ---------------------------------
+      const lines = [];
+      for (const family of FAMILIES) {
+        const regular = CHARS.map((ch) => advance(family.canvas, 400, ch));
+        lines.push(`${family.key}_PACKED (${CHARS.length} values):`);
+        lines.push(regular.map((v) => Math.round(v * 10000)).join(' '));
+
+        const lower = 'abcdefghijklmnopqrstuvwxyz'
+          .split('')
+          .map((ch) => advance(family.canvas, 400, ch));
+        lines.push(
+          `${family.key} fallbackAdvance = ${(lower.reduce((a, b) => a + b, 0) / lower.length).toFixed(4)}`,
+        );
+
+        const scales = WEIGHTS.map((w) => {
+          const ratios = CHARS.map((ch, i) => advance(family.canvas, w, ch) / regular[i]).filter(
+            (r) => Number.isFinite(r) && r > 0,
+          );
+          return `${w}: ${(ratios.reduce((a, b) => a + b, 0) / ratios.length).toFixed(4)}`;
+        });
+        lines.push(`${family.key} weightScale = { ${scales.join(', ')} }`);
+        lines.push('');
+      }
+      document.getElementById('tables').value = lines.join('\n');
+
+      // --- 2. reference widths + the stringFitScale they imply --------------
+      const CASES = [
+        { family: 'Inter, sans-serif', canvas: 'Inter', weight: 400, fontSizePx: 16, texts: TEXTS },
+        { family: 'Inter, sans-serif', canvas: 'Inter', weight: 700, fontSizePx: 24, texts: TEXTS.slice(0, 3) },
+        { family: 'Georgia, serif', canvas: 'Georgia', weight: 400, fontSizePx: 16, texts: TEXTS },
+        { family: 'Georgia, serif', canvas: 'Georgia', weight: 700, fontSizePx: 20, texts: TEXTS.slice(0, 2) },
+        { family: 'Menlo, monospace', canvas: 'Menlo', weight: 400, fontSizePx: 16, texts: TEXTS },
+      ];
+
+      const samples = [];
+      const fitNotes = [];
+      for (const c of CASES) {
+        const ratios = [];
+        for (const text of c.texts) {
+          ctx.font = `${c.weight} ${c.fontSizePx}px ${c.canvas}`;
+          const measuredPx = Math.round(ctx.measureText(text).width * 1000) / 1000;
+          const summed =
+            [...text].reduce((acc, ch) => acc + advance(c.canvas, c.weight, ch), 0) * c.fontSizePx;
+          ratios.push(measuredPx / summed);
+          samples.push({
+            family: c.family,
+            weight: c.weight,
+            fontSizePx: c.fontSizePx,
+            text,
+            measuredPx,
+          });
+        }
+        const mean = ratios.reduce((a, b) => a + b, 0) / ratios.length;
+        fitNotes.push(`// ${c.family} @${c.weight}: stringFitScale ≈ ${mean.toFixed(4)}`);
+      }
+
+      document.getElementById('widths').value =
+        fitNotes.join('\n') +
+        '\n\n' +
+        JSON.stringify(
+          {
+            provenance: {
+              capturedWith: `canvas.measureText in ${navigator.userAgent}`,
+              page: 'scripts/measure-fonts.html',
+              regenerateWith: 'scripts/measure-fonts.html',
+              note: 'Independent of the engine advance tables; the ±3% margin is measured against these.',
+            },
+            samples,
+          },
+          null,
+          2,
+        );
+    </script>
+  </body>
+</html>
