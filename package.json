@@ -13,12 +13,16 @@
   },
   "scripts": {
     "dev": "npm run dev --workspace @ale/web",
+    "dev:api": "npm run dev --workspace @ale/api",
     "build": "npm run build --workspace @ale/web",
     "demo": "vite-node scripts/demo.ts --",
-    "test": "npm run test --workspace @ale/engine",
+    "seed": "npm run seed --workspace @ale/api",
+    "test": "npm run test --workspace @ale/engine && npm run test --workspace @ale/api",
+    "test:engine": "npm run test --workspace @ale/engine",
+    "test:api": "npm run test --workspace @ale/api",
     "test:watch": "npm run test:watch --workspace @ale/engine",
     "bench": "npm run bench --workspace @ale/engine",
-    "typecheck": "tsc -b packages/shared packages/engine && tsc -p tsconfig.scripts.json && tsc -p apps/web/tsconfig.json --noEmit",
+    "typecheck": "tsc -b packages/shared packages/engine && tsc -p tsconfig.scripts.json && tsc -p apps/web/tsconfig.json --noEmit && tsc -p apps/api/tsconfig.json --noEmit",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\""

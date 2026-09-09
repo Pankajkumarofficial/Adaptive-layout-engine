@@ -1,4 +1,6 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { DEMO_SPEC } from '@ale/engine';
+import { useSearchParams } from 'react-router-dom';
 import { usePlayground } from '../lib/store';
 import { useSolve } from '../lib/useSolve';
 import { PriorityLadder } from '../components/PriorityLadder';
@@ -9,15 +11,28 @@ import { MatrixView } from '../components/MatrixView';
 import { JsonView } from '../components/JsonView';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Swatch } from '../components/Field';
+import { Library } from '../components/Library';
 import type { AdSpec } from '@ale/engine';
 
-type LeftTab = 'elements' | 'theme' | 'json';
+type LeftTab = 'elements' | 'theme' | 'json' | 'library';
 
 export function Playground() {
   const spec = usePlayground((s) => s.spec);
   const surface = usePlayground((s) => s.surface);
   const selectedId = usePlayground((s) => s.selectedElementId);
   const [tab, setTab] = useState<LeftTab>('elements');
+  const [params] = useSearchParams();
+  const setSpec = usePlayground((s) => s.setSpec);
+  const selectPreset = usePlayground((s) => s.selectPreset);
+
+  // `?demo=1` is the link handed to someone with no account and no context:
+  // it must show the showcase, never whatever was left in this browser.
+  const demo = params.get('demo') === '1';
+  useEffect(() => {
+    if (!demo) return;
+    setSpec(DEMO_SPEC);
+    selectPreset('story-1080x1920');
+  }, [demo, setSpec, selectPreset]);
 
   const { result, error, ms } = useSolve(spec, surface);
   const selected = spec.elements.find((el) => el.id === selectedId);
@@ -32,6 +47,8 @@ export function Playground() {
           <ErrorBoundary label="The spec editor">
             {tab === 'json' ? (
               <JsonView />
+            ) : tab === 'library' ? (
+              <Library />
             ) : tab === 'theme' ? (
               <ThemeEditor />
             ) : (
@@ -107,6 +124,7 @@ function Tabs({ tab, onChange }: { tab: LeftTab; onChange: (t: LeftTab) => void 
     { id: 'elements', label: 'Elements' },
     { id: 'theme', label: 'Theme' },
     { id: 'json', label: 'JSON' },
+    { id: 'library', label: 'Library' },
   ];
   return (
     <div className="flex border-b border-rule" role="tablist">
