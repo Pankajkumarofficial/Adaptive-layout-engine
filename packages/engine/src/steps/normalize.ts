@@ -1,0 +1,251 @@
+import { adSpecSchema, surfaceSchema } from '@ale/shared';
+import { SpecError, type SpecIssue } from '../errors.js';
+import type { AdElement, AdSpec, ElementRole, PinTo, Size, Surface, TextAlign } from '../types.js';
+import type { Tracer } from '../trace.js';
+
+/** Per-role defaults. Authors override any of these on the element itself. */
+export interface RoleDefaults {
+  maxLines: number;
+  minFontPx: number;
+  /** Font weight passed to the metrics estimator. */
+  weight: number;
+  /** line-height as a multiple of font size. */
+  leading: number;
+  align: TextAlign;
+  minSize: Size;
+  /** Paint order. Higher sits on top. */
+  z: number;
+  /** Relative share of its region's main axis. */
+  bandWeight: number;
+  /** Painted edge-to-edge, exempt from safe-area insetting. */
+  bleed: boolean;
+}
+
+export const ROLE_DEFAULTS: Readonly<Record<ElementRole, RoleDefaults>> = {
+  background: {
+    maxLines: 1,
+    minFontPx: 8,
+    weight: 400,
+    leading: 1.2,
+    align: 'center',
+    minSize: { w: 0, h: 0 },
+    z: 0,
+    bandWeight: 0,
+    bleed: true,
+  },
+  hero: {
+    maxLines: 1,
+    minFontPx: 8,
+    weight: 400,
+    leading: 1.2,
+    align: 'center',
+    minSize: { w: 48, h: 40 },
+    z: 10,
+    bandWeight: 1,
+    bleed: false,
+  },
+  logo: {
+    maxLines: 1,
+    minFontPx: 8,
+    weight: 600,
+    leading: 1.2,
+    align: 'left',
+    minSize: { w: 24, h: 16 },
+    z: 30,
+    bandWeight: 1,
+    bleed: false,
+  },
+  badge: {
+    maxLines: 1,
+    minFontPx: 9,
+    weight: 600,
+    leading: 1.2,
+    align: 'right',
+    minSize: { w: 20, h: 16 },
+    z: 30,
+    bandWeight: 1,
+    bleed: false,
+  },
+  headline: {
+    maxLines: 3,
+    minFontPx: 13,
+    weight: 700,
+    leading: 1.15,
+    align: 'center',
+    minSize: { w: 60, h: 14 },
+    z: 20,
+    bandWeight: 1,
+    bleed: false,
+  },
+  subhead: {
+    maxLines: 2,
+    minFontPx: 11,
+    weight: 500,
+    leading: 1.25,
+    align: 'center',
+    minSize: { w: 60, h: 12 },
+    z: 20,
+    bandWeight: 0.7,
+    bleed: false,
+  },
+  body: {
+    maxLines: 4,
+    minFontPx: 10,
+    weight: 400,
+    leading: 1.4,
+    align: 'center',
+    minSize: { w: 60, h: 12 },
+    z: 20,
+    bandWeight: 0.9,
+    bleed: false,
+  },
+  cta: {
+    maxLines: 1,
+    minFontPx: 12,
+    weight: 600,
+    leading: 1.2,
+    align: 'center',
+    minSize: { w: 64, h: 28 },
+    z: 40,
+    bandWeight: 0.6,
+    bleed: false,
+  },
+  legal: {
+    maxLines: 2,
+    minFontPx: 8,
+    weight: 400,
+    leading: 1.3,
+    align: 'center',
+    minSize: { w: 40, h: 9 },
+    z: 20,
+    bandWeight: 0.4,
+    bleed: false,
+  },
+};
+
+export interface NormalizedText {
+  value: string;
+  maxLines: number;
+  minFontPx: number;
+  weight: number;
+  leading: number;
+  align: TextAlign;
+}
+
+export interface NormalizedElement {
+  readonly source: AdElement;
+  id: string;
+  role: ElementRole;
+  priority: number;
+  minSize: Size;
+  aspectLock: number | null;
+  pinTo: PinTo | null;
+  z: number;
+  bandWeight: number;
+  bleed: boolean;
+  /** Present only for text elements. */
+  text: NormalizedText | null;
+}
+
+export interface NormalizedSpec {
+  spec: AdSpec;
+  surface: Surface;
+  /** Sorted by priority ascending (0 = most important), then by author order. */
+  elements: NormalizedElement[];
+  neverDrop: ReadonlySet<string>;
+  alwaysPairs: readonly [string, string][];
+  minContrastRatio: number;
+}
+
+/**
+ * Step 1 — validate, resolve defaults, order by importance.
+ *
+ * Everything downstream may assume the returned shape is complete: no optional
+ * field lookups, no `?? default` scattered through the layout code.
+ */
+export function normalize(spec: AdSpec, surface: Surface, tracer: Tracer): NormalizedSpec {
+  const specResult = adSpecSchema.safeParse(spec);
+  if (!specResult.success) {
+    throw new SpecError(
+      'INVALID_SPEC',
+      `spec "${spec?.id ?? '<unknown>'}" is invalid`,
+      toIssues(specResult.error.issues),
+    );
+  }
+  const surfaceResult = surfaceSchema.safeParse(surface);
+  if (!surfaceResult.success) {
+    throw new SpecError(
+      'INVALID_SURFACE',
+      `surface "${surface?.id ?? '<unknown>'}" is invalid`,
+      toIssues(surfaceResult.error.issues),
+    );
+  }
+
+  const parsed = specResult.data as AdSpec;
+  const parsedSurface = surfaceResult.data as Surface;
+
+  const elements = parsed.elements
+    .map((el, index) => ({ el, index }))
+    .sort((a, b) => a.el.priority - b.el.priority || a.index - b.index)
+    .map(({ el }) => normalizeElement(el));
+
+  const neverDrop = new Set(parsed.rules?.neverDrop ?? []);
+  // Priority 0 is a promise in the data model, so it implies neverDrop.
+  for (const el of elements) {
+    if (el.priority === 0) neverDrop.add(el.id);
+  }
+
+  const minContrastRatio = parsed.rules?.minContrastRatio ?? 4.5;
+
+  tracer.info('normalize', `spec "${parsed.name}" accepted`, {
+    data: {
+      elements: elements.length,
+      neverDrop: neverDrop.size,
+      pairs: parsed.rules?.alwaysPairs?.length ?? 0,
+      minContrastRatio,
+    },
+  });
+  tracer.info('normalize', `priority order: ${elements.map((e) => e.id).join(' > ')}`);
+
+  return {
+    spec: parsed,
+    surface: parsedSurface,
+    elements,
+    neverDrop,
+    alwaysPairs: parsed.rules?.alwaysPairs ?? [],
+    minContrastRatio,
+  };
+}
+
+function normalizeElement(el: AdElement): NormalizedElement {
+  const defaults = ROLE_DEFAULTS[el.role];
+  const text: NormalizedText | null =
+    el.content.kind === 'text'
+      ? {
+          value: el.content.value,
+          maxLines: el.content.maxLines ?? defaults.maxLines,
+          minFontPx: el.content.minFontPx ?? defaults.minFontPx,
+          weight: defaults.weight,
+          leading: defaults.leading,
+          align: defaults.align,
+        }
+      : null;
+
+  return {
+    source: el,
+    id: el.id,
+    role: el.role,
+    priority: el.priority,
+    minSize: el.minSize ?? defaults.minSize,
+    aspectLock: el.aspectLock ?? null,
+    pinTo: el.pinTo ?? null,
+    z: defaults.z,
+    bandWeight: defaults.bandWeight,
+    bleed: defaults.bleed,
+    text,
+  };
+}
+
+function toIssues(issues: readonly { path: (string | number)[]; message: string }[]): SpecIssue[] {
+  return issues.map((i) => ({ path: i.path.join('.'), message: i.message }));
+}
