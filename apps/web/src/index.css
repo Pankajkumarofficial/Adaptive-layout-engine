@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    height: 100%;
+    background: theme('colors.board');
+    color: theme('colors.ink');
+    font-family: theme('fontFamily.sans');
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* A faint hatch, the tooth of board stock. Subtle enough to read as texture
+     rather than pattern, and it stops the large flat areas going dead. */
+  .board-tooth {
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        rgba(26, 26, 23, 0.022) 0 1px,
+        transparent 1px 7px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        rgba(26, 26, 23, 0.018) 0 1px,
+        transparent 1px 9px
+      );
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.guide');
+    outline-offset: 1px;
+  }
+
+  ::selection {
+    background: theme('colors.guide-2');
+    color: theme('colors.ink');
+  }
+
+  /* Numbers in this app are measurements; they should line up in columns. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: theme('colors.rule-2');
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -12,12 +12,13 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "npm run demo",
+    "dev": "npm run dev --workspace @ale/web",
+    "build": "npm run build --workspace @ale/web",
     "demo": "vite-node scripts/demo.ts --",
     "test": "npm run test --workspace @ale/engine",
     "test:watch": "npm run test:watch --workspace @ale/engine",
     "bench": "npm run bench --workspace @ale/engine",
-    "typecheck": "tsc -b packages/shared packages/engine && tsc -p tsconfig.scripts.json",
+    "typecheck": "tsc -b packages/shared packages/engine && tsc -p tsconfig.scripts.json && tsc -p apps/web/tsconfig.json --noEmit",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\""
