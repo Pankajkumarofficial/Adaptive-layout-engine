@@ -1,0 +1,408 @@
+{
+  "surface": {
+    "id": "mpu-300x250",
+    "label": "MPU 300x250",
+    "width": 300,
+    "height": 250,
+    "dpr": 2,
+    "interactionHint": "tap"
+  },
+  "surfaceClass": {
+    "aspect": 1.2,
+    "aspectBucket": "landscape",
+    "area": 75000,
+    "densityClass": "small",
+    "minTouchTarget": 44,
+    "contentBox": {
+      "x": 0,
+      "y": 0,
+      "w": 300,
+      "h": 250
+    }
+  },
+  "archetype": "stack",
+  "regions": {
+    "bleed": {
+      "x": 0,
+      "y": 0,
+      "w": 300,
+      "h": 250
+    },
+    "media": {
+      "x": 8,
+      "y": 8,
+      "w": 284,
+      "h": 103.46
+    },
+    "copy": {
+      "x": 8,
+      "y": 119.46,
+      "w": 284,
+      "h": 70.54
+    },
+    "action": {
+      "x": 8,
+      "y": 198,
+      "w": 284,
+      "h": 44
+    }
+  },
+  "placed": [
+    {
+      "id": "bg",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 300,
+        "h": 250
+      },
+      "opacity": 1,
+      "z": 0,
+      "fill": "#0f172a"
+    },
+    {
+      "id": "hero",
+      "frame": {
+        "x": 8,
+        "y": 8,
+        "w": 284,
+        "h": 103.46
+      },
+      "opacity": 1,
+      "z": 10,
+      "imageCrop": {
+        "sx": 0,
+        "sy": 170.85,
+        "sw": 2400,
+        "sh": 874.31
+      }
+    },
+    {
+      "id": "headline",
+      "frame": {
+        "x": 8,
+        "y": 119.66,
+        "w": 284,
+        "h": 70.14
+      },
+      "opacity": 1,
+      "z": 20,
+      "fontSizePx": 30.5,
+      "lineHeightPx": 35.07,
+      "lines": [
+        "Every trail starts",
+        "somewhere"
+      ],
+      "textAlign": "center",
+      "color": "#f8fafc"
+    },
+    {
+      "id": "cta",
+      "frame": {
+        "x": 49.88,
+        "y": 198,
+        "w": 200.25,
+        "h": 44
+      },
+      "opacity": 1,
+      "z": 40,
+      "fontSizePx": 25,
+      "lineHeightPx": 30,
+      "lines": [
+        "Shop the range"
+      ],
+      "textAlign": "center",
+      "color": "#1c1917",
+      "fill": "#f97316"
+    }
+  ],
+  "dropped": [
+    {
+      "id": "legal",
+      "reason": "priority 90; bound to logo, dropped together to recover 30px of unmet minimums"
+    },
+    {
+      "id": "logo",
+      "reason": "priority 10; bound to legal, dropped together to recover 30px of unmet minimums"
+    },
+    {
+      "id": "subhead",
+      "reason": "priority 60; dropped to recover 30px of unmet minimums"
+    }
+  ],
+  "warnings": [
+    "archetype \"split\" is not implemented yet; falling back to \"stack\"",
+    "\"subhead\" does not fit at its 12px floor"
+  ],
+  "trace": [
+    {
+      "seq": 1,
+      "step": "normalize",
+      "level": "info",
+      "pass": 0,
+      "message": "spec \"Trailhead — Spring Launch\" accepted",
+      "data": {
+        "elements": 7,
+        "neverDrop": 3,
+        "pairs": 1,
+        "minContrastRatio": 4.5
+      }
+    },
+    {
+      "seq": 2,
+      "step": "normalize",
+      "level": "info",
+      "pass": 0,
+      "message": "priority order: bg > headline > cta > logo > hero > subhead > legal"
+    },
+    {
+      "seq": 3,
+      "step": "classify",
+      "level": "decision",
+      "pass": 0,
+      "message": "300x250 is landscape/small",
+      "subject": "mpu-300x250",
+      "data": {
+        "aspect": 1.2,
+        "area": 75000,
+        "dpr": 2,
+        "minTouchTarget": 44,
+        "contentW": 300,
+        "contentH": 250
+      }
+    },
+    {
+      "seq": 4,
+      "step": "selectArchetype",
+      "level": "warn",
+      "pass": 0,
+      "message": "archetype \"split\" is not implemented yet; falling back to \"stack\"",
+      "data": {
+        "aspectBucket": "landscape",
+        "densityClass": "small"
+      }
+    },
+    {
+      "seq": 5,
+      "step": "budget",
+      "level": "info",
+      "pass": 0,
+      "message": "7 frames placed",
+      "data": {
+        "deficitPx": 0,
+        "shortfalls": 0
+      }
+    },
+    {
+      "seq": 6,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"headline\" set at 19.5px over 1 line",
+      "subject": "headline",
+      "data": {
+        "freeSizePx": 19.5,
+        "snapped": false,
+        "lines": 1,
+        "maxLines": 3,
+        "lineHeightPx": 22.42
+      }
+    },
+    {
+      "seq": 7,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"cta\" set at 25px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 26.5,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 30
+      }
+    },
+    {
+      "seq": 8,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"subhead\" does not fit at its 12px floor",
+      "subject": "subhead",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 284,
+        "boxH": 18.41,
+        "neededLines": 2,
+        "maxLines": 2
+      }
+    },
+    {
+      "seq": 9,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"legal\" set at 8px over 1 line",
+      "subject": "legal",
+      "data": {
+        "freeSizePx": 8,
+        "snapped": false,
+        "lines": 1,
+        "maxLines": 2,
+        "lineHeightPx": 10.4
+      }
+    },
+    {
+      "seq": 10,
+      "step": "degrade",
+      "level": "decision",
+      "pass": 0,
+      "message": "dropping legal + logo — priority 90 to recover 30px of unmet minimums",
+      "subject": "legal",
+      "data": {
+        "priority": 90,
+        "deficitPx": 30,
+        "group": 2
+      }
+    },
+    {
+      "seq": 11,
+      "step": "budget",
+      "level": "info",
+      "pass": 1,
+      "message": "5 frames placed",
+      "data": {
+        "deficitPx": 0,
+        "shortfalls": 0
+      }
+    },
+    {
+      "seq": 12,
+      "step": "fitText",
+      "level": "info",
+      "pass": 1,
+      "message": "\"headline\" set at 19.5px over 1 line",
+      "subject": "headline",
+      "data": {
+        "freeSizePx": 19.5,
+        "snapped": false,
+        "lines": 1,
+        "maxLines": 3,
+        "lineHeightPx": 22.42
+      }
+    },
+    {
+      "seq": 13,
+      "step": "fitText",
+      "level": "info",
+      "pass": 1,
+      "message": "\"cta\" set at 25px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 26.5,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 30
+      }
+    },
+    {
+      "seq": 14,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 1,
+      "message": "\"subhead\" does not fit at its 12px floor",
+      "subject": "subhead",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 284,
+        "boxH": 25.75,
+        "neededLines": 2,
+        "maxLines": 2
+      }
+    },
+    {
+      "seq": 15,
+      "step": "degrade",
+      "level": "decision",
+      "pass": 1,
+      "message": "dropping subhead — priority 60 to recover 30px of unmet minimums",
+      "subject": "subhead",
+      "data": {
+        "priority": 60,
+        "deficitPx": 30,
+        "group": 1
+      }
+    },
+    {
+      "seq": 16,
+      "step": "budget",
+      "level": "info",
+      "pass": 2,
+      "message": "4 frames placed",
+      "data": {
+        "deficitPx": 0,
+        "shortfalls": 0
+      }
+    },
+    {
+      "seq": 17,
+      "step": "fitText",
+      "level": "info",
+      "pass": 2,
+      "message": "\"headline\" set at 30.5px over 2 lines",
+      "subject": "headline",
+      "data": {
+        "freeSizePx": 30.5,
+        "snapped": false,
+        "lines": 2,
+        "maxLines": 3,
+        "lineHeightPx": 35.07
+      }
+    },
+    {
+      "seq": 18,
+      "step": "fitText",
+      "level": "info",
+      "pass": 2,
+      "message": "\"cta\" set at 25px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 26.5,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 30
+      }
+    },
+    {
+      "seq": 19,
+      "step": "imageCrop",
+      "level": "info",
+      "pass": 2,
+      "message": "cropped \"hero\" to 2400x874 around focal 0.62,0.38",
+      "subject": "hero",
+      "data": {
+        "sx": 0,
+        "sy": 170.85,
+        "sw": 2400,
+        "sh": 874.31,
+        "intrinsicW": 2400,
+        "intrinsicH": 1600
+      }
+    },
+    {
+      "seq": 20,
+      "step": "fingerprint",
+      "level": "info",
+      "pass": 2,
+      "message": "layout hashes to fp_12bb4c17",
+      "data": {
+        "placed": 4,
+        "dropped": 3
+      }
+    }
+  ],
+  "fingerprint": "fp_12bb4c17"
+}

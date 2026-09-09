@@ -1,0 +1,350 @@
+{
+  "surface": {
+    "id": "square-1080",
+    "label": "Social Square 1:1",
+    "width": 1080,
+    "height": 1080,
+    "dpr": 2,
+    "interactionHint": "tap"
+  },
+  "surfaceClass": {
+    "aspect": 1,
+    "aspectBucket": "square",
+    "area": 1166400,
+    "densityClass": "large",
+    "minTouchTarget": 44,
+    "contentBox": {
+      "x": 0,
+      "y": 0,
+      "w": 1080,
+      "h": 1080
+    }
+  },
+  "archetype": "stack",
+  "regions": {
+    "bleed": {
+      "x": 0,
+      "y": 0,
+      "w": 1080,
+      "h": 1080
+    },
+    "media": {
+      "x": 24,
+      "y": 24,
+      "w": 1032,
+      "h": 411.84
+    },
+    "header": {
+      "x": 24,
+      "y": 459.84,
+      "w": 1032,
+      "h": 93.6
+    },
+    "copy": {
+      "x": 24,
+      "y": 577.44,
+      "w": 1032,
+      "h": 280.8
+    },
+    "action": {
+      "x": 24,
+      "y": 882.24,
+      "w": 1032,
+      "h": 112.32
+    },
+    "footer": {
+      "x": 24,
+      "y": 1018.56,
+      "w": 1032,
+      "h": 37.44
+    }
+  },
+  "placed": [
+    {
+      "id": "bg",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "opacity": 1,
+      "z": 0,
+      "fill": "#0f172a"
+    },
+    {
+      "id": "hero",
+      "frame": {
+        "x": 24,
+        "y": 24,
+        "w": 1032,
+        "h": 411.84
+      },
+      "opacity": 1,
+      "z": 10,
+      "imageCrop": {
+        "sx": 0,
+        "sy": 129.12,
+        "sw": 2400,
+        "sh": 957.77
+      }
+    },
+    {
+      "id": "headline",
+      "frame": {
+        "x": 24,
+        "y": 640.03,
+        "w": 1032,
+        "h": 82.8
+      },
+      "opacity": 1,
+      "z": 20,
+      "fontSizePx": 72,
+      "lineHeightPx": 82.8,
+      "lines": [
+        "Every trail starts somewhere"
+      ],
+      "textAlign": "center",
+      "color": "#f8fafc"
+    },
+    {
+      "id": "legal",
+      "frame": {
+        "x": 24,
+        "y": 1021.03,
+        "w": 1032,
+        "h": 32.5
+      },
+      "opacity": 1,
+      "z": 20,
+      "fontSizePx": 25,
+      "lineHeightPx": 32.5,
+      "lines": [
+        "Free returns within 30 days. Terms apply."
+      ],
+      "textAlign": "center",
+      "color": "#f8fafc"
+    },
+    {
+      "id": "subhead",
+      "frame": {
+        "x": 24,
+        "y": 746.83,
+        "w": 1032,
+        "h": 48.83
+      },
+      "opacity": 1,
+      "z": 20,
+      "fontSizePx": 39.06,
+      "lineHeightPx": 48.83,
+      "lines": [
+        "Boots, packs and layers built for the long way round."
+      ],
+      "textAlign": "center",
+      "color": "#f8fafc"
+    },
+    {
+      "id": "logo",
+      "frame": {
+        "x": 24,
+        "y": 459.84,
+        "w": 280.8,
+        "h": 93.6
+      },
+      "opacity": 1,
+      "z": 30,
+      "imageCrop": {
+        "sx": 0,
+        "sy": 0,
+        "sw": 480,
+        "sh": 160
+      }
+    },
+    {
+      "id": "cta",
+      "frame": {
+        "x": 291.07,
+        "y": 883.78,
+        "w": 497.87,
+        "h": 109.25
+      },
+      "opacity": 1,
+      "z": 40,
+      "fontSizePx": 61.04,
+      "lineHeightPx": 73.25,
+      "lines": [
+        "Shop the range"
+      ],
+      "textAlign": "center",
+      "color": "#1c1917",
+      "fill": "#f97316"
+    }
+  ],
+  "dropped": [],
+  "warnings": [],
+  "trace": [
+    {
+      "seq": 1,
+      "step": "normalize",
+      "level": "info",
+      "pass": 0,
+      "message": "spec \"Trailhead — Spring Launch\" accepted",
+      "data": {
+        "elements": 7,
+        "neverDrop": 3,
+        "pairs": 1,
+        "minContrastRatio": 4.5
+      }
+    },
+    {
+      "seq": 2,
+      "step": "normalize",
+      "level": "info",
+      "pass": 0,
+      "message": "priority order: bg > headline > cta > logo > hero > subhead > legal"
+    },
+    {
+      "seq": 3,
+      "step": "classify",
+      "level": "decision",
+      "pass": 0,
+      "message": "1080x1080 is square/large",
+      "subject": "square-1080",
+      "data": {
+        "aspect": 1,
+        "area": 1166400,
+        "dpr": 2,
+        "minTouchTarget": 44,
+        "contentW": 1080,
+        "contentH": 1080
+      }
+    },
+    {
+      "seq": 4,
+      "step": "selectArchetype",
+      "level": "decision",
+      "pass": 0,
+      "message": "chose \"stack\" — vertical reading order suits portrait and square surfaces with room to breathe",
+      "data": {
+        "aspectBucket": "square",
+        "densityClass": "large",
+        "hasHero": true
+      }
+    },
+    {
+      "seq": 5,
+      "step": "budget",
+      "level": "info",
+      "pass": 0,
+      "message": "7 frames placed",
+      "data": {
+        "deficitPx": 0,
+        "shortfalls": 0
+      }
+    },
+    {
+      "seq": 6,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"headline\" set at 72px over 1 line",
+      "subject": "headline",
+      "data": {
+        "freeSizePx": 72,
+        "snapped": false,
+        "lines": 1,
+        "maxLines": 3,
+        "lineHeightPx": 82.8
+      }
+    },
+    {
+      "seq": 7,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"cta\" set at 61.04px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 63.5,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 73.25
+      }
+    },
+    {
+      "seq": 8,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"subhead\" set at 39.06px over 1 line",
+      "subject": "subhead",
+      "data": {
+        "freeSizePx": 42,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 2,
+        "lineHeightPx": 48.83
+      }
+    },
+    {
+      "seq": 9,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"legal\" set at 25px over 1 line",
+      "subject": "legal",
+      "data": {
+        "freeSizePx": 28.5,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 2,
+        "lineHeightPx": 32.5
+      }
+    },
+    {
+      "seq": 10,
+      "step": "imageCrop",
+      "level": "info",
+      "pass": 0,
+      "message": "cropped \"hero\" to 2400x958 around focal 0.62,0.38",
+      "subject": "hero",
+      "data": {
+        "sx": 0,
+        "sy": 129.12,
+        "sw": 2400,
+        "sh": 957.77,
+        "intrinsicW": 2400,
+        "intrinsicH": 1600
+      }
+    },
+    {
+      "seq": 11,
+      "step": "imageCrop",
+      "level": "info",
+      "pass": 0,
+      "message": "cropped \"logo\" to 480x160 around focal 0.5,0.5",
+      "subject": "logo",
+      "data": {
+        "sx": 0,
+        "sy": 0,
+        "sw": 480,
+        "sh": 160,
+        "intrinsicW": 480,
+        "intrinsicH": 160
+      }
+    },
+    {
+      "seq": 12,
+      "step": "fingerprint",
+      "level": "info",
+      "pass": 0,
+      "message": "layout hashes to fp_ecf6722d",
+      "data": {
+        "placed": 7,
+        "dropped": 0
+      }
+    }
+  ],
+  "fingerprint": "fp_ecf6722d"
+}
