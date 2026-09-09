@@ -87,18 +87,36 @@
       "id": "headline",
       "frame": {
         "x": 137.44,
-        "y": 67.01,
+        "y": 69.29,
         "w": 154.56,
-        "h": 86.25
+        "h": 43.7
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 25,
-      "lineHeightPx": 28.75,
+      "fontSizePx": 19,
+      "lineHeightPx": 21.85,
       "lines": [
-        "Every trail",
-        "starts",
+        "Every trail starts",
         "somewhere"
+      ],
+      "textAlign": "center",
+      "color": "#f8fafc"
+    },
+    {
+      "id": "subhead",
+      "frame": {
+        "x": 137.44,
+        "y": 120.99,
+        "w": 154.56,
+        "h": 30
+      },
+      "opacity": 1,
+      "z": 20,
+      "fontSizePx": 12,
+      "lineHeightPx": 15,
+      "lines": [
+        "Boots, packs and layers",
+        "built for the long way…"
       ],
       "textAlign": "center",
       "color": "#f8fafc"
@@ -143,18 +161,16 @@
   "dropped": [
     {
       "id": "badge",
-      "reason": "priority 70; bound to legal, dropped together to recover 42px of unmet minimums"
+      "reason": "priority 70; bound to legal, dropped together to recover 16px of unmet minimums"
     },
     {
       "id": "legal",
-      "reason": "priority 90; bound to badge, dropped together to recover 42px of unmet minimums"
-    },
-    {
-      "id": "subhead",
-      "reason": "priority 60; dropped to recover 30px of unmet minimums"
+      "reason": "priority 90; bound to badge, dropped together to recover 16px of unmet minimums"
     }
   ],
-  "warnings": [],
+  "warnings": [
+    "\"subhead\" does not fit at its 12px floor"
+  ],
   "trace": [
     {
       "seq": 1,
@@ -297,11 +313,11 @@
       "step": "degrade",
       "level": "decision",
       "pass": 0,
-      "message": "dropping badge + legal — priority 90 to recover 42px of unmet minimums",
+      "message": "dropping badge + legal — priority 90 to recover 16px of unmet minimums",
       "subject": "legal",
       "data": {
         "priority": 90,
-        "deficitPx": 42,
+        "deficitPx": 16,
         "group": 2
       }
     },
@@ -364,63 +380,9 @@
     },
     {
       "seq": 16,
-      "step": "degrade",
-      "level": "decision",
-      "pass": 1,
-      "message": "dropping subhead — priority 60 to recover 30px of unmet minimums",
-      "subject": "subhead",
-      "data": {
-        "priority": 60,
-        "deficitPx": 30,
-        "group": 1
-      }
-    },
-    {
-      "seq": 17,
-      "step": "budget",
-      "level": "info",
-      "pass": 2,
-      "message": "5 frames placed",
-      "data": {
-        "deficitPx": 0,
-        "shortfalls": 0
-      }
-    },
-    {
-      "seq": 18,
-      "step": "fitText",
-      "level": "info",
-      "pass": 2,
-      "message": "\"headline\" set at 25px over 3 lines",
-      "subject": "headline",
-      "data": {
-        "freeSizePx": 26,
-        "snapped": true,
-        "lines": 3,
-        "maxLines": 3,
-        "lineHeightPx": 28.75
-      }
-    },
-    {
-      "seq": 19,
-      "step": "fitText",
-      "level": "info",
-      "pass": 2,
-      "message": "\"cta\" set at 16px over 1 line",
-      "subject": "cta",
-      "data": {
-        "freeSizePx": 18,
-        "snapped": true,
-        "lines": 1,
-        "maxLines": 1,
-        "lineHeightPx": 19.2
-      }
-    },
-    {
-      "seq": 20,
       "step": "imageCrop",
       "level": "info",
-      "pass": 2,
+      "pass": 1,
       "message": "cropped \"hero\" to 830x1600 around focal 0.62,0.38",
       "subject": "hero",
       "data": {
@@ -433,10 +395,10 @@
       }
     },
     {
-      "seq": 21,
+      "seq": 17,
       "step": "imageCrop",
       "level": "info",
-      "pass": 2,
+      "pass": 1,
       "message": "cropped \"logo\" to 480x160 around focal 0.5,0.5",
       "subject": "logo",
       "data": {
@@ -449,16 +411,16 @@
       }
     },
     {
-      "seq": 22,
+      "seq": 18,
       "step": "fingerprint",
       "level": "info",
-      "pass": 2,
-      "message": "layout hashes to fp_c208a438",
+      "pass": 1,
+      "message": "layout hashes to fp_e738e007",
       "data": {
-        "placed": 5,
-        "dropped": 3
+        "placed": 6,
+        "dropped": 2
       }
     }
   ],
-  "fingerprint": "fp_c208a438"
+  "fingerprint": "fp_e738e007"
 }

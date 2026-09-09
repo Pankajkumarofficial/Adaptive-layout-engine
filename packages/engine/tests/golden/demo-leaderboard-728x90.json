@@ -87,81 +87,28 @@
       "id": "headline",
       "frame": {
         "x": 334.76,
-        "y": 14.98,
+        "y": 10.5,
         "w": 244.1,
-        "h": 18.4
+        "h": 69
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 16,
-      "lineHeightPx": 18.4,
+      "fontSizePx": 30,
+      "lineHeightPx": 34.5,
       "lines": [
-        "Every trail starts somewhere"
+        "Every trail starts",
+        "somewhere"
       ],
       "textAlign": "center",
-      "color": "#f8fafc"
-    },
-    {
-      "id": "legal",
-      "frame": {
-        "x": 334.76,
-        "y": 64.38,
-        "w": 244.1,
-        "h": 10.65
-      },
-      "opacity": 1,
-      "z": 20,
-      "fontSizePx": 8.19,
-      "lineHeightPx": 10.65,
-      "lines": [
-        "Free returns within 30 days. Terms apply."
-      ],
-      "textAlign": "center",
-      "color": "#f8fafc"
-    },
-    {
-      "id": "subhead",
-      "frame": {
-        "x": 334.76,
-        "y": 41.38,
-        "w": 244.1,
-        "h": 15
-      },
-      "opacity": 1,
-      "z": 20,
-      "fontSizePx": 12,
-      "lineHeightPx": 15,
-      "lines": [
-        "Boots, packs and layers built for the lon…"
-      ],
-      "textAlign": "center",
-      "color": "#f8fafc"
-    },
-    {
-      "id": "badge",
-      "frame": {
-        "x": 227.76,
-        "y": 55.9,
-        "w": 99,
-        "h": 19.2
-      },
-      "opacity": 1,
-      "z": 30,
-      "fontSizePx": 16,
-      "lineHeightPx": 19.2,
-      "lines": [
-        "New season"
-      ],
-      "textAlign": "right",
       "color": "#f8fafc"
     },
     {
       "id": "logo",
       "frame": {
         "x": 104.76,
-        "y": 14.9,
-        "w": 99,
-        "h": 33
+        "y": 8,
+        "w": 222,
+        "h": 74
       },
       "opacity": 1,
       "z": 30,
@@ -192,11 +139,21 @@
       "fill": "#f97316"
     }
   ],
-  "dropped": [],
-  "warnings": [
-    "\"subhead\" does not fit at its 12px floor",
-    "layout still overflows by 15px with only protected elements left; clamping"
+  "dropped": [
+    {
+      "id": "badge",
+      "reason": "priority 70; bound to legal, dropped together to recover 11px of unmet minimums"
+    },
+    {
+      "id": "legal",
+      "reason": "priority 90; bound to badge, dropped together to recover 11px of unmet minimums"
+    },
+    {
+      "id": "subhead",
+      "reason": "priority 60; dropped to recover 3px of unmet minimums"
+    }
   ],
+  "warnings": [],
   "trace": [
     {
       "seq": 1,
@@ -338,11 +295,11 @@
       "step": "degrade",
       "level": "decision",
       "pass": 0,
-      "message": "dropping badge + legal — priority 90 to recover 15px of unmet minimums",
+      "message": "dropping badge + legal — priority 90 to recover 11px of unmet minimums",
       "subject": "legal",
       "data": {
         "priority": 90,
-        "deficitPx": 15,
+        "deficitPx": 11,
         "group": 2
       }
     },
@@ -406,31 +363,62 @@
     {
       "seq": 16,
       "step": "degrade",
-      "level": "warn",
+      "level": "decision",
       "pass": 1,
-      "message": "dropping badge + legal did not reduce the deficit, so it is kept and the layout is clamped instead",
-      "subject": "badge",
+      "message": "dropping subhead — priority 60 to recover 3px of unmet minimums",
+      "subject": "subhead",
       "data": {
-        "deficitBefore": 15,
-        "deficitAfter": 15
+        "priority": 60,
+        "deficitPx": 3,
+        "group": 1
       }
     },
     {
       "seq": 17,
-      "step": "degrade",
-      "level": "warn",
-      "pass": 0,
-      "message": "layout still overflows by 15px with only protected elements left; clamping",
+      "step": "budget",
+      "level": "info",
+      "pass": 2,
+      "message": "5 frames placed",
       "data": {
-        "deficitPx": 15,
-        "remaining": 8
+        "deficitPx": 0,
+        "shortfalls": 0
       }
     },
     {
       "seq": 18,
+      "step": "fitText",
+      "level": "info",
+      "pass": 2,
+      "message": "\"headline\" set at 30px over 2 lines",
+      "subject": "headline",
+      "data": {
+        "freeSizePx": 30,
+        "snapped": false,
+        "lines": 2,
+        "maxLines": 3,
+        "lineHeightPx": 34.5
+      }
+    },
+    {
+      "seq": 19,
+      "step": "fitText",
+      "level": "info",
+      "pass": 2,
+      "message": "\"cta\" set at 12.8px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 15,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 15.36
+      }
+    },
+    {
+      "seq": 20,
       "step": "imageCrop",
       "level": "info",
-      "pass": 0,
+      "pass": 2,
       "message": "cropped \"hero\" to 1919x1600 around focal 0.62,0.38",
       "subject": "hero",
       "data": {
@@ -443,10 +431,10 @@
       }
     },
     {
-      "seq": 19,
+      "seq": 21,
       "step": "imageCrop",
       "level": "info",
-      "pass": 0,
+      "pass": 2,
       "message": "cropped \"logo\" to 480x160 around focal 0.5,0.5",
       "subject": "logo",
       "data": {
@@ -459,16 +447,16 @@
       }
     },
     {
-      "seq": 20,
+      "seq": 22,
       "step": "fingerprint",
       "level": "info",
-      "pass": 0,
-      "message": "layout hashes to fp_afc51d33",
+      "pass": 2,
+      "message": "layout hashes to fp_0abf46da",
       "data": {
-        "placed": 8,
-        "dropped": 0
+        "placed": 5,
+        "dropped": 3
       }
     }
   ],
-  "fingerprint": "fp_afc51d33"
+  "fingerprint": "fp_0abf46da"
 }

@@ -30,6 +30,18 @@ const DEFICIT_EPSILON = 0.5;
  */
 const MAX_TOUCH_REENTRIES = 2;
 
+/**
+ * How many consecutive drops may fail to improve the fit before the engine
+ * concludes that dropping is not the answer here.
+ *
+ * It cannot be zero. Degradation is not monotonic: removing the legal line from
+ * a cramped strip can leave the deficit slightly worse, and only the *next*
+ * drop — the badge it is bound to competing for the same row — resolves it. One
+ * bad step is normal; two in a row means the constraint is somewhere no
+ * droppable element is competing for.
+ */
+const DEGRADE_PATIENCE = 2;
+
 interface Attempt {
   regions: Record<string, Rect>;
   assignments: Assignment[];
@@ -68,11 +80,16 @@ export function solve(spec: AdSpec, surface: Surface): LayoutResult {
 
   let pass = 0;
   const maxPasses = norm.elements.length;
+
+  // The best fit seen so far, so a cascade that overshoots can be rewound to
+  // the layout that actually worked rather than to wherever it stopped.
+  let best = { active, attempt, dropped: dropped.slice(), pass };
+  let stale = 0;
+
   while (attempt.deficitPx > DEFICIT_EPSILON && pass < maxPasses) {
     const plan = chooseDrop(active, attempt.shortfalls, norm.neverDrop, norm.alwaysPairs, tracer);
     if (plan === null) break;
 
-    const previous = { active, attempt, dropped: dropped.slice(), pass };
     const removing = new Set(plan.ids);
     active = active.filter((el) => !removing.has(el.id));
     for (const id of plan.ids) {
@@ -83,29 +100,33 @@ export function solve(spec: AdSpec, surface: Surface): LayoutResult {
     tracer.setPass(pass);
     attempt = runAttempt(archetype, norm, klass, gutter, active, tracer);
 
-    // A drop that buys nothing will not be redeemed by dropping more: the
-    // constraint is somewhere this element was never competing for. Put it
-    // back and stop, rather than stripping the ad down to nothing for free.
-    if (attempt.deficitPx >= previous.attempt.deficitPx - DEFICIT_EPSILON) {
-      tracer.warn(
-        'degrade',
-        `dropping ${plan.ids.join(' + ')} did not reduce the deficit, so it is kept and the layout is clamped instead`,
-        {
-          subject: plan.ids[0],
-          data: {
-            deficitBefore: Math.round(previous.attempt.deficitPx),
-            deficitAfter: Math.round(attempt.deficitPx),
-          },
-        },
-      );
-      active = previous.active;
-      attempt = previous.attempt;
-      dropped.length = 0;
-      dropped.push(...previous.dropped);
-      pass = previous.pass;
-      tracer.setPass(pass);
-      break;
+    if (attempt.deficitPx < best.attempt.deficitPx - DEFICIT_EPSILON) {
+      best = { active, attempt, dropped: dropped.slice(), pass };
+      stale = 0;
+      continue;
     }
+
+    stale += 1;
+    if (stale >= DEGRADE_PATIENCE) break;
+  }
+
+  // Never ship a layout worse than one already found. Dropping content that
+  // bought no room is pure loss, so rewind to the best fit seen.
+  if (attempt.deficitPx > best.attempt.deficitPx + DEFICIT_EPSILON) {
+    const abandoned = dropped.slice(best.dropped.length).map((d) => d.id);
+    active = best.active;
+    attempt = best.attempt;
+    dropped.length = 0;
+    dropped.push(...best.dropped);
+    pass = best.pass;
+    // Set the pass back *before* the warning, so it is reported against the
+    // layout that actually shipped rather than filtered out as a stale pass.
+    tracer.setPass(pass);
+    tracer.warn(
+      'degrade',
+      `dropping ${abandoned.join(', ')} did not buy any room, so ${abandoned.length === 1 ? 'it is' : 'they are'} kept and the layout is clamped instead`,
+      { data: { deficitPx: Math.round(attempt.deficitPx), abandoned: abandoned.length } },
+    );
   }
 
   if (attempt.deficitPx > DEFICIT_EPSILON) {
@@ -190,16 +211,21 @@ function runAttempt(
     if (el.text === null) continue;
     const band = frames[el.id];
     if (band === undefined) continue;
-    const fit = fitText(el, textBoxOf(el, band, gutter), norm.spec.theme, tracer);
+    const box = textBoxOf(el, band, gutter);
+    const fit = fitText(el, box, norm.spec.theme, tracer);
     fits.set(el.id, fit);
     frames[el.id] = textFrameFor(el, band, fit, klass, gutter);
     if (fit.overflow) {
-      shortfalls.push({
-        elementId: el.id,
-        axis: 'h',
-        required: band.h + fit.blockHeightPx,
-        available: band.h,
-      });
+      // Report the genuine shortfall on whichever axis is binding: how much
+      // more room this text needed than it was given. Anything that does not
+      // shrink when the box grows would make the degradation loop blind.
+      const shortH = fit.neededHeightPx - box.h;
+      const shortW = fit.neededWidthPx - box.w;
+      shortfalls.push(
+        shortW > shortH
+          ? { elementId: el.id, axis: 'w', required: fit.neededWidthPx, available: box.w }
+          : { elementId: el.id, axis: 'h', required: fit.neededHeightPx, available: box.h },
+      );
     }
   }
 

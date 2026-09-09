@@ -164,6 +164,51 @@ describe('solve — contract', () => {
     for (const w of result.warnings) expect(traceWarnings).toContain(w);
   });
 
+  it('pushes through a drop that temporarily makes the fit worse', () => {
+    // Regression: at 400x130 removing the legal line leaves the deficit
+    // slightly worse (201px -> 204px) and only the next drop resolves it.
+    // Stopping at the first non-improving drop shipped a clamped, overlapping
+    // layout with every element still on it.
+    const cramped: Surface = {
+      id: 'cramped',
+      label: 'Cramped strip',
+      width: 400,
+      height: 130,
+      dpr: 2,
+      interactionHint: 'tap',
+    };
+    const result = solve(DEMO_SPEC, cramped);
+    expect(result.dropped.length).toBeGreaterThan(2);
+    expect(result.warnings).toEqual([]);
+  });
+
+  it('never ships a layout worse than one it already found', () => {
+    // Whatever the degradation loop explores, the result it returns must be
+    // the best fit it saw, not wherever it happened to stop.
+    for (const width of [360, 400, 460, 520, 640]) {
+      for (const height of [90, 130, 200, 320]) {
+        const result = solve(DEMO_SPEC, {
+          id: `${width}x${height}`,
+          label: `${width}x${height}`,
+          width,
+          height,
+          dpr: 2,
+          interactionHint: 'tap',
+        });
+        // A clamped layout is allowed, but only when nothing droppable is left.
+        const clamped = result.warnings.some((w) => w.includes('still overflows'));
+        if (clamped) {
+          const survivors = result.placed.map((p) => p.id);
+          const droppable = survivors.filter(
+            (id) => !['bg', 'headline', 'cta'].includes(id),
+          );
+          expect(droppable, `${width}x${height} clamped with ${droppable.join(',')} still droppable`)
+            .toEqual([]);
+        }
+      }
+    }
+  });
+
   it('works with a two-element spec and no rules block', () => {
     const result = solve(MINIMAL_SPEC, square);
     expect(result.placed).toHaveLength(2);

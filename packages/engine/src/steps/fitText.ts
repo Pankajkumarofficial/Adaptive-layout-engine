@@ -14,6 +14,17 @@ export interface TextFit {
   snapped: boolean;
   /** True when even `minFontPx` did not fit; the caller must degrade or clamp. */
   overflow: boolean;
+  /**
+   * Height this text would need at its floor size if nothing were truncated.
+   *
+   * `blockHeightPx` describes what will be drawn; this describes what was
+   * asked for. `degrade` needs the second number: the difference between them
+   * is the shortfall, and it shrinks as the box grows, which is what makes the
+   * deficit a usable signal for whether a drop actually helped.
+   */
+  neededHeightPx: number;
+  /** Width the widest untruncated line would need, for the same reason. */
+  neededWidthPx: number;
 }
 
 /** Ladder anchor. Everything snaps relative to a 16px base. */
@@ -110,6 +121,9 @@ export function fitText(el: NormalizedElement, box: Rect, theme: Theme, tracer: 
     const style = styleAt(text.minFontPx);
     const lineHeightPx = roundTo(text.minFontPx * text.leading, 2);
     const linesThatFit = Math.max(1, Math.floor((box.h + 0.01) / lineHeightPx));
+    // Wrap once unbounded to learn what the text actually needs, then again
+    // bounded for what will be drawn.
+    const full = wrap(text.value, style, { maxWidthPx: maxWidth });
     const wrapped = wrap(text.value, style, {
       maxWidthPx: maxWidth,
       maxLines: Math.min(text.maxLines, linesThatFit),
@@ -133,6 +147,8 @@ export function fitText(el: NormalizedElement, box: Rect, theme: Theme, tracer: 
       maxLineWidthPx: roundTo(wrapped.maxLineWidthPx, 2),
       snapped: false,
       overflow: true,
+      neededHeightPx: roundTo(Math.max(full.lines.length, text.maxLines) * lineHeightPx, 2),
+      neededWidthPx: roundTo(full.maxLineWidthPx, 2),
     };
   }
 
@@ -173,6 +189,8 @@ export function fitText(el: NormalizedElement, box: Rect, theme: Theme, tracer: 
     maxLineWidthPx: roundTo(wrapped.maxLineWidthPx, 2),
     snapped: snapAcceptable,
     overflow: false,
+    neededHeightPx: roundTo(wrapped.lines.length * final.lineHeightPx, 2),
+    neededWidthPx: roundTo(wrapped.maxLineWidthPx, 2),
   };
 }
 

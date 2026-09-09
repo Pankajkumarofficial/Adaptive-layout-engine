@@ -96,23 +96,23 @@
   "dropped": [
     {
       "id": "badge",
-      "reason": "priority 70; bound to legal, dropped together to recover 146px of unmet minimums"
+      "reason": "priority 70; bound to legal, dropped together to recover 302px of unmet minimums"
     },
     {
       "id": "legal",
-      "reason": "priority 90; bound to badge, dropped together to recover 146px of unmet minimums"
+      "reason": "priority 90; bound to badge, dropped together to recover 302px of unmet minimums"
     },
     {
       "id": "subhead",
-      "reason": "priority 60; dropped to recover 116px of unmet minimums"
+      "reason": "priority 60; dropped to recover 244px of unmet minimums"
     },
     {
       "id": "hero",
-      "reason": "priority 40; dropped to recover 107px of unmet minimums"
+      "reason": "priority 40; dropped to recover 110px of unmet minimums"
     },
     {
       "id": "logo",
-      "reason": "priority 10; dropped to recover 49px of unmet minimums"
+      "reason": "priority 10; dropped to recover 19px of unmet minimums"
     }
   ],
   "warnings": [
@@ -275,11 +275,11 @@
       "step": "degrade",
       "level": "decision",
       "pass": 0,
-      "message": "dropping badge + legal — priority 90 to recover 146px of unmet minimums",
+      "message": "dropping badge + legal — priority 90 to recover 302px of unmet minimums",
       "subject": "legal",
       "data": {
         "priority": 90,
-        "deficitPx": 146,
+        "deficitPx": 302,
         "group": 2
       }
     },
@@ -347,11 +347,11 @@
       "step": "degrade",
       "level": "decision",
       "pass": 1,
-      "message": "dropping subhead — priority 60 to recover 116px of unmet minimums",
+      "message": "dropping subhead — priority 60 to recover 244px of unmet minimums",
       "subject": "subhead",
       "data": {
         "priority": 60,
-        "deficitPx": 116,
+        "deficitPx": 244,
         "group": 1
       }
     },
@@ -403,11 +403,11 @@
       "step": "degrade",
       "level": "decision",
       "pass": 2,
-      "message": "dropping hero — priority 40 to recover 107px of unmet minimums",
+      "message": "dropping hero — priority 40 to recover 110px of unmet minimums",
       "subject": "hero",
       "data": {
         "priority": 40,
-        "deficitPx": 107,
+        "deficitPx": 110,
         "group": 1
       }
     },
@@ -459,11 +459,11 @@
       "step": "degrade",
       "level": "decision",
       "pass": 3,
-      "message": "dropping logo — priority 10 to recover 49px of unmet minimums",
+      "message": "dropping logo — priority 10 to recover 19px of unmet minimums",
       "subject": "logo",
       "data": {
         "priority": 10,
-        "deficitPx": 49,
+        "deficitPx": 19,
         "group": 1
       }
     },
