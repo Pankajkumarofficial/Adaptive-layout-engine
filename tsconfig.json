@@ -1,19 +1,27 @@
 {
+  // Root config for the serverless function. Two jobs:
+  //
+  // 1. Scope the build. Vercel's Node builder looks for a tsconfig.json beside
+  //    `api/`; without one it sweeps the whole repo and compiles the React app
+  //    with no --jsx flag.
+  //
+  // 2. Map the workspace packages to their sources. They are symlinks in
+  //    node_modules whose entry point is a .ts file, so the bundler would
+  //    otherwise leave them external and Node would try to `import` TypeScript
+  //    at runtime. These paths make the bundler inline them instead.
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    // Never emitted here: tsx runs the API in development and Vercel bundles
-    // the function with esbuild. This config exists so that toolchains which
-    // look for a tsconfig.json beside the `api/` directory — Vercel's Node
-    // builder among them — compile the function's import graph and nothing
-    // else. Without it the builder falls back to a default that sweeps the
-    // whole repo, and reports hundreds of errors against the React app for
-    // missing a `--jsx` flag it was never meant to be compiled with.
     "noEmit": true,
     "composite": false,
     "declaration": false,
     "declarationMap": false,
     "types": ["node"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ale/engine": ["./packages/engine/src/index.ts"],
+      "@ale/shared": ["./packages/shared/src/index.ts"]
+    }
   },
   "include": ["api/**/*.ts"],
   "exclude": ["node_modules", "**/dist", "apps/web", "packages/*/dist"]
