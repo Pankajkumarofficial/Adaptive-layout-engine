@@ -329,6 +329,37 @@ function ThemeEditor() {
   );
 }
 
+/** The smallest spec the schema accepts: a ground, something to say, something to do. */
+function blankSpec(theme: AdSpec['theme']): AdSpec {
+  return {
+    id: `spec-${Date.now().toString(36)}`,
+    name: 'Untitled ad',
+    elements: [
+      {
+        id: 'bg',
+        role: 'background',
+        priority: 0,
+        content: { kind: 'shape', fill: theme.palette.bg },
+      },
+      {
+        id: 'headline',
+        role: 'headline',
+        priority: 0,
+        content: { kind: 'text', value: 'Your headline here', maxLines: 3, minFontPx: 14 },
+      },
+      {
+        id: 'cta',
+        role: 'cta',
+        priority: 5,
+        content: { kind: 'text', value: 'Get started', maxLines: 1, minFontPx: 12 },
+        minSize: { w: 96, h: 32 },
+      },
+    ],
+    theme,
+    rules: { neverDrop: ['headline', 'cta'], minContrastRatio: 4.5 },
+  };
+}
+
 function SpecFileBar() {
   const spec = usePlayground((s) => s.spec);
   const setSpec = usePlayground((s) => s.setSpec);
@@ -354,6 +385,14 @@ function SpecFileBar() {
 
   return (
     <div className="flex gap-2 border-t border-rule px-4 py-2">
+      <button
+        type="button"
+        onClick={() => setSpec(blankSpec(spec.theme))}
+        title="Start a new ad from three elements"
+        className="text-tiny text-ink-3 hover:text-ink"
+      >
+        New
+      </button>
       <button
         type="button"
         onClick={() => fileRef.current?.click()}

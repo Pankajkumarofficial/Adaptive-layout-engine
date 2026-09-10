@@ -1,0 +1,103 @@
+{
+  "id": "my-first-ad",
+  "name": "My First Ad",
+  "elements": [
+    {
+      "id": "bg",
+      "role": "background",
+      "priority": 0,
+      "content": {
+        "kind": "shape",
+        "fill": "#1d2b3a"
+      }
+    },
+    {
+      "id": "hero",
+      "role": "hero",
+      "priority": 40,
+      "content": {
+        "kind": "image",
+        "url": "https://picsum.photos/id/1043/2000/1300",
+        "focalPoint": {
+          "x": 0.5,
+          "y": 0.4
+        },
+        "intrinsic": {
+          "w": 2000,
+          "h": 1300
+        }
+      },
+      "minSize": {
+        "w": 80,
+        "h": 60
+      }
+    },
+    {
+      "id": "headline",
+      "role": "headline",
+      "priority": 0,
+      "content": {
+        "kind": "text",
+        "value": "Say the one thing that matters",
+        "maxLines": 3,
+        "minFontPx": 14
+      }
+    },
+    {
+      "id": "subhead",
+      "role": "subhead",
+      "priority": 60,
+      "content": {
+        "kind": "text",
+        "value": "And a second line for the surfaces that have room.",
+        "maxLines": 2,
+        "minFontPx": 12
+      }
+    },
+    {
+      "id": "cta",
+      "role": "cta",
+      "priority": 5,
+      "content": {
+        "kind": "text",
+        "value": "Get started",
+        "maxLines": 1,
+        "minFontPx": 12
+      },
+      "minSize": {
+        "w": 96,
+        "h": 32
+      }
+    },
+    {
+      "id": "legal",
+      "role": "legal",
+      "priority": 90,
+      "content": {
+        "kind": "text",
+        "value": "Terms apply.",
+        "maxLines": 2,
+        "minFontPx": 8
+      }
+    }
+  ],
+  "theme": {
+    "palette": {
+      "bg": "#1d2b3a",
+      "fg": "#f6f7f5",
+      "accent": "#4ec9a5",
+      "ctaBg": "#4ec9a5",
+      "ctaFg": "#0d1a14"
+    },
+    "fontFamily": "Inter, system-ui, sans-serif",
+    "scaleRatio": 1.25,
+    "cornerRadius": 6
+  },
+  "rules": {
+    "neverDrop": [
+      "headline",
+      "cta"
+    ],
+    "minContrastRatio": 4.5
+  }
+}

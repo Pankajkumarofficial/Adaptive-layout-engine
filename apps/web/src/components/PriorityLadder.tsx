@@ -1,5 +1,5 @@
-import { useCallback, useRef } from 'react';
-import type { AdElement, LayoutResult } from '@ale/engine';
+import { useCallback, useRef, useState } from 'react';
+import type { AdElement, ElementRole, LayoutResult } from '@ale/engine';
 import { usePlayground } from '../lib/store';
 
 /**
@@ -57,6 +57,122 @@ export function PriorityLadder({ result }: { result: LayoutResult | null }) {
           />
         ))}
       </ul>
+
+      <AddElement existingIds={new Set(spec.elements.map((el) => el.id))} />
+    </div>
+  );
+}
+
+/**
+ * Default priority per role: the order a person would sacrifice them in if
+ * asked. Authoring a new element should land somewhere sensible on the ladder
+ * rather than at zero, which would silently make it undroppable.
+ */
+const ROLE_PRIORITY: Readonly<Record<ElementRole, number>> = {
+  background: 0,
+  headline: 0,
+  cta: 5,
+  logo: 10,
+  hero: 40,
+  subhead: 60,
+  body: 65,
+  badge: 70,
+  legal: 90,
+};
+
+const PLACEHOLDER: Readonly<Record<ElementRole, string>> = {
+  headline: 'Your headline here',
+  subhead: 'A supporting line for surfaces with room',
+  body: 'Longer copy that only survives where there is space for it.',
+  cta: 'Get started',
+  legal: 'Terms apply.',
+  badge: 'New',
+  logo: '',
+  hero: '',
+  background: '',
+};
+
+/** Builds a valid element for a role, so nothing added here can fail the schema. */
+function blankElement(role: ElementRole, id: string, fill: string): AdElement {
+  if (role === 'background') {
+    return { id, role, priority: ROLE_PRIORITY[role], content: { kind: 'shape', fill } };
+  }
+  if (role === 'hero' || role === 'logo') {
+    return {
+      id,
+      role,
+      priority: ROLE_PRIORITY[role],
+      content: {
+        kind: 'image',
+        url: 'https://picsum.photos/id/1043/2000/1300',
+        focalPoint: { x: 0.5, y: 0.5 },
+        intrinsic: { w: 2000, h: 1300 },
+      },
+      ...(role === 'logo' ? { aspectLock: 3, minSize: { w: 48, h: 16 } } : {}),
+    };
+  }
+  return {
+    id,
+    role,
+    priority: ROLE_PRIORITY[role],
+    content: {
+      kind: 'text',
+      value: PLACEHOLDER[role],
+      maxLines: role === 'cta' ? 1 : 2,
+      minFontPx: 12,
+    },
+    ...(role === 'cta' ? { minSize: { w: 96, h: 32 } } : {}),
+  };
+}
+
+const ROLES: readonly ElementRole[] = [
+  'headline',
+  'subhead',
+  'body',
+  'cta',
+  'hero',
+  'logo',
+  'badge',
+  'legal',
+  'background',
+];
+
+function AddElement({ existingIds }: { existingIds: Set<string> }) {
+  const addElement = usePlayground((s) => s.addElement);
+  const themeBg = usePlayground((s) => s.spec.theme.palette.bg);
+  const [role, setRole] = useState<ElementRole>('subhead');
+
+  const add = (): void => {
+    let id: string = role;
+    let n = 2;
+    while (existingIds.has(id)) id = `${role}-${n++}`;
+    addElement(blankElement(role, id, themeBg));
+  };
+
+  return (
+    <div className="flex items-center gap-2 border-t border-rule px-4 py-2.5">
+      <label className="sr-only" htmlFor="new-element-role">
+        Role for the new element
+      </label>
+      <select
+        id="new-element-role"
+        value={role}
+        onChange={(e) => setRole(e.target.value as ElementRole)}
+        className="flex-1 border border-rule bg-card px-2 py-1 text-tiny text-ink focus:border-guide focus:outline-none"
+      >
+        {ROLES.map((r) => (
+          <option key={r} value={r}>
+            {r}
+          </option>
+        ))}
+      </select>
+      <button
+        type="button"
+        onClick={add}
+        className="bg-ink px-2.5 py-1 text-tiny text-on-accent hover:opacity-90"
+      >
+        Add element
+      </button>
     </div>
   );
 }
