@@ -3,8 +3,64 @@
 @tailwind utilities;
 
 @layer base {
+  /**
+   * Light — a paste-up board.
+   *
+   * Before layouts were solved they were built: artwork pasted onto grey
+   * board, guides ruled in non-photo blue because that ink did not show up on
+   * the camera, and anything to be cut marked in registration red.
+   */
   :root {
+    --c-board: 200 203 193;
+    --c-board-2: 188 191 180;
+    --c-paper: 226 225 218;
+    --c-card: 242 241 236;
+    --c-rule: 167 169 157;
+    --c-rule-2: 141 144 132;
+    --c-proof: 118 122 112;
+    --c-ink: 26 26 23;
+    --c-ink-2: 84 84 76;
+    --c-ink-3: 107 107 97;
+    --c-on-accent: 245 245 240;
+    --c-guide: 31 111 168;
+    --c-guide-2: 127 198 232;
+    --c-reg: 191 49 38;
+    --c-mark: 163 103 12;
+    /* Ink for the board's tooth texture. */
+    --c-tooth: 26 26 23;
+    --tooth-a: 0.022;
+    --tooth-b: 0.018;
     color-scheme: light;
+  }
+
+  /**
+   * Dark — the same bench under a darkroom safelight.
+   *
+   * The board goes to near-black and the guides brighten, because non-photo
+   * blue at 31,111,168 disappears against it. The proofing surround stays a
+   * mid grey: artwork has to be judged against something neutral, and a black
+   * surround would flatter every dark creative and punish every light one.
+   */
+  :root[data-theme='dark'] {
+    --c-board: 12 12 13;
+    --c-board-2: 20 20 22;
+    --c-paper: 18 18 20;
+    --c-card: 27 27 30;
+    --c-rule: 44 44 49;
+    --c-rule-2: 61 61 68;
+    --c-proof: 74 74 80;
+    --c-ink: 241 240 237;
+    --c-ink-2: 169 168 163;
+    --c-ink-3: 126 125 121;
+    --c-on-accent: 12 12 13;
+    --c-guide: 108 182 228;
+    --c-guide-2: 168 220 245;
+    --c-reg: 228 103 90;
+    --c-mark: 224 169 74;
+    --c-tooth: 241 240 237;
+    --tooth-a: 0.026;
+    --tooth-b: 0.02;
+    color-scheme: dark;
   }
 
   html,
@@ -22,12 +78,12 @@
     background-image:
       repeating-linear-gradient(
         45deg,
-        rgba(26, 26, 23, 0.022) 0 1px,
+        rgb(var(--c-tooth) / var(--tooth-a)) 0 1px,
         transparent 1px 7px
       ),
       repeating-linear-gradient(
         -45deg,
-        rgba(26, 26, 23, 0.018) 0 1px,
+        rgb(var(--c-tooth) / var(--tooth-b)) 0 1px,
         transparent 1px 9px
       );
   }

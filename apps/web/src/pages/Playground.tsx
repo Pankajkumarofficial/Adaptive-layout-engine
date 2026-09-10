@@ -12,6 +12,7 @@ import { JsonView } from '../components/JsonView';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Swatch } from '../components/Field';
 import { Library } from '../components/Library';
+import { useAppTheme, type AppTheme } from '../lib/theme';
 import type { AdSpec } from '@ale/engine';
 
 type LeftTab = 'elements' | 'theme' | 'json' | 'library';
@@ -21,6 +22,11 @@ export function Playground() {
   const surface = usePlayground((s) => s.surface);
   const selectedId = usePlayground((s) => s.selectedElementId);
   const [tab, setTab] = useState<LeftTab>('elements');
+  // 1280px is where both rails plus a usable canvas stop fitting. Below it the
+  // inspector starts closed; below 1024px the spec rail does too. They stay
+  // togglable at every width, so nothing is unreachable on a small screen.
+  const [showSpec, setShowSpec] = useState(() => wider(1024));
+  const [showInspector, setShowInspector] = useState(() => wider(1280));
   const [params] = useSearchParams();
   const setSpec = usePlayground((s) => s.setSpec);
   const selectPreset = usePlayground((s) => s.selectPreset);
@@ -39,27 +45,34 @@ export function Playground() {
 
   return (
     <div className="board-tooth flex h-full flex-col bg-board text-ink">
-      <TitleBar />
+      <TitleBar
+        showSpec={showSpec}
+        showInspector={showInspector}
+        onToggleSpec={() => setShowSpec((v) => !v)}
+        onToggleInspector={() => setShowInspector((v) => !v)}
+      />
 
       <div className="flex min-h-0 flex-1">
-        <aside className="flex w-[300px] shrink-0 flex-col border-r border-rule-2 bg-paper">
-          <Tabs tab={tab} onChange={setTab} />
-          <ErrorBoundary label="The spec editor">
-            {tab === 'json' ? (
-              <JsonView />
-            ) : tab === 'library' ? (
-              <Library />
-            ) : tab === 'theme' ? (
-              <ThemeEditor />
-            ) : (
-              <div className="min-h-0 flex-1 overflow-auto">
-                <PriorityLadder result={result} />
-                {selected !== undefined && <ElementInspector element={selected} />}
-              </div>
-            )}
-          </ErrorBoundary>
-          <SpecFileBar />
-        </aside>
+        {showSpec && (
+          <aside className="flex w-[264px] shrink-0 flex-col border-r border-rule-2 bg-paper xl:w-[300px]">
+            <Tabs tab={tab} onChange={setTab} />
+            <ErrorBoundary label="The spec editor">
+              {tab === 'json' ? (
+                <JsonView />
+              ) : tab === 'library' ? (
+                <Library />
+              ) : tab === 'theme' ? (
+                <ThemeEditor />
+              ) : (
+                <div className="min-h-0 flex-1 overflow-auto">
+                  <PriorityLadder result={result} />
+                  {selected !== undefined && <ElementInspector element={selected} />}
+                </div>
+              )}
+            </ErrorBoundary>
+            <SpecFileBar />
+          </aside>
+        )}
 
         <main className="flex min-w-0 flex-1 flex-col">
           <ErrorBoundary label="The canvas">
@@ -74,48 +87,121 @@ export function Playground() {
           </ErrorBoundary>
         </main>
 
-        <aside className="flex w-[400px] shrink-0 flex-col border-l border-rule-2 bg-paper">
-          <h2 className="border-b border-rule px-4 py-2.5 font-display text-[17px] font-medium leading-none">
-            What the engine decided
-          </h2>
-          <ErrorBoundary label="The inspector">
-            {result !== null ? (
-              <Inspector result={result} ms={ms} />
-            ) : (
-              <p className="p-4 text-tiny text-ink-3">Nothing to show until the spec is valid.</p>
-            )}
-          </ErrorBoundary>
-        </aside>
+        {showInspector && (
+          <aside className="flex w-[330px] shrink-0 flex-col border-l border-rule-2 bg-paper xl:w-[400px]">
+            <h2 className="border-b border-rule px-4 py-2.5 font-display text-[17px] font-medium leading-none">
+              What the engine decided
+            </h2>
+            <ErrorBoundary label="The inspector">
+              {result !== null ? (
+                <Inspector result={result} ms={ms} />
+              ) : (
+                <p className="p-4 text-tiny text-ink-3">Nothing to show until the spec is valid.</p>
+              )}
+            </ErrorBoundary>
+          </aside>
+        )}
       </div>
     </div>
   );
 }
 
-function TitleBar() {
+/** Media query evaluated once, for the initial rail state. */
+function wider(px: number): boolean {
+  return typeof window === 'undefined' ? true : window.matchMedia(`(min-width: ${px}px)`).matches;
+}
+
+interface TitleBarProps {
+  showSpec: boolean;
+  showInspector: boolean;
+  onToggleSpec: () => void;
+  onToggleInspector: () => void;
+}
+
+function TitleBar({ showSpec, showInspector, onToggleSpec, onToggleInspector }: TitleBarProps) {
   const spec = usePlayground((s) => s.spec);
   const surface = usePlayground((s) => s.surface);
+  const { theme, toggle } = useAppTheme();
+
   return (
-    <header className="flex items-end gap-4 border-b-2 border-ink bg-paper px-4 pb-2 pt-2.5">
+    <header className="flex flex-wrap items-end gap-x-4 gap-y-1 border-b-2 border-ink bg-paper px-4 pb-2 pt-2.5">
       <h1 className="font-display text-[27px] font-bold leading-[0.92] tracking-[-0.018em]">
         Adaptive Layout Engine
       </h1>
-      <p className="mb-px max-w-[42ch] text-tiny leading-snug text-ink-2">
+      <p className="mb-px hidden max-w-[42ch] text-tiny leading-snug text-ink-2 lg:block">
         One spec, solved for each surface. Nothing here is a template &mdash; every position below
         is a decision, and the engine shows its working.
       </p>
-      <dl className="mb-px ml-auto flex items-end gap-5 text-right">
-        <div>
-          <dt className="text-micro leading-none text-ink-3">Piece</dt>
-          <dd className="text-tiny font-semibold">{spec.name}</dd>
+
+      <div className="mb-px ml-auto flex items-end gap-4">
+        <dl className="flex items-end gap-4 text-right">
+          <div className="hidden sm:block">
+            <dt className="text-micro leading-none text-ink-3">Piece</dt>
+            <dd className="text-tiny font-semibold">{spec.name}</dd>
+          </div>
+          <div>
+            <dt className="text-micro leading-none text-ink-3">Surface</dt>
+            <dd className="tabular text-tiny">
+              {surface.width} &times; {surface.height}
+            </dd>
+          </div>
+        </dl>
+
+        <div className="flex items-center gap-1">
+          <RailToggle label="Spec" on={showSpec} onClick={onToggleSpec} />
+          <RailToggle label="Decisions" on={showInspector} onClick={onToggleInspector} />
+          <ThemeToggle theme={theme} onClick={toggle} />
         </div>
-        <div>
-          <dt className="text-micro leading-none text-ink-3">Surface</dt>
-          <dd className="tabular text-tiny">
-            {surface.width} &times; {surface.height}
-          </dd>
-        </div>
-      </dl>
+      </div>
     </header>
+  );
+}
+
+function RailToggle({ label, on, onClick }: { label: string; on: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={on}
+      title={`${on ? 'Hide' : 'Show'} the ${label.toLowerCase()} panel`}
+      className={`border px-2 py-1 text-micro transition-colors ${
+        on
+          ? 'border-ink bg-ink text-on-accent'
+          : 'border-rule-2 text-ink-2 hover:border-ink hover:text-ink'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+/**
+ * Light is the paste-up board under daylight; dark is the same bench under a
+ * darkroom safelight. The button names the state you are in and switches to
+ * the other, with the action spelled out for screen readers.
+ */
+function ThemeToggle({ theme, onClick }: { theme: AppTheme; onClick: () => void }) {
+  const dark = theme === 'dark';
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={`Switch to ${dark ? 'light' : 'dark'} theme`}
+      title={`Switch to ${dark ? 'light' : 'dark'} theme`}
+      className="ml-1 flex items-center gap-1.5 border border-rule-2 px-2 py-1 text-micro text-ink-2 transition-colors hover:border-ink hover:text-ink"
+    >
+      <svg width="11" height="11" viewBox="0 0 16 16" aria-hidden className="shrink-0">
+        {dark ? (
+          <path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5Z" fill="currentColor" />
+        ) : (
+          <g fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+            <circle cx="8" cy="8" r="3" />
+            <path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.2 1.2M11.8 11.8 13 13M13 3l-1.2 1.2M4.2 11.8 3 13" />
+          </g>
+        )}
+      </svg>
+      {dark ? 'Darkroom' : 'Daylight'}
+    </button>
   );
 }
 

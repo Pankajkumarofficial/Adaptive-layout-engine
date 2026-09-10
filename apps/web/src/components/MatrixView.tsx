@@ -4,6 +4,7 @@ import { solve } from '@ale/engine';
 import type { AdSpec } from '@ale/engine';
 import { AdRenderer } from '../renderer/AdRenderer';
 import { PRESETS, fitScale } from '../lib/presets';
+import { tokenColor } from '../lib/theme';
 
 const TILE_W = 190;
 const TILE_H = 150;
@@ -35,7 +36,12 @@ export function MatrixView({ spec }: { spec: AdSpec }) {
     if (node === null) return;
     setExporting(true);
     try {
-      const url = await toPng(node, { pixelRatio: 2, backgroundColor: '#c8cbc1', cacheBust: true });
+      // Resolved at export time so the PNG matches the theme on screen.
+      const url = await toPng(node, {
+        pixelRatio: 2,
+        backgroundColor: tokenColor('--c-board', '#c8cbc1'),
+        cacheBust: true,
+      });
       const link = document.createElement('a');
       link.download = `${spec.id}-matrix.png`;
       link.href = url;

@@ -9,7 +9,12 @@ of the same input, and the engine can tell you exactly why each one looks the wa
 
 The engine is the deliverable. The app around it exists so you can watch it think.
 
-![The playground](docs/playground.png)
+| Daylight                                                  | Darkroom                                                      |
+| --------------------------------------------------------- | ------------------------------------------------------------- |
+| ![The playground in the light theme](docs/playground.jpg) | ![The playground in the dark theme](docs/playground-dark.jpg) |
+
+The theme switch is in the masthead, next to the two panel toggles. It remembers your choice and
+follows your OS preference until you make one.
 
 - **Live demo:** _not deployed from this machine — see [Deployment](#deployment)._
   The no-login route is `/?demo=1`, which always loads the showcase spec.

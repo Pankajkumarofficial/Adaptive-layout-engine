@@ -20,13 +20,13 @@ function Tag({
   x,
   y,
   scale,
-  fill,
+  tone,
   text,
 }: {
   x: number;
   y: number;
   scale: number;
-  fill: string;
+  tone: 'guide' | 'ink';
   text: string;
 }) {
   const size = 9 / scale;
@@ -37,14 +37,14 @@ function Tag({
         y={y}
         width={text.length * size * 0.62 + size * 0.7}
         height={size * 1.45}
-        fill="#f2f1ec"
+        className="fill-card"
         opacity={0.88}
         rx={1 / scale}
       />
       <text
         x={x + size * 0.35}
         y={y + size * 1.1}
-        fill={fill}
+        className={tone === 'guide' ? 'fill-guide' : 'fill-ink'}
         stroke="none"
         fontSize={size}
         fontFamily="Courier Prime, monospace"
@@ -67,7 +67,7 @@ export function DebugOverlay({ spec, result, scale }: DebugOverlayProps) {
       viewBox={`0 0 ${width} ${height}`}
       aria-hidden
     >
-      <g fill="none" stroke="#1f6fa8">
+      <g fill="none" className="stroke-guide">
         {Object.entries(result.regions).map(([key, r]) => (
           <g key={key} opacity={key === 'bleed' ? 0.25 : 0.5}>
             <rect
@@ -78,7 +78,7 @@ export function DebugOverlay({ spec, result, scale }: DebugOverlayProps) {
               strokeWidth={1 / scale}
               strokeDasharray={`${6 / scale} ${4 / scale}`}
             />
-            <Tag x={r.x + 2 / scale} y={r.y + 2 / scale} scale={scale} fill="#1f6fa8" text={key} />
+            <Tag x={r.x + 2 / scale} y={r.y + 2 / scale} scale={scale} tone="guide" text={key} />
           </g>
         ))}
       </g>
@@ -97,7 +97,7 @@ export function DebugOverlay({ spec, result, scale }: DebugOverlayProps) {
                     M${x + w} ${y + h - tick} V${y + h} H${x + w - tick}
                     M${x + tick} ${y + h} H${x} V${y + h - tick}`}
                 fill="none"
-                stroke="#bf3126"
+                className="stroke-ink"
                 strokeWidth={1.5 / scale}
                 opacity={0.95}
               />
@@ -105,7 +105,7 @@ export function DebugOverlay({ spec, result, scale }: DebugOverlayProps) {
                 x={x + 2 / scale}
                 y={y + h - 12 / scale}
                 scale={scale}
-                fill="#bf3126"
+                tone="ink"
                 text={`${p.id}\u2009p${priorityOf.get(p.id) ?? '?'}`}
               />
             </g>

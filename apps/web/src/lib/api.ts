@@ -21,22 +21,41 @@ export class ApiError extends Error {
   }
 }
 
+const UNREACHABLE =
+  'Cannot reach the API. Start it with `npm run dev:api` — the playground itself works without it.';
+
 async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${BASE}/api${path}`, {
-    credentials: 'include',
-    headers: init.body === undefined ? {} : { 'content-type': 'application/json' },
-    ...init,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}/api${path}`, {
+      credentials: 'include',
+      headers: init.body === undefined ? {} : { 'content-type': 'application/json' },
+      ...init,
+    });
+  } catch {
+    // fetch only rejects when the request never completed: no server, DNS
+    // failure, or the connection dropped. That is worth saying plainly.
+    throw new ApiError(0, 'UNREACHABLE', UNREACHABLE);
+  }
 
   const payload: unknown = await res.json().catch(() => null);
   if (!res.ok) {
     const err = (payload as { error?: { code?: string; message?: string; details?: unknown } })
       ?.error;
+    if (err === undefined) {
+      // No envelope means nothing of ours answered — usually the dev proxy
+      // reporting that it could not connect. Do not surface a bare status.
+      throw new ApiError(
+        res.status,
+        res.status >= 500 ? 'UNREACHABLE' : 'UNKNOWN',
+        res.status >= 500 ? UNREACHABLE : `That request failed (${res.status}).`,
+      );
+    }
     throw new ApiError(
       res.status,
-      err?.code ?? 'UNKNOWN',
-      err?.message ?? `Request failed with ${res.status}`,
-      err?.details,
+      err.code ?? 'UNKNOWN',
+      err.message ?? `That request failed (${res.status}).`,
+      err.details,
     );
   }
   return (payload as { data: T }).data;

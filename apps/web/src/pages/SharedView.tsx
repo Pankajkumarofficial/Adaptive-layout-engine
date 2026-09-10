@@ -4,6 +4,7 @@ import type { AdSpec, LayoutResult } from '@ale/engine';
 import { api, ApiError } from '../lib/api';
 import { AdRenderer } from '../renderer/AdRenderer';
 import { fitScale } from '../lib/presets';
+import { useAppTheme } from '../lib/theme';
 
 /**
  * A shared link, open to anyone. The server has already solved every preset, so
@@ -11,6 +12,7 @@ import { fitScale } from '../lib/presets';
  */
 export function SharedView() {
   const { slug } = useParams<{ slug: string }>();
+  const { theme, toggle } = useAppTheme();
   const [state, setState] = useState<
     | { status: 'loading' }
     | { status: 'error'; message: string }
@@ -41,9 +43,19 @@ export function SharedView() {
         <p className="mb-1 max-w-[46ch] text-tiny leading-snug text-ink-2">
           One spec, solved for each surface by the same engine that runs in the editor.
         </p>
-        <Link to="/" className="mb-1 ml-auto text-tiny text-guide hover:text-ink">
-          Open the playground
-        </Link>
+        <div className="mb-1 ml-auto flex items-center gap-3">
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+            className="border border-rule-2 px-2 py-1 text-micro text-ink-2 transition-colors hover:border-ink hover:text-ink"
+          >
+            {theme === 'dark' ? 'Darkroom' : 'Daylight'}
+          </button>
+          <Link to="/" className="text-tiny text-guide hover:text-ink">
+            Open the playground
+          </Link>
+        </div>
       </header>
 
       {state.status === 'loading' && <p className="p-6 text-tiny text-ink-2">Loading&hellip;</p>}

@@ -1,37 +1,32 @@
+/**
+ * Colours are declared as CSS variables holding space-separated RGB channels,
+ * so one token set serves both themes and Tailwind's alpha modifiers
+ * (`bg-reg/5`, `border-rule/60`) still work. The values live in index.css.
+ */
+const token = (name) => `rgb(var(${name}) / <alpha-value>)`;
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
+  darkMode: ['selector', '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
-        /**
-         * A paste-up board, not a dashboard.
-         *
-         * Before layouts were solved they were built: artwork pasted onto grey
-         * board, guides ruled in non-photo blue because that ink did not show
-         * up on the camera, and anything to be cut marked in registration red.
-         * The whole palette is that bench, so the app looks like the craft it
-         * automates rather than like every other developer tool.
-         */
-        board: '#c8cbc1',
-        'board-2': '#bcbfb4',
-        paper: '#e2e1da',
-        card: '#f2f1ec',
-        rule: '#a7a99d',
-        'rule-2': '#8d9084',
-        /** The proofing surround: darker, so colourful artwork reads honestly. */
-        proof: '#767a70',
-        ink: '#1a1a17',
-        'ink-2': '#54544c',
-        'ink-3': '#6b6b61',
-        'on-accent': '#f5f5f0',
-        /** Non-photo blue: guides, regions, structure. */
-        guide: '#1f6fa8',
-        'guide-2': '#7fc6e8',
-        /** Registration red: cut marks, drops, anything sacrificed. */
-        reg: '#bf3126',
-        /** Warning ochre, from a proofing pencil. */
-        mark: '#a3670c',
+        board: token('--c-board'),
+        'board-2': token('--c-board-2'),
+        paper: token('--c-paper'),
+        card: token('--c-card'),
+        rule: token('--c-rule'),
+        'rule-2': token('--c-rule-2'),
+        proof: token('--c-proof'),
+        ink: token('--c-ink'),
+        'ink-2': token('--c-ink-2'),
+        'ink-3': token('--c-ink-3'),
+        'on-accent': token('--c-on-accent'),
+        guide: token('--c-guide'),
+        'guide-2': token('--c-guide-2'),
+        reg: token('--c-reg'),
+        mark: token('--c-mark'),
       },
       fontFamily: {
         /**
@@ -39,7 +34,7 @@ export default {
          *
          * Bodoni is the face advertising layout was actually set in: a severe
          * didone with real contrast. It is spent in one place — the masthead
-         * and the three panel headings — so it carries authority instead of
+         * and the panel headings — so it carries authority instead of
          * decorating everything.
          *
          * Archivo does all the work: labels, controls, the trace, the numbers.
@@ -59,8 +54,7 @@ export default {
         tiny: ['12px', { lineHeight: '16px' }],
       },
       boxShadow: {
-        // Artwork pasted onto the board sits slightly above it.
-        paste: '0 1px 0 rgba(0,0,0,0.25), 0 10px 24px -12px rgba(0,0,0,0.55)',
+        paste: '0 1px 0 rgb(0 0 0 / 0.25), 0 10px 24px -12px rgb(0 0 0 / 0.55)',
       },
     },
   },
