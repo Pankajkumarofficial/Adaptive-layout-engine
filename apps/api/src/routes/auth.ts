@@ -18,16 +18,16 @@ export function authRoutes(env: Env): Router {
   const router = Router();
 
   const setSession = (res: Response, userId: string): void => {
-    // In development the client is proxied onto the same origin, so `lax` is
-    // right. In production the frontend (Vercel) and the API (Render) are
-    // different sites, and a `lax` cookie is simply never sent on the
-    // cross-site request — the session would silently never exist. `none`
-    // requires `secure`, which is why the two move together.
-    const crossSite = env.NODE_ENV === 'production';
+    // Served from one origin — Vite's proxy in development, one Vercel project
+    // in production — `lax` is correct and stricter. Split across two hosts, a
+    // `lax` cookie is simply never sent on the cross-site request and the
+    // session would silently never exist, so that case opts into `none`, which
+    // in turn requires `secure`.
+    const crossSite = env.COOKIE_CROSS_SITE;
     res.cookie(AUTH_COOKIE, signToken(userId, env.JWT_SECRET, env.JWT_EXPIRES_IN), {
       httpOnly: true,
       sameSite: crossSite ? 'none' : 'lax',
-      secure: crossSite,
+      secure: crossSite || env.NODE_ENV === 'production',
       maxAge: COOKIE_MAX_AGE_MS,
       path: '/',
     });
@@ -71,11 +71,11 @@ export function authRoutes(env: Env): Router {
   );
 
   router.post('/logout', (_req, res) => {
-    const crossSite = env.NODE_ENV === 'production';
+    const crossSite = env.COOKIE_CROSS_SITE;
     res.clearCookie(AUTH_COOKIE, {
       path: '/',
       sameSite: crossSite ? 'none' : 'lax',
-      secure: crossSite,
+      secure: crossSite || env.NODE_ENV === 'production',
     });
     ok(res, { ok: true });
   });

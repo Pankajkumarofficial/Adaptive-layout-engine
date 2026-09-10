@@ -4,5 +4,14 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build --workspace @ale/web",
   "outputDirectory": "apps/web/dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "functions": {
+    "api/index.ts": {
+      "memory": 1024,
+      "maxDuration": 15
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
 }

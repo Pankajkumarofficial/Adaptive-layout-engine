@@ -15,7 +15,13 @@ const ALLOWED = new Set(['image/png', 'image/jpeg', 'image/webp', 'image/gif', '
 export function assetRoutes(env: Env): Router {
   const router = Router();
   const dir = resolve(process.cwd(), env.UPLOAD_DIR);
-  mkdirSync(dir, { recursive: true });
+  try {
+    mkdirSync(dir, { recursive: true });
+  } catch (err) {
+    // A read-only filesystem must not take the whole API down at import time;
+    // the upload route will fail on its own with a real status instead.
+    console.warn(`[api] uploads unavailable at ${dir}:`, err);
+  }
 
   const upload = multer({
     storage: multer.diskStorage({

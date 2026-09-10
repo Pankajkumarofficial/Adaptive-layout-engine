@@ -33,8 +33,21 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, 'JWT_SECRET must be at least 16 characters'),
   JWT_EXPIRES_IN: z.string().default('7d'),
   WEB_ORIGIN: z.string().default('http://localhost:5173'),
+  /**
+   * Set this only when the frontend and the API are on different sites, which
+   * forces SameSite=None. Served from one Vercel project they share an origin,
+   * so the default keeps the stricter Lax.
+   */
+  COOKIE_CROSS_SITE: z.coerce.boolean().default(false),
   ASSET_STORAGE: z.enum(['disk']).default('disk'),
-  UPLOAD_DIR: z.string().default('uploads'),
+  /**
+   * Serverless filesystems are read-only except for /tmp, so the default has
+   * to move there when we are running as a function. Uploads are ephemeral in
+   * that case, which is stated in the README rather than hidden.
+   */
+  UPLOAD_DIR: z.string().default(process.env.VERCEL === undefined ? 'uploads' : '/tmp/uploads'),
+  /** True when running as a serverless function rather than a listening server. */
+  SERVERLESS: z.coerce.boolean().default(process.env.VERCEL !== undefined),
 });
 
 export type Env = z.infer<typeof envSchema>;

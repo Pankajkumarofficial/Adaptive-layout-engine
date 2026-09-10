@@ -322,33 +322,37 @@ scripts/          demo, perf, collapse, and the font-metric capture page
 
 Configuration is committed; the deploy itself needs accounts I do not have from here.
 
-- **Frontend → Vercel.** `vercel.json` at the repo root sets the build and the SPA rewrite. Leave
-  the Root Directory as the repo root — this is an npm workspace, and `@ale/engine` and
-  `@ale/shared` resolve from there. Set `VITE_API_URL` to the API origin.
-- **API → Render.** `render.yaml` at the repo root defines the service, health check and env vars.
-  Set `MONGODB_URI` and `WEB_ORIGIN`; `JWT_SECRET` is generated.
-- **Database → MongoDB Atlas** free tier. Point `MONGODB_URI` at it and run `npm run seed` once.
+**One Vercel project serves both.** The SPA is static output; `api/index.ts` is a serverless
+function that hands each request to the same Express app the standalone server runs. Because they
+share an origin there is no CORS and no cross-site cookie — the class of bug that eats an afternoon
+on a split deployment simply does not exist.
 
-The API is a long-running Express process, so it needs a host that runs one. Vercel is serverless
-and never calls `app.listen()`, which is why the backend goes to Render and only the frontend goes
-to Vercel.
+- **Root Directory: the repo root.** Not `apps/web` or `apps/api`. This is an npm workspace, and
+  `@ale/engine` and `@ale/shared` only resolve from the root.
+- **Framework Preset: Other.** `vercel.json` supplies the build command, the output directory, the
+  function config and the rewrites: `/api/*` to the function, everything else to `index.html`.
+- **`VITE_API_URL` stays empty** — the client calls `/api` on its own origin.
+- **Database → MongoDB Atlas** free tier. Set `MONGODB_URI`, and allow access from anywhere
+  (`0.0.0.0/0`); serverless egress IPs are not fixed.
 
-Worth knowing about the free tiers: a Render service sleeps after 15 minutes idle and takes roughly
-half a minute to wake. That only affects the Library and share links — the playground itself,
-including `?demo=1`, solves everything in the browser and never touches the API.
+Serverless has two consequences the code accounts for. Connections are cached across invocations
+(`apps/api/src/db.ts`) — without that, each request opens a new pool and exhausts a free Atlas tier
+within minutes. And the filesystem is read-only apart from `/tmp`, so `UPLOAD_DIR` moves there
+automatically and uploaded assets do not survive; the demo spec deliberately depends on none.
+
+`render.yaml` is still committed if you would rather run a long-lived process. In that topology the
+two are different sites, so set `COOKIE_CROSS_SITE=true` or the session cookie is never sent.
 
 ### Deploy checklist
 
-1. **Atlas** — create a free M0 cluster, add a database user, allow access from anywhere
-   (`0.0.0.0/0`, since Render's egress IPs are not fixed on the free plan), and copy the SRV string.
-2. **Render** — New → Blueprint, point it at the repo; `render.yaml` is picked up automatically.
-   Set `MONGODB_URI` to the Atlas string and `WEB_ORIGIN` to the Vercel URL once you have it.
-3. **Vercel** — import the repo. `apps/web/vercel.json` supplies the build command and the SPA
-   rewrite. Set `VITE_API_URL` to the Render URL.
-4. Set `WEB_ORIGIN` on Render to the final Vercel URL and redeploy, or the session cookie will be
-   blocked by CORS.
-5. Run the seed once against the production database:
-   `MONGODB_URI="<atlas string>" npm run seed`.
+1. **Atlas** — create a free M0 cluster, add a database user, allow access from `0.0.0.0/0`, and
+   copy the SRV string. Percent-encode any of `@ : / ? # [ ]` in the password.
+2. **Vercel** — import the repo. Leave Root Directory as the repo root and set Framework Preset to
+   _Other_; `vercel.json` does the rest.
+3. Add two environment variables: `MONGODB_URI` (the Atlas string) and `JWT_SECRET`
+   (`openssl rand -base64 48`). Deploy.
+4. Set `WEB_ORIGIN` to the deployed URL and redeploy once, so CORS names the real origin.
+5. Seed the production database once: `MONGODB_URI="<atlas string>" npm run seed`.
 
 After deploying, the no-login demo is `<frontend>/?demo=1` and a shared spec is `<frontend>/s/<slug>`.
 

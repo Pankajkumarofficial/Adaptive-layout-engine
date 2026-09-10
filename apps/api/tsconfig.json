@@ -1,13 +1,16 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": ".",
-    "types": ["node"],
+    // The API is never emitted by tsc — tsx transpiles it at run time and
+    // Vercel bundles the function — so there is no rootDir/outDir to satisfy.
+    // Dropping them lets the serverless entry at the repo root be typechecked
+    // alongside the tests that exercise it.
+    "noEmit": true,
     "composite": false,
     "declaration": false,
     "declarationMap": false,
+    "types": ["node"],
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.ts", "../../api/**/*.ts"]
 }

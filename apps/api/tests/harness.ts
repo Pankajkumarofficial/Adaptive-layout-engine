@@ -17,7 +17,11 @@ export const TEST_ENV = {
 
 export async function startDb(): Promise<void> {
   mongo = await MongoMemoryServer.create();
-  await mongoose.connect(mongo.getUri('ale-test'));
+  const uri = mongo.getUri('ale-test');
+  // Published so the serverless entry, which reads env at module scope, can
+  // connect to the same in-memory instance.
+  process.env.MONGODB_URI = uri;
+  await mongoose.connect(uri);
 }
 
 export async function stopDb(): Promise<void> {
