@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { surfaceSchema } from '@ale/shared';
-import { PRESET_SURFACES } from '@ale/engine';
-import type { Surface } from '@ale/engine';
+import { surfaceSchema } from '../shared.js';
+import { PRESET_SURFACES } from '../engine.js';
+import type { Surface } from '../engine.js';
 import { ApiError, ok, route } from '../http.js';
 import { validateBody } from '../middleware/validate.js';
 import { requireUser } from '../middleware/auth.js';

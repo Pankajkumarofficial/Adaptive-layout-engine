@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { PRESET_SURFACES } from '@ale/engine';
-import type { AdSpec } from '@ale/engine';
+import { PRESET_SURFACES } from '../engine.js';
+import type { AdSpec } from '../engine.js';
 import { ApiError, ok, route } from '../http.js';
 import { AdSpecDoc, ShareLink } from '../models/index.js';
 import { renderMany } from '../services/render.js';

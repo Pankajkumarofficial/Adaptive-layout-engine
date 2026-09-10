@@ -1,5 +1,5 @@
-import { solve } from '@ale/engine';
-import type { AdSpec, LayoutResult, Surface } from '@ale/engine';
+import { solve } from '../engine.js';
+import type { AdSpec, LayoutResult, Surface } from '../engine.js';
 
 export interface TimedResult {
   result: LayoutResult;

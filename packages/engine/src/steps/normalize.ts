@@ -1,4 +1,8 @@
-import { adSpecSchema, surfaceSchema } from '@ale/shared';
+// Imported by relative path rather than by package name. `@ale/shared` is a
+// workspace symlink whose entry point is a `.ts` file, and a serverless
+// bundler leaves node_modules external — which would ask Node to `import`
+// TypeScript at runtime. A path inside the source tree is compiled in.
+import { adSpecSchema, surfaceSchema } from '../../../shared/src/index.js';
 import { SpecError, type SpecIssue } from '../errors.js';
 import type { AdElement, AdSpec, ElementRole, PinTo, Size, Surface, TextAlign } from '../types.js';
 import type { Tracer } from '../trace.js';

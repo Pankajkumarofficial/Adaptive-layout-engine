@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { adSpecSchema, surfaceSchema } from '@ale/shared';
-import { PRESET_SURFACES } from '@ale/engine';
-import type { AdSpec, Surface } from '@ale/engine';
+import { adSpecSchema, surfaceSchema } from '../shared.js';
+import { PRESET_SURFACES } from '../engine.js';
+import type { AdSpec, Surface } from '../engine.js';
 import { ApiError, ok, route } from '../http.js';
 import { validateBody } from '../middleware/validate.js';
 import { AdSpecDoc, RenderLog } from '../models/index.js';

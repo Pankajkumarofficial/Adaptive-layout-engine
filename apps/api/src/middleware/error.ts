@@ -1,5 +1,5 @@
 import { ZodError } from 'zod';
-import { SpecError } from '@ale/engine';
+import { SpecError } from '../engine.js';
 import type { ErrorRequestHandler, RequestHandler } from 'express';
 import { ApiError } from '../http.js';
 

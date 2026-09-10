@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
-import { adSpecSchema } from '@ale/shared';
-import type { AdSpec } from '@ale/engine';
+import { adSpecSchema } from '../shared.js';
+import type { AdSpec } from '../engine.js';
 import { ApiError, ok, route } from '../http.js';
 import { validateBody } from '../middleware/validate.js';
 import { requireUser } from '../middleware/auth.js';

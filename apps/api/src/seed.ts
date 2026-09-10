@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { DEMO_SPEC } from '@ale/engine';
-import type { AdSpec } from '@ale/engine';
+import { DEMO_SPEC } from './engine.js';
+import type { AdSpec } from './engine.js';
 import { loadDotenv, loadEnv } from './env.js';
 import { AdSpecDoc, ShareLink, User } from './models/index.js';
 import { makeSlug } from './routes/specs.js';
