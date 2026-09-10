@@ -42,6 +42,33 @@ describe('solve — contract', () => {
     }
   });
 
+  it('gives every full-bleed element the whole surface, not a share of it', () => {
+    // Regression: two elements with role "background" were band-allocated
+    // against each other, so each got half the canvas and the ad rendered as
+    // two stacked colour blocks. Bands divide a region between elements that
+    // must share it; anything that bleeds shares with nobody.
+    const twoBackgrounds: AdSpec = {
+      ...MINIMAL_SPEC,
+      elements: [
+        { id: 'bg', role: 'background', priority: 0, content: { kind: 'shape', fill: '#0f172a' } },
+        { id: 'bg2', role: 'background', priority: 0, content: { kind: 'shape', fill: '#85a9ff' } },
+        ...MINIMAL_SPEC.elements,
+      ],
+    };
+    for (const preset of [square, banner, story]) {
+      const result = solve(twoBackgrounds, preset);
+      for (const id of ['bg', 'bg2']) {
+        const placed = result.placed.find((p) => p.id === id);
+        expect(placed?.frame, `${id} on ${preset.label}`).toEqual({
+          x: 0,
+          y: 0,
+          w: preset.width,
+          h: preset.height,
+        });
+      }
+    }
+  });
+
   it('lets the background bleed past the safe area', () => {
     const bg = solve(DEMO_SPEC, story).placed.find((p) => p.id === 'bg');
     expect(bg?.frame).toEqual({ x: 0, y: 0, w: 1080, h: 1920 });
@@ -199,11 +226,11 @@ describe('solve — contract', () => {
         const clamped = result.warnings.some((w) => w.includes('still overflows'));
         if (clamped) {
           const survivors = result.placed.map((p) => p.id);
-          const droppable = survivors.filter(
-            (id) => !['bg', 'headline', 'cta'].includes(id),
-          );
-          expect(droppable, `${width}x${height} clamped with ${droppable.join(',')} still droppable`)
-            .toEqual([]);
+          const droppable = survivors.filter((id) => !['bg', 'headline', 'cta'].includes(id));
+          expect(
+            droppable,
+            `${width}x${height} clamped with ${droppable.join(',')} still droppable`,
+          ).toEqual([]);
         }
       }
     }

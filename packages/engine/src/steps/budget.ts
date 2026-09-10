@@ -174,15 +174,25 @@ export function budget(
     const region = regions[regionKey];
     if (region === undefined) continue;
 
-    if (regionElements.length === 1) {
-      const only = regionElements[0];
+    // Anything that bleeds fills its region outright. Bands divide a region
+    // between elements that have to share it; a background shares with nobody,
+    // and two of them stacked must overlap, not take half the surface each.
+    const stacked: NormalizedElement[] = [];
+    for (const el of regionElements) {
+      if (bleeding.has(el.id)) frames[el.id] = region;
+      else stacked.push(el);
+    }
+    if (stacked.length === 0) continue;
+
+    if (stacked.length === 1) {
+      const only = stacked[0];
       if (only !== undefined) {
-        frames[only.id] = fitInBand(only, region, klass, bleeding.has(only.id));
+        frames[only.id] = fitInBand(only, region, klass, false);
         continue;
       }
     }
 
-    const bands = regionElements.map((el) => ({
+    const bands = stacked.map((el) => ({
       key: el.id,
       weight: el.bandWeight,
       min: minHeightOf(el, klass, gutter),
@@ -194,7 +204,7 @@ export function budget(
         data: { shortfallPx: round1(allocation.shortfallPx) },
       });
     }
-    for (const el of regionElements) {
+    for (const el of stacked) {
       const band = allocation.rects[el.id];
       if (band === undefined) continue;
       frames[el.id] = fitInBand(el, band, klass, bleeding.has(el.id));

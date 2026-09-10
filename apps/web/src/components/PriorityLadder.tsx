@@ -92,12 +92,37 @@ const PLACEHOLDER: Readonly<Record<ElementRole, string>> = {
   background: '',
 };
 
+/** Inlined so a new logo needs no network and reads as a placeholder. */
+const LOGO_PLACEHOLDER =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 160">' +
+      '<rect width="480" height="160" rx="12" fill="#1a1a17"/>' +
+      '<circle cx="76" cy="80" r="30" fill="#f6f6f2"/>' +
+      '<text x="128" y="102" font-family="Helvetica,Arial,sans-serif" font-size="52" ' +
+      'font-weight="700" fill="#f6f6f2">YOUR LOGO</text>' +
+      '</svg>',
+  );
+
 /** Builds a valid element for a role, so nothing added here can fail the schema. */
 function blankElement(role: ElementRole, id: string, fill: string): AdElement {
   if (role === 'background') {
     return { id, role, priority: ROLE_PRIORITY[role], content: { kind: 'shape', fill } };
   }
-  if (role === 'hero' || role === 'logo') {
+  if (role === 'logo') {
+    // A wordmark, not a photograph. A landscape image locked to 3:1 renders as
+    // an arbitrary crop of a picture, which reads as a bug rather than as a
+    // placeholder you are meant to replace.
+    return {
+      id,
+      role,
+      priority: ROLE_PRIORITY[role],
+      content: { kind: 'image', url: LOGO_PLACEHOLDER, intrinsic: { w: 480, h: 160 } },
+      aspectLock: 3,
+      minSize: { w: 48, h: 16 },
+    };
+  }
+  if (role === 'hero') {
     return {
       id,
       role,
@@ -108,7 +133,7 @@ function blankElement(role: ElementRole, id: string, fill: string): AdElement {
         focalPoint: { x: 0.5, y: 0.5 },
         intrinsic: { w: 2000, h: 1300 },
       },
-      ...(role === 'logo' ? { aspectLock: 3, minSize: { w: 48, h: 16 } } : {}),
+      minSize: { w: 80, h: 60 },
     };
   }
   return {
