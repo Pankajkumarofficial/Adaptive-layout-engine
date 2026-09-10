@@ -91,6 +91,13 @@ export const api = {
   duplicateSpec: (id: string) => call<StoredSpec>(`/specs/${id}/duplicate`, { method: 'POST' }),
   share: (id: string) => call<{ slug: string }>(`/specs/${id}/share`, { method: 'POST' }),
 
+  analytics: () =>
+    call<{
+      byElement: { elementId: string; drops: number }[];
+      bySurface: { surfaceId: string; archetype: string; renders: number; dropped: number }[];
+      timing: { renders: number; avgSolveMs: number; maxSolveMs: number };
+    }>('/analytics/drops'),
+
   shared: (slug: string) =>
     call<{ slug: string; name: string; spec: AdSpec; results: LayoutResult[] }>(`/public/${slug}`),
 };

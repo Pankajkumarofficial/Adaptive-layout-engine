@@ -8,6 +8,7 @@ import { ElementInspector } from '../components/ElementInspector';
 import { SurfaceCanvas } from '../components/SurfaceCanvas';
 import { Inspector } from '../components/Inspector';
 import { MatrixView } from '../components/MatrixView';
+import { DropRates } from '../components/DropRates';
 import { JsonView } from '../components/JsonView';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Swatch } from '../components/Field';
@@ -16,6 +17,7 @@ import { useAppTheme, type AppTheme } from '../lib/theme';
 import type { AdSpec } from '@ale/engine';
 
 type LeftTab = 'elements' | 'theme' | 'json' | 'library';
+type RightTab = 'decisions' | 'drops';
 
 export function Playground() {
   const spec = usePlayground((s) => s.spec);
@@ -27,6 +29,7 @@ export function Playground() {
   // togglable at every width, so nothing is unreachable on a small screen.
   const [showSpec, setShowSpec] = useState(() => wider(1024));
   const [showInspector, setShowInspector] = useState(() => wider(1280));
+  const [rightTab, setRightTab] = useState<RightTab>('decisions');
   const [params] = useSearchParams();
   const setSpec = usePlayground((s) => s.setSpec);
   const selectPreset = usePlayground((s) => s.selectPreset);
@@ -92,8 +95,32 @@ export function Playground() {
             <h2 className="border-b border-rule px-4 py-2.5 font-display text-[17px] font-medium leading-none">
               What the engine decided
             </h2>
+            <div className="flex border-b border-rule" role="tablist">
+              {(
+                [
+                  ['decisions', 'This surface'],
+                  ['drops', 'Drop rates'],
+                ] as const
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  role="tab"
+                  aria-selected={rightTab === id}
+                  onClick={() => setRightTab(id)}
+                  className={`flex-1 border-b-2 px-3 py-1.5 text-tiny font-medium transition-colors ${
+                    rightTab === id
+                      ? 'border-ink bg-card text-ink'
+                      : 'border-transparent text-ink-2 hover:bg-card/60 hover:text-ink'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             <ErrorBoundary label="The inspector">
-              {result !== null ? (
+              {rightTab === 'drops' ? (
+                <DropRates spec={spec} />
+              ) : result !== null ? (
                 <Inspector result={result} ms={ms} />
               ) : (
                 <p className="p-4 text-tiny text-ink-3">Nothing to show until the spec is valid.</p>

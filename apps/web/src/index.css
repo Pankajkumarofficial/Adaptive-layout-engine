@@ -20,12 +20,12 @@
     --c-proof: 118 122 112;
     --c-ink: 26 26 23;
     --c-ink-2: 84 84 76;
-    --c-ink-3: 107 107 97;
+    --c-ink-3: 98 98 89;
     --c-on-accent: 245 245 240;
-    --c-guide: 31 111 168;
+    --c-guide: 29 103 156;
     --c-guide-2: 127 198 232;
-    --c-reg: 191 49 38;
-    --c-mark: 163 103 12;
+    --c-reg: 183 47 36;
+    --c-mark: 137 87 10;
     /* Ink for the board's tooth texture. */
     --c-tooth: 26 26 23;
     --tooth-a: 0.022;

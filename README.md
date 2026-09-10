@@ -32,6 +32,23 @@ reason they were dropped.
 
 ---
 
+## Drop rates
+
+The right rail's second tab answers the question the whole priority system exists to serve: _which
+elements does this spec actually lose, and where?_
+
+A bar chart of counts would say the legal line dies four times. The matrix says it dies on exactly
+the four surfaces with no vertical room — and that `badge` dies on the same four, because
+`alwaysPairs` binds them. It is built as a real `<table>`, so the accessible view and the visual are
+the same object, and it is computed in the browser from the spec you have open: no account, no
+server, and it updates as you type. When the API is reachable it adds the lifetime figures from
+`RenderLog` underneath.
+
+Both status colours were checked with the dataviz palette validator against the light and dark
+chart surfaces rather than eyeballed, and auditing the themes that way turned up a real defect: the
+light palette's small text was sitting at 3.3–4.1:1, below AA. Those tokens were re-solved to clear
+4.5:1 on the panels where the text actually sits.
+
 ## The algorithm
 
 `solve(spec, surface)` runs ten steps in order. Every step appends to a trace, so the output
@@ -311,6 +328,19 @@ Configuration is committed; the deploy itself needs accounts I do not have from 
   Set `MONGODB_URI` and `WEB_ORIGIN`; `JWT_SECRET` is generated.
 - **Database → MongoDB Atlas** free tier. Point `MONGODB_URI` at it and run `npm run seed` once.
 
+### Deploy checklist
+
+1. **Atlas** — create a free M0 cluster, add a database user, allow access from anywhere
+   (`0.0.0.0/0`, since Render's egress IPs are not fixed on the free plan), and copy the SRV string.
+2. **Render** — New → Blueprint, point it at the repo; `render.yaml` is picked up automatically.
+   Set `MONGODB_URI` to the Atlas string and `WEB_ORIGIN` to the Vercel URL once you have it.
+3. **Vercel** — import the repo. `apps/web/vercel.json` supplies the build command and the SPA
+   rewrite. Set `VITE_API_URL` to the Render URL.
+4. Set `WEB_ORIGIN` on Render to the final Vercel URL and redeploy, or the session cookie will be
+   blocked by CORS.
+5. Run the seed once against the production database:
+   `MONGODB_URI="<atlas string>" npm run seed`.
+
 After deploying, the no-login demo is `<frontend>/?demo=1` and a shared spec is `<frontend>/s/<slug>`.
 
 ---
@@ -333,6 +363,10 @@ apps/api/tests            27 tests
   parity.test.ts         server output is byte-identical to a client solve
   api.test.ts            auth, ownership, CRUD, pagination, sharing, analytics
 ```
+
+`.github/workflows/ci.yml` runs lint, typecheck, both suites and the production build on Node 20
+and 22 for every push and pull request, and prints the solve-time distribution so the numbers above
+are verifiable on a machine that is not the author's.
 
 Golden snapshots include the trace, not just the frames: a change that moves no pixel but changes
 _why_ is still worth reviewing. `UPDATE_GOLDEN=1 npm test` rewrites them.
