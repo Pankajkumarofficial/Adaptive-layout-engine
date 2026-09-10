@@ -72,13 +72,12 @@ export function SharedView() {
       {state.status === 'ready' && (
         <div className="grid gap-6 p-6 [grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]">
           {state.results.map((result) => {
-            const scale = fitScale(result.surface, 240, 300);
+            // A uniform tile height keeps the grid rows aligned; a 9:16 story and
+            // a 728x90 leaderboard otherwise stagger every row they share.
+            const scale = fitScale(result.surface, 216, 232);
             return (
               <figure key={result.surface.id}>
-                <div
-                  className="flex items-center justify-center bg-proof p-3"
-                  style={{ minHeight: 160 }}
-                >
+                <div className="flex h-[260px] items-center justify-center bg-proof p-3">
                   <div
                     className="shadow-paste"
                     style={{

@@ -1,4 +1,14 @@
-import { Schema, model, type Model, type Types, models } from 'mongoose';
+import mongooseDefault from 'mongoose';
+import type { Model, Schema as SchemaType, Types } from 'mongoose';
+
+/**
+ * Mongoose is CommonJS. Node's ESM loader only detects some of its named
+ * exports, and `models` is not one of them — importing it by name typechecks
+ * and passes under Vitest's interop, then throws SyntaxError the moment the
+ * server actually starts. Destructuring the default export is the form that
+ * works in both.
+ */
+const { Schema, model, models } = mongooseDefault;
 
 /**
  * Specs and surfaces are stored as opaque documents and validated with the
@@ -105,7 +115,7 @@ const renderLogSchema = new Schema<RenderLogDocType>(
 );
 
 /** `models[...] ?? model(...)` keeps hot reload and repeated test setup safe. */
-function define<T>(name: string, schema: Schema<T>): Model<T> {
+function define<T>(name: string, schema: SchemaType<T>): Model<T> {
   return (models[name] as Model<T> | undefined) ?? model<T>(name, schema);
 }
 

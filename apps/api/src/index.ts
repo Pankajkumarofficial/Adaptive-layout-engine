@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 import { createApp } from './app.js';
-import { loadEnv } from './env.js';
+import { loadDotenv, loadEnv } from './env.js';
 
+const envFiles = loadDotenv();
 const env = loadEnv();
 
 async function main(): Promise<void> {
+  if (envFiles.length > 0) console.log(`[api] config from ${envFiles.join(', ')}`);
   await mongoose.connect(env.MONGODB_URI);
   console.log('[api] connected to mongo');
 

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { DEMO_SPEC } from '@ale/engine';
 import type { AdSpec } from '@ale/engine';
-import { loadEnv } from './env.js';
+import { loadDotenv, loadEnv } from './env.js';
 import { AdSpecDoc, ShareLink, User } from './models/index.js';
 import { makeSlug } from './routes/specs.js';
 
@@ -27,7 +27,8 @@ const SPECS: AdSpec[] = [
             ...el,
             content: {
               kind: 'text',
-              value: 'The trail does not care how far you have already come, only where you point your boots next',
+              value:
+                'The trail does not care how far you have already come, only where you point your boots next',
               maxLines: 4,
               minFontPx: 14,
             },
@@ -43,6 +44,7 @@ const SPECS: AdSpec[] = [
 ];
 
 async function main(): Promise<void> {
+  loadDotenv();
   const env = loadEnv();
   await mongoose.connect(env.MONGODB_URI);
 

@@ -9,3 +9,4 @@ coverage/
 apps/api/uploads/
 apps/api/uploads-test/
 apps/*/dist/
+.env.bak

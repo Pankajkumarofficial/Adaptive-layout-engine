@@ -1,4 +1,26 @@
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { config as loadDotenvFile } from 'dotenv';
 import { z } from 'zod';
+
+/**
+ * Reads a `.env` before the schema runs.
+ *
+ * npm workspaces run scripts with the cwd set to the workspace, so a file at
+ * the repo root would otherwise be invisible. Both placements are accepted and
+ * the workspace-local one wins, because dotenv never overwrites a key that is
+ * already set.
+ */
+export function loadDotenv(cwd: string = process.cwd()): string[] {
+  const candidates = [resolve(cwd, '.env'), resolve(cwd, '..', '..', '.env')];
+  const used: string[] = [];
+  for (const path of candidates) {
+    if (!existsSync(path)) continue;
+    loadDotenvFile({ path });
+    used.push(path);
+  }
+  return used;
+}
 
 /**
  * Environment is validated once, at boot, so a missing secret is a startup

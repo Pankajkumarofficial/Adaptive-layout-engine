@@ -18,10 +18,16 @@ export function authRoutes(env: Env): Router {
   const router = Router();
 
   const setSession = (res: Response, userId: string): void => {
+    // In development the client is proxied onto the same origin, so `lax` is
+    // right. In production the frontend (Vercel) and the API (Render) are
+    // different sites, and a `lax` cookie is simply never sent on the
+    // cross-site request — the session would silently never exist. `none`
+    // requires `secure`, which is why the two move together.
+    const crossSite = env.NODE_ENV === 'production';
     res.cookie(AUTH_COOKIE, signToken(userId, env.JWT_SECRET, env.JWT_EXPIRES_IN), {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: env.NODE_ENV === 'production',
+      sameSite: crossSite ? 'none' : 'lax',
+      secure: crossSite,
       maxAge: COOKIE_MAX_AGE_MS,
       path: '/',
     });
@@ -65,7 +71,12 @@ export function authRoutes(env: Env): Router {
   );
 
   router.post('/logout', (_req, res) => {
-    res.clearCookie(AUTH_COOKIE, { path: '/' });
+    const crossSite = env.NODE_ENV === 'production';
+    res.clearCookie(AUTH_COOKIE, {
+      path: '/',
+      sameSite: crossSite ? 'none' : 'lax',
+      secure: crossSite,
+    });
     ok(res, { ok: true });
   });
 
