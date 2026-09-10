@@ -19,17 +19,26 @@ export function Inspector({ result, ms }: { result: LayoutResult; ms: number }) 
       </dl>
 
       {result.warnings.length > 0 && (
-        <ul className="border-b border-rule px-4 py-3">
-          {result.warnings.map((warning) => (
-            <li
-              key={warning}
-              className="mb-1 flex gap-2 text-tiny leading-snug text-mark last:mb-0"
-            >
-              <span aria-hidden className="mt-[7px] h-px w-2 shrink-0 bg-mark" />
-              {warning}
-            </li>
-          ))}
-        </ul>
+        <section className="border-b border-rule px-4 py-3">
+          {/* These are corrections, not failures: the engine met a constraint it
+              could not satisfy as written and says what it did instead. The
+              label matters — unheaded amber text reads as an error log. */}
+          <h3 className="mb-1.5 text-micro text-ink-3">
+            {result.warnings.length} adjustment{result.warnings.length === 1 ? '' : 's'} the engine
+            made
+          </h3>
+          <ul>
+            {result.warnings.map((warning) => (
+              <li
+                key={warning}
+                className="mb-1 flex gap-2 text-tiny leading-snug text-mark last:mb-0"
+              >
+                <span aria-hidden className="mt-[7px] h-px w-2 shrink-0 bg-mark" />
+                {warning}
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <ol className="min-h-0 flex-1 overflow-auto">
