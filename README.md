@@ -322,11 +322,20 @@ scripts/          demo, perf, collapse, and the font-metric capture page
 
 Configuration is committed; the deploy itself needs accounts I do not have from here.
 
-- **Frontend → Vercel.** `apps/web/vercel.json` sets the build and the SPA rewrite. Set
-  `VITE_API_URL` to the API origin.
+- **Frontend → Vercel.** `vercel.json` at the repo root sets the build and the SPA rewrite. Leave
+  the Root Directory as the repo root — this is an npm workspace, and `@ale/engine` and
+  `@ale/shared` resolve from there. Set `VITE_API_URL` to the API origin.
 - **API → Render.** `render.yaml` at the repo root defines the service, health check and env vars.
   Set `MONGODB_URI` and `WEB_ORIGIN`; `JWT_SECRET` is generated.
 - **Database → MongoDB Atlas** free tier. Point `MONGODB_URI` at it and run `npm run seed` once.
+
+The API is a long-running Express process, so it needs a host that runs one. Vercel is serverless
+and never calls `app.listen()`, which is why the backend goes to Render and only the frontend goes
+to Vercel.
+
+Worth knowing about the free tiers: a Render service sleeps after 15 minutes idle and takes roughly
+half a minute to wake. That only affects the Library and share links — the playground itself,
+including `?demo=1`, solves everything in the browser and never touches the API.
 
 ### Deploy checklist
 
