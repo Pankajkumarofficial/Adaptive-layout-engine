@@ -75,7 +75,10 @@ export function solve(spec: AdSpec, surface: Surface): LayoutResult {
 
   // 4-7 — budget, fit, degrade, safe area
   let active = norm.elements.slice();
-  const dropped: DroppedElement[] = [];
+  const dropped: DroppedElement[] = norm.empty.map((id) => ({
+    id,
+    reason: 'has no text to place',
+  }));
   let attempt = runAttempt(archetype, norm, klass, gutter, active, tracer);
 
   let pass = 0;

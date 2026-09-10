@@ -69,6 +69,26 @@ describe('solve — contract', () => {
     }
   });
 
+  it('keeps solving while a text field is being retyped', () => {
+    // Regression: clearing a text box to retype it made the whole spec
+    // invalid, so the canvas, the matrix and the inspector all went blank
+    // mid-keystroke. An element with nothing to say is nothing to place, and
+    // is reported as dropped rather than rejecting the document.
+    const midEdit: AdSpec = {
+      ...DEMO_SPEC,
+      elements: DEMO_SPEC.elements.map((el) =>
+        el.id === 'subhead' && el.content.kind === 'text'
+          ? { ...el, content: { ...el.content, value: '   ' } }
+          : el,
+      ),
+    };
+    const result = solve(midEdit, square);
+    expect(result.placed.map((p) => p.id)).not.toContain('subhead');
+    expect(result.dropped.find((d) => d.id === 'subhead')?.reason).toContain('no text');
+    // Everything else still lays out.
+    expect(result.placed.map((p) => p.id)).toContain('headline');
+  });
+
   it('lets the background bleed past the safe area', () => {
     const bg = solve(DEMO_SPEC, story).placed.find((p) => p.id === 'bg');
     expect(bg?.frame).toEqual({ x: 0, y: 0, w: 1080, h: 1920 });

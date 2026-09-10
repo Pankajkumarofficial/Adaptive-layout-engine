@@ -14,7 +14,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Swatch } from '../components/Field';
 import { Library } from '../components/Library';
 import { useAppTheme, type AppTheme } from '../lib/theme';
-import type { AdSpec } from '@ale/engine';
+import { SpecError, type AdSpec } from '@ale/engine';
 
 type LeftTab = 'elements' | 'theme' | 'json' | 'library';
 type RightTab = 'decisions' | 'drops';
@@ -79,11 +79,7 @@ export function Playground() {
 
         <main className="flex min-w-0 flex-1 flex-col">
           <ErrorBoundary label="The canvas">
-            {error !== null ? (
-              <SolveError message={error.message} />
-            ) : (
-              <SurfaceCanvas result={result} />
-            )}
+            {error !== null ? <SolveError error={error} /> : <SurfaceCanvas result={result} />}
           </ErrorBoundary>
           <ErrorBoundary label="The matrix">
             <MatrixView spec={spec} />
@@ -425,14 +421,33 @@ function SpecFileBar() {
   );
 }
 
-function SolveError({ message }: { message: string }) {
+/**
+ * The engine already knows which field is wrong — `SpecError` carries a path
+ * and a message per issue. Showing only the summary threw that away and left
+ * people hunting through JSON for something the error could have named.
+ */
+function SolveError({ error }: { error: Error }) {
+  const issues = error instanceof SpecError ? error.issues : [];
   return (
     <div className="flex flex-1 items-center justify-center bg-proof p-12">
       <div className="max-w-md rounded-bench border border-reg/50 bg-card p-4">
         <p className="text-sm text-reg">This spec cannot be solved.</p>
-        <p className="mt-1 tabular text-tiny leading-relaxed text-ink-2">{message}</p>
+        {issues.length > 0 ? (
+          <ul className="mt-2">
+            {issues.map((issue, i) => (
+              <li key={i} className="mb-1 text-tiny leading-snug last:mb-0">
+                {issue.path !== '' && (
+                  <span className="font-mono text-micro text-mark">{issue.path} </span>
+                )}
+                <span className="text-ink-2">{issue.message}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-1 text-tiny leading-relaxed text-ink-2">{error.message}</p>
+        )}
         <p className="mt-2 text-tiny text-ink-3">
-          Fix it in the JSON tab; the errors there name the exact field.
+          The JSON tab shows the same errors inline against the field.
         </p>
       </div>
     </div>

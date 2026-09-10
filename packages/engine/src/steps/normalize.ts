@@ -156,6 +156,8 @@ export interface NormalizedSpec {
   surface: Surface;
   /** Sorted by priority ascending (0 = most important), then by author order. */
   elements: NormalizedElement[];
+  /** Text elements with nothing to say. Reported as dropped, never laid out. */
+  empty: string[];
   neverDrop: ReadonlySet<string>;
   alwaysPairs: readonly [string, string][];
   minContrastRatio: number;
@@ -188,10 +190,29 @@ export function normalize(spec: AdSpec, surface: Surface, tracer: Tracer): Norma
   const parsed = specResult.data as AdSpec;
   const parsedSurface = surfaceResult.data as Surface;
 
-  const elements = parsed.elements
+  const ordered = parsed.elements
     .map((el, index) => ({ el, index }))
     .sort((a, b) => a.el.priority - b.el.priority || a.index - b.index)
     .map(({ el }) => normalizeElement(el));
+
+  // An element with no text is not content, whatever its priority says. Laying
+  // one out would reserve space for an empty box; refusing the spec would make
+  // the editor unusable while you clear a field to retype it.
+  const empty = ordered
+    .filter((el) => el.text !== null && el.text.value.trim().length === 0)
+    .map((el) => el.id);
+  const emptySet = new Set(empty);
+  const elements = ordered.filter((el) => !emptySet.has(el.id));
+
+  if (empty.length > 0) {
+    tracer.info(
+      'normalize',
+      `${empty.join(', ')} ${empty.length === 1 ? 'has' : 'have'} no text to place`,
+      {
+        data: { empty: empty.length },
+      },
+    );
+  }
 
   const neverDrop = new Set(parsed.rules?.neverDrop ?? []);
   // Priority 0 is a promise in the data model, so it implies neverDrop.
@@ -215,6 +236,7 @@ export function normalize(spec: AdSpec, surface: Surface, tracer: Tracer): Norma
     spec: parsed,
     surface: parsedSurface,
     elements,
+    empty,
     neverDrop,
     alwaysPairs: parsed.rules?.alwaysPairs ?? [],
     minContrastRatio,

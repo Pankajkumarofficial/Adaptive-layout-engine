@@ -33,7 +33,13 @@ export const unitIntervalSchema = z.number().min(0).max(1);
 
 export const textContentSchema = z.object({
   kind: z.literal('text'),
-  value: z.string().min(1, 'text elements need a non-empty value'),
+  /**
+   * Empty is allowed. Clearing a field to retype it is an ordinary thing to
+   * do, and rejecting the whole spec mid-keystroke makes the editor unusable.
+   * The engine treats an element with nothing to say as nothing to place, and
+   * reports it as dropped with that reason.
+   */
+  value: z.string(),
   maxLines: z.number().int().min(1).max(12).optional(),
   minFontPx: z.number().min(4).max(200).optional(),
 });

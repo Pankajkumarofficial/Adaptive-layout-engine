@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { solve } from '@ale/engine';
-import type { AdSpec, LayoutResult, SpecError, Surface } from '@ale/engine';
+import type { AdSpec, LayoutResult, Surface } from '@ale/engine';
 
 export interface SolveOutcome {
   result: LayoutResult | null;
-  error: SpecError | Error | null;
+  /** A SpecError when the spec is invalid; its `issues` name the exact fields. */
+  error: Error | null;
   /** Wall-clock time of the solve, in ms. Shown in the inspector. */
   ms: number;
 }
