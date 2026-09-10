@@ -16,6 +16,7 @@ export function Library() {
   const [items, setItems] = useState<StoredSpec[]>([]);
   const [openId, setOpenId] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -80,6 +81,7 @@ export function Library() {
               setAccount(null);
               setItems([]);
               setOpenId(null);
+              setShareUrl(null);
             })
           }
         >
@@ -113,8 +115,17 @@ export function Library() {
               if (openId === null) return;
               const { slug } = await api.share(openId);
               const url = `${window.location.origin}/s/${slug}`;
-              await navigator.clipboard.writeText(url).catch(() => undefined);
-              setMessage(`Link copied: /s/${slug}`);
+              setShareUrl(url);
+              // Clipboard access can be refused — a browser setting, a missing
+              // user gesture, an insecure context. Say which happened instead
+              // of claiming success, because the link itself is shown either
+              // way and the reader needs to know whether to select it by hand.
+              try {
+                await navigator.clipboard.writeText(url);
+                setMessage('Link copied to your clipboard.');
+              } catch {
+                setMessage('Could not reach the clipboard — copy the link below.');
+              }
             })
           }
         >
@@ -122,7 +133,37 @@ export function Library() {
         </button>
       </div>
 
-      {message !== null && <p className="px-4 py-2 text-tiny text-guide">{message}</p>}
+      {message !== null && <p className="px-4 pt-2 text-tiny text-guide">{message}</p>}
+
+      {shareUrl !== null && (
+        <div className="mx-4 mb-2 mt-1 border border-rule bg-card p-2">
+          <a
+            href={shareUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="block break-all text-tiny text-guide underline underline-offset-2 hover:text-ink"
+          >
+            {shareUrl}
+          </a>
+          <div className="mt-1.5 flex items-center gap-3">
+            <button
+              type="button"
+              className="text-micro text-ink-2 hover:text-ink"
+              onClick={() => {
+                void navigator.clipboard
+                  .writeText(shareUrl)
+                  .then(() => setMessage('Link copied to your clipboard.'))
+                  .catch(() =>
+                    setMessage('Could not reach the clipboard — select the link above.'),
+                  );
+              }}
+            >
+              Copy link
+            </button>
+            <span className="text-micro text-ink-3">Anyone with this link can view it.</span>
+          </div>
+        </div>
+      )}
 
       {items.length === 0 ? (
         <p className="px-4 py-3 text-tiny leading-snug text-ink-3">
@@ -143,6 +184,7 @@ export function Library() {
                 onClick={() => {
                   setSpec(item.spec);
                   setOpenId(item.id);
+                  setShareUrl(null);
                 }}
               >
                 {item.name}
