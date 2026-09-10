@@ -16,8 +16,9 @@ The engine is the deliverable. The app around it exists so you can watch it thin
 The theme switch is in the masthead, next to the two panel toggles. It remembers your choice and
 follows your OS preference until you make one.
 
-- **Live demo:** _not deployed from this machine — see [Deployment](#deployment)._
-  The no-login route is `/?demo=1`, which always loads the showcase spec.
+- **Live demo:** **<https://adaptive-layout-engine-api.vercel.app/?demo=1>** — no login, loads the
+  showcase spec. The playground itself solves in the browser, so it works whether or not the API is
+  awake; sign in only to save specs or share a link.
 - **Run it locally:** `npm install && npm run dev` (see [Local setup](#local-setup)).
 
 ---
