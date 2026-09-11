@@ -248,8 +248,8 @@ function fitInBand(el: NormalizedElement, band: Rect, klass: SurfaceClass, bleed
   }
 
   if (el.maxSize !== null) {
-    w = Math.min(w, el.maxSize.w);
-    h = Math.min(h, el.maxSize.h);
+    if (el.maxSize.w !== undefined) w = Math.min(w, el.maxSize.w);
+    if (el.maxSize.h !== undefined) h = Math.min(h, el.maxSize.h);
     // Re-derive against the lock, or capping one axis would distort the other.
     if (el.aspectLock !== null && el.aspectLock > 0) {
       w = Math.min(w, h * el.aspectLock);

@@ -225,30 +225,33 @@ function SizeCap({ element }: { element: AdElement }) {
   const updateElement = usePlayground((s) => s.updateElement);
   const max = element.maxSize;
 
+  /**
+   * Each axis is written independently. An empty, zero or negative entry
+   * removes that axis's cap rather than storing it — the previous version
+   * derived the other axis from the one you typed, so a width of 1 produced a
+   * height of 0 and invalidated the whole document mid-keystroke.
+   */
   const set = (axis: 'w' | 'h', raw: string): void => {
     const n = Number(raw);
-    if (raw.trim() === '' || !Number.isFinite(n) || n <= 0) {
-      // Clearing either axis removes the cap entirely; a half-cap would be a
-      // constraint nobody asked for.
-      updateElement(element.id, { maxSize: undefined });
-      return;
-    }
-    const other = axis === 'w' ? (max?.h ?? Math.round(n / 3)) : (max?.w ?? Math.round(n * 3));
+    const valid = raw.trim() !== '' && Number.isFinite(n) && n > 0;
+    const next: { w?: number; h?: number } = { ...max };
+    if (valid) next[axis] = n;
+    else delete next[axis];
     updateElement(element.id, {
-      maxSize: axis === 'w' ? { w: n, h: other } : { w: other, h: n },
+      maxSize: next.w === undefined && next.h === undefined ? undefined : next,
     });
   };
 
   return (
     <div className="mb-3">
       <span className="mb-1 block text-tiny leading-snug text-ink-3">
-        Largest it may be drawn, in px &mdash; leave blank to let it fill the space
+        Largest it may be drawn, in px &mdash; leave either blank for no limit
       </span>
       <div className="flex items-center gap-2">
         <input
           type="number"
           min={1}
-          placeholder="width"
+          placeholder="any width"
           aria-label="Maximum width in pixels"
           value={max?.w ?? ''}
           onChange={(e) => set('w', e.target.value)}
@@ -260,16 +263,16 @@ function SizeCap({ element }: { element: AdElement }) {
         <input
           type="number"
           min={1}
-          placeholder="height"
+          placeholder="any height"
           aria-label="Maximum height in pixels"
           value={max?.h ?? ''}
           onChange={(e) => set('h', e.target.value)}
           className="w-full rounded-bench border border-rule bg-card px-2 py-1 tabular text-tiny text-ink focus:border-guide focus:outline-none"
         />
       </div>
-      {element.aspectLock !== undefined && max !== undefined && (
+      {element.aspectLock !== undefined && (
         <p className="mt-1 text-micro text-ink-3">
-          Kept at {element.aspectLock}:1, so whichever cap binds first wins.
+          Held at {element.aspectLock}:1, so whichever limit binds first wins.
         </p>
       )}
     </div>

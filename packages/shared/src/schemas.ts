@@ -65,6 +65,22 @@ export const elementContentSchema = z.discriminatedUnion('kind', [
   shapeContentSchema,
 ]);
 
+/**
+ * A cap of zero, or a stray string, is not worth rejecting a whole document
+ * over — it means "no cap on that axis". Documents saved by an older build, or
+ * hand-edited, heal instead of becoming unopenable.
+ */
+function dropNonPositiveAxes(value: unknown): unknown {
+  if (typeof value !== 'object' || value === null) return undefined;
+  const source = value as Record<string, unknown>;
+  const out: Record<string, number> = {};
+  for (const axis of ['w', 'h'] as const) {
+    const n = Number(source[axis]);
+    if (Number.isFinite(n) && n > 0) out[axis] = n;
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
 export const adElementSchema = z.object({
   id: z.string().min(1),
   role: elementRoleSchema,
@@ -73,8 +89,19 @@ export const adElementSchema = z.object({
   content: elementContentSchema,
   /** Below this size the element carries no meaning and should be dropped instead. */
   minSize: z.object({ w: z.number().min(0), h: z.number().min(0) }).optional(),
-  /** Ceiling on the rendered frame, in px. Stops an element taking all the room there is. */
-  maxSize: z.object({ w: z.number().positive(), h: z.number().positive() }).optional(),
+  /**
+   * Ceiling on the rendered frame, in px. Each axis is independent and
+   * optional — an absent axis is uncapped — so setting one can never imply an
+   * invalid value for the other.
+   */
+  maxSize: z
+    .preprocess(
+      dropNonPositiveAxes,
+      z
+        .object({ w: z.number().positive().optional(), h: z.number().positive().optional() })
+        .optional(),
+    )
+    .optional(),
   /** width / height, enforced for logos and badges. */
   aspectLock: z.number().positive().optional(),
   pinTo: z.enum(['top', 'bottom', 'left', 'right', 'center']).optional(),

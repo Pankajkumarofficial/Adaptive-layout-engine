@@ -181,6 +181,19 @@ describe('solve — contract', () => {
     expect(logo.frame.w / logo.frame.h).toBeCloseTo(3, 2);
   });
 
+  it('heals a size cap that is zero or nonsense rather than rejecting the spec', () => {
+    // Regression: typing "1" into a width field derived a height of 0, which
+    // failed the schema and blanked the whole editor. Values that cannot mean
+    // anything now mean "no cap on that axis".
+    for (const maxSize of [{ w: 1, h: 0 }, { w: 0, h: 0 }, { w: -5 }, 'nonsense', null]) {
+      const spec = {
+        ...DEMO_SPEC,
+        elements: DEMO_SPEC.elements.map((el) => (el.id === 'logo' ? { ...el, maxSize } : el)),
+      } as AdSpec;
+      expect(() => solve(spec, square), JSON.stringify(maxSize)).not.toThrow();
+    }
+  });
+
   it('lets the background bleed past the safe area', () => {
     const bg = solve(DEMO_SPEC, story).placed.find((p) => p.id === 'bg');
     expect(bg?.frame).toEqual({ x: 0, y: 0, w: 1080, h: 1920 });

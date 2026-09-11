@@ -4,7 +4,16 @@
 // TypeScript at runtime. A path inside the source tree is compiled in.
 import { adSpecSchema, surfaceSchema } from '../../../shared/src/index.js';
 import { SpecError, type SpecIssue } from '../errors.js';
-import type { AdElement, AdSpec, ElementRole, PinTo, Size, Surface, TextAlign } from '../types.js';
+import type {
+  AdElement,
+  AdSpec,
+  ElementRole,
+  PinTo,
+  Size,
+  SizeCap,
+  Surface,
+  TextAlign,
+} from '../types.js';
 import type { Tracer } from '../trace.js';
 
 /** Per-role defaults. Authors override any of these on the element itself. */
@@ -142,7 +151,7 @@ export interface NormalizedElement {
   role: ElementRole;
   priority: number;
   minSize: Size;
-  maxSize: Size | null;
+  maxSize: SizeCap | null;
   aspectLock: number | null;
   pinTo: PinTo | null;
   z: number;

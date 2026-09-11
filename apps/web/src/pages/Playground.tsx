@@ -43,7 +43,7 @@ export function Playground() {
     selectPreset('story-1080x1920');
   }, [demo, setSpec, selectPreset]);
 
-  const { result, error, ms } = useSolve(spec, surface);
+  const { result, stale, error, ms } = useSolve(spec, surface);
   const selected = spec.elements.find((el) => el.id === selectedId);
 
   return (
@@ -79,7 +79,26 @@ export function Playground() {
 
         <main className="flex min-w-0 flex-1 flex-col">
           <ErrorBoundary label="The canvas">
-            {error !== null ? <SolveError error={error} /> : <SurfaceCanvas result={result} />}
+            {/* An invalid spec dims the canvas rather than emptying it: the
+                layout you are editing against is the thing you most need while
+                fixing it. Only a spec that has never solved shows nothing. */}
+            {result === null && error !== null ? (
+              <SolveError error={error} />
+            ) : (
+              <div className="relative flex min-h-0 flex-1 flex-col">
+                <div
+                  className={`flex min-h-0 flex-1 flex-col ${stale ? 'opacity-40' : ''}`}
+                  aria-hidden={stale}
+                >
+                  <SurfaceCanvas result={result} />
+                </div>
+                {error !== null && (
+                  <div className="pointer-events-none absolute inset-x-0 top-16 flex justify-center px-4">
+                    <SolveIssues error={error} />
+                  </div>
+                )}
+              </div>
+            )}
           </ErrorBoundary>
           <ErrorBoundary label="The matrix">
             <MatrixView spec={spec} />
@@ -426,6 +445,32 @@ function SpecFileBar() {
  * and a message per issue. Showing only the summary threw that away and left
  * people hunting through JSON for something the error could have named.
  */
+/** The same issue list, floated over a stale canvas instead of replacing it. */
+function SolveIssues({ error }: { error: Error }) {
+  const issues = error instanceof SpecError ? error.issues : [];
+  return (
+    <div className="pointer-events-auto max-w-md border border-reg/60 bg-card p-3 shadow-paste">
+      <p className="text-tiny font-semibold text-reg">
+        Not solvable yet &mdash; showing the last layout that worked.
+      </p>
+      {issues.length > 0 ? (
+        <ul className="mt-1.5">
+          {issues.map((issue, i) => (
+            <li key={i} className="mb-0.5 text-tiny leading-snug last:mb-0">
+              {issue.path !== '' && (
+                <span className="font-mono text-micro text-mark">{issue.path} </span>
+              )}
+              <span className="text-ink-2">{issue.message}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-1 text-tiny text-ink-2">{error.message}</p>
+      )}
+    </div>
+  );
+}
+
 function SolveError({ error }: { error: Error }) {
   const issues = error instanceof SpecError ? error.issues : [];
   return (

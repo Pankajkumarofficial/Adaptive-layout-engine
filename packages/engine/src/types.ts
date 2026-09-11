@@ -36,6 +36,12 @@ export interface Size {
   h: number;
 }
 
+/** A ceiling on one or both axes. An absent axis is uncapped. */
+export interface SizeCap {
+  w?: number;
+  h?: number;
+}
+
 // ---------------------------------------------------------------------------
 // AdSpec
 // ---------------------------------------------------------------------------
@@ -84,8 +90,12 @@ export interface AdElement {
    * hero and wrong for a logo, where "as large as it fits" is never what an
    * author means. The cap applies on every surface; smaller ones are already
    * limited by the region, so it only bites where there was room to spare.
+   *
+   * Each axis is independent and optional: capping the width of a logo says
+   * nothing about its height, and deriving the other axis from the one given
+   * is how you end up computing a zero.
    */
-  maxSize?: Size;
+  maxSize?: SizeCap;
   /** width / height, held exactly for logos and badges. */
   aspectLock?: number;
   pinTo?: PinTo;
