@@ -55,6 +55,7 @@ export function ElementInspector({ element }: { element: AdElement }) {
             content={content}
             onPick={(next) => updateElement(element.id, { content: { ...content, ...next } })}
           />
+          <SizeCap element={element} />
           <Field label="Focal point — click the image to set what must survive the crop">
             <FocalPicker
               url={content.url}
@@ -207,6 +208,68 @@ function ImagePicker({
           className={`mt-1 text-micro leading-snug ${status.tone === 'error' ? 'text-reg' : 'text-ink-2'}`}
         >
           {status.text}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/**
+ * A ceiling on the rendered frame.
+ *
+ * Without one an element takes whatever room its region offers, which is right
+ * for a hero and wrong for a logo — "as large as it fits" is never what anyone
+ * means by a logo. Blank means no cap, which is the previous behaviour.
+ */
+function SizeCap({ element }: { element: AdElement }) {
+  const updateElement = usePlayground((s) => s.updateElement);
+  const max = element.maxSize;
+
+  const set = (axis: 'w' | 'h', raw: string): void => {
+    const n = Number(raw);
+    if (raw.trim() === '' || !Number.isFinite(n) || n <= 0) {
+      // Clearing either axis removes the cap entirely; a half-cap would be a
+      // constraint nobody asked for.
+      updateElement(element.id, { maxSize: undefined });
+      return;
+    }
+    const other = axis === 'w' ? (max?.h ?? Math.round(n / 3)) : (max?.w ?? Math.round(n * 3));
+    updateElement(element.id, {
+      maxSize: axis === 'w' ? { w: n, h: other } : { w: other, h: n },
+    });
+  };
+
+  return (
+    <div className="mb-3">
+      <span className="mb-1 block text-tiny leading-snug text-ink-3">
+        Largest it may be drawn, in px &mdash; leave blank to let it fill the space
+      </span>
+      <div className="flex items-center gap-2">
+        <input
+          type="number"
+          min={1}
+          placeholder="width"
+          aria-label="Maximum width in pixels"
+          value={max?.w ?? ''}
+          onChange={(e) => set('w', e.target.value)}
+          className="w-full rounded-bench border border-rule bg-card px-2 py-1 tabular text-tiny text-ink focus:border-guide focus:outline-none"
+        />
+        <span aria-hidden className="text-tiny text-ink-3">
+          &times;
+        </span>
+        <input
+          type="number"
+          min={1}
+          placeholder="height"
+          aria-label="Maximum height in pixels"
+          value={max?.h ?? ''}
+          onChange={(e) => set('h', e.target.value)}
+          className="w-full rounded-bench border border-rule bg-card px-2 py-1 tabular text-tiny text-ink focus:border-guide focus:outline-none"
+        />
+      </div>
+      {element.aspectLock !== undefined && max !== undefined && (
+        <p className="mt-1 text-micro text-ink-3">
+          Kept at {element.aspectLock}:1, so whichever cap binds first wins.
         </p>
       )}
     </div>

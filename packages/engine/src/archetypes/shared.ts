@@ -1,4 +1,4 @@
-import type { ElementRole } from '../types.js';
+import type { ElementRole, PinTo } from '../types.js';
 import type { NormalizedElement } from '../steps/normalize.js';
 
 /**
@@ -40,4 +40,29 @@ export function groupByRegion(
     else list.push(el);
   }
   return out;
+}
+
+/**
+ * Only chrome may be re-homed by `pinTo`. Copy and hero keep their reading
+ * order — a headline pinned to the footer is not a layout, it is a mistake.
+ */
+export const PINNABLE: ReadonlySet<ElementRole> = new Set<ElementRole>([
+  'logo',
+  'badge',
+  'legal',
+  'cta',
+]);
+
+/**
+ * Resolves `pinTo` against the regions an archetype actually has.
+ *
+ * Every archetype has to do this or the setting silently does nothing on that
+ * composition — which is exactly what happened when only `stack` honoured it.
+ */
+export function pinnedRegion(
+  el: NormalizedElement,
+  available: Partial<Record<PinTo, string>>,
+): string | null {
+  if (el.pinTo === null || !PINNABLE.has(el.role)) return null;
+  return available[el.pinTo] ?? null;
 }

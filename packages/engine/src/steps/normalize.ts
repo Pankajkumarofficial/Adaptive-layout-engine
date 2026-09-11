@@ -142,6 +142,7 @@ export interface NormalizedElement {
   role: ElementRole;
   priority: number;
   minSize: Size;
+  maxSize: Size | null;
   aspectLock: number | null;
   pinTo: PinTo | null;
   z: number;
@@ -263,6 +264,7 @@ function normalizeElement(el: AdElement): NormalizedElement {
     role: el.role,
     priority: el.priority,
     minSize: el.minSize ?? defaults.minSize,
+    maxSize: el.maxSize ?? null,
     aspectLock: el.aspectLock ?? null,
     pinTo: el.pinTo ?? null,
     z: defaults.z,

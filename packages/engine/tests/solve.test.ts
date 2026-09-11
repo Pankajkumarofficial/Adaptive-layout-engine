@@ -143,6 +143,44 @@ describe('solve — contract', () => {
     expect(size('subhead')).toBeLessThan(size('headline'));
   });
 
+  it('honours pinTo on every archetype, not just stack', () => {
+    // Regression: pinTo was resolved only by `stack`, so pinning a logo to the
+    // bottom silently did nothing on a landscape surface, which uses `split`.
+    const pinned = (pin: 'top' | 'bottom'): AdSpec => ({
+      ...DEMO_SPEC,
+      elements: DEMO_SPEC.elements.map((el) => (el.id === 'logo' ? { ...el, pinTo: pin } : el)),
+    });
+    for (const preset of [presetSurface('tv-1920x1080'), presetSurface('square-1080')]) {
+      const top = solve(pinned('top'), preset).placed.find((p) => p.id === 'logo');
+      const bottom = solve(pinned('bottom'), preset).placed.find((p) => p.id === 'logo');
+      expect(top, preset.label).toBeDefined();
+      expect(bottom, preset.label).toBeDefined();
+      expect(bottom!.frame.y, `${preset.label} moved the pinned logo`).toBeGreaterThan(
+        top!.frame.y,
+      );
+    }
+  });
+
+  it('caps an element at maxSize without breaking its aspect lock', () => {
+    const tv = presetSurface('tv-1920x1080');
+    const uncapped = solve(DEMO_SPEC, tv).placed.find((p) => p.id === 'logo')!;
+
+    // Pick a cap that actually binds, or the assertion proves nothing.
+    const capWidth = Math.round(uncapped.frame.w / 2);
+    const capped: AdSpec = {
+      ...DEMO_SPEC,
+      elements: DEMO_SPEC.elements.map((el) =>
+        el.id === 'logo' ? { ...el, maxSize: { w: capWidth, h: capWidth } } : el,
+      ),
+    };
+    const logo = solve(capped, tv).placed.find((p) => p.id === 'logo')!;
+
+    expect(logo.frame.w).toBeLessThanOrEqual(capWidth + 0.01);
+    expect(logo.frame.w).toBeLessThan(uncapped.frame.w);
+    // aspectLock is 3 in the demo spec; capping must not distort it.
+    expect(logo.frame.w / logo.frame.h).toBeCloseTo(3, 2);
+  });
+
   it('lets the background bleed past the safe area', () => {
     const bg = solve(DEMO_SPEC, story).placed.find((p) => p.id === 'bg');
     expect(bg?.frame).toEqual({ x: 0, y: 0, w: 1080, h: 1920 });

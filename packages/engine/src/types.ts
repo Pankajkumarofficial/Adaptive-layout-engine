@@ -77,6 +77,15 @@ export interface AdElement {
   content: ElementContent;
   /** px, below which the element is useless and should be dropped rather than shrunk. */
   minSize?: Size;
+  /**
+   * px ceiling on the rendered frame.
+   *
+   * Without one, an element with room to grow takes it — which is right for a
+   * hero and wrong for a logo, where "as large as it fits" is never what an
+   * author means. The cap applies on every surface; smaller ones are already
+   * limited by the region, so it only bites where there was room to spare.
+   */
+  maxSize?: Size;
   /** width / height, held exactly for logos and badges. */
   aspectLock?: number;
   pinTo?: PinTo;

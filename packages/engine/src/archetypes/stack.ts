@@ -3,7 +3,7 @@ import { insetRect, rect } from '../geometry.js';
 import type { NormalizedElement } from '../steps/normalize.js';
 import type { ElementRole, Rect, Surface } from '../types.js';
 import { BLEED_REGION, type Archetype, type ArchetypeContext, type Assignment } from './types.js';
-import { byReadingOrder, groupByRegion } from './shared.js';
+import { byReadingOrder, groupByRegion, pinnedRegion } from './shared.js';
 
 /**
  * `stack` — vertical flow for portrait and square surfaces.
@@ -36,13 +36,8 @@ const ROLE_REGION: Readonly<Record<ElementRole, RegionKey | typeof BLEED_REGION>
   legal: 'footer',
 };
 
-/** Only chrome may be re-homed by `pinTo`; copy and hero keep their reading order. */
-const PINNABLE: ReadonlySet<ElementRole> = new Set<ElementRole>(['logo', 'badge', 'legal', 'cta']);
-
 export function regionKeyFor(el: NormalizedElement): string {
-  if (el.pinTo === 'top' && PINNABLE.has(el.role)) return 'header';
-  if (el.pinTo === 'bottom' && PINNABLE.has(el.role)) return 'footer';
-  return ROLE_REGION[el.role];
+  return pinnedRegion(el, { top: 'header', bottom: 'footer' }) ?? ROLE_REGION[el.role];
 }
 
 export const stackArchetype: Archetype = {

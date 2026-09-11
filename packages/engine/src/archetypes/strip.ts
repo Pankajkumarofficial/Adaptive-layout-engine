@@ -3,7 +3,7 @@ import { insetRect, rect } from '../geometry.js';
 import type { NormalizedElement } from '../steps/normalize.js';
 import type { ElementRole, Rect, Surface } from '../types.js';
 import { BLEED_REGION, type Archetype, type ArchetypeContext, type Assignment } from './types.js';
-import { byReadingOrder, groupByRegion } from './shared.js';
+import { byReadingOrder, groupByRegion, pinnedRegion } from './shared.js';
 
 /**
  * `strip` — one horizontal row, for banners and anything else with no vertical
@@ -38,7 +38,8 @@ const ROLE_REGION: Readonly<Record<ElementRole, RegionKey | typeof BLEED_REGION>
 };
 
 export function stripRegionKeyFor(el: NormalizedElement): string {
-  return ROLE_REGION[el.role];
+  // A row has no top or bottom to pin to; left and right are the ends.
+  return pinnedRegion(el, { left: 'brand', right: 'action' }) ?? ROLE_REGION[el.role];
 }
 
 export const stripArchetype: Archetype = {

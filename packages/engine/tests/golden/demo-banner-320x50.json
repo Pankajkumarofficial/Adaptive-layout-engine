@@ -96,11 +96,11 @@
   "dropped": [
     {
       "id": "badge",
-      "reason": "priority 70; bound to legal, dropped together to recover 302px of unmet minimums"
+      "reason": "priority 70; bound to legal, dropped together to recover 347px of unmet minimums"
     },
     {
       "id": "legal",
-      "reason": "priority 90; bound to badge, dropped together to recover 302px of unmet minimums"
+      "reason": "priority 90; bound to badge, dropped together to recover 347px of unmet minimums"
     },
     {
       "id": "subhead",
@@ -173,10 +173,10 @@
       "step": "budget",
       "level": "info",
       "pass": 0,
-      "message": "region \"copy\" is 7.5px short",
-      "subject": "copy",
+      "message": "region \"action\" is 24px short",
+      "subject": "action",
       "data": {
-        "shortfallPx": 7.5
+        "shortfallPx": 24
       }
     },
     {
@@ -184,14 +184,25 @@
       "step": "budget",
       "level": "info",
       "pass": 0,
-      "message": "8 frames placed",
+      "message": "region \"copy\" is 7.5px short",
+      "subject": "copy",
       "data": {
-        "deficitPx": 78.2,
-        "shortfalls": 9
+        "shortfallPx": 7.5
       }
     },
     {
       "seq": 7,
+      "step": "budget",
+      "level": "info",
+      "pass": 0,
+      "message": "8 frames placed",
+      "data": {
+        "deficitPx": 100.2,
+        "shortfalls": 10
+      }
+    },
+    {
+      "seq": 8,
       "step": "fitText",
       "level": "warn",
       "pass": 0,
@@ -207,7 +218,7 @@
       }
     },
     {
-      "seq": 8,
+      "seq": 9,
       "step": "fitText",
       "level": "warn",
       "pass": 0,
@@ -216,14 +227,14 @@
       "data": {
         "minFontPx": 12,
         "boxW": 67.56,
-        "boxH": 34,
+        "boxH": 18.97,
         "renderedLines": 1,
         "maxLines": 1,
         "truncated": true
       }
     },
     {
-      "seq": 9,
+      "seq": 10,
       "step": "fitText",
       "level": "warn",
       "pass": 0,
@@ -239,7 +250,7 @@
       }
     },
     {
-      "seq": 10,
+      "seq": 11,
       "step": "fitText",
       "level": "warn",
       "pass": 0,
@@ -247,15 +258,15 @@
       "subject": "badge",
       "data": {
         "minFontPx": 10,
-        "boxW": 57,
-        "boxH": 19,
+        "boxW": 56,
+        "boxH": 11.03,
         "renderedLines": 1,
         "maxLines": 1,
         "truncated": true
       }
     },
     {
-      "seq": 11,
+      "seq": 12,
       "step": "fitText",
       "level": "warn",
       "pass": 0,
@@ -271,7 +282,7 @@
       }
     },
     {
-      "seq": 12,
+      "seq": 13,
       "step": "fitText",
       "level": "warn",
       "pass": 0,
@@ -280,14 +291,14 @@
       "data": {
         "minFontPx": 12,
         "boxW": 67.56,
-        "boxH": 34,
+        "boxH": 18.97,
         "renderedLines": 1,
         "maxLines": 1,
         "truncated": true
       }
     },
     {
-      "seq": 13,
+      "seq": 14,
       "step": "fitText",
       "level": "decision",
       "pass": 0,
@@ -300,7 +311,7 @@
       }
     },
     {
-      "seq": 14,
+      "seq": 15,
       "step": "fitText",
       "level": "warn",
       "pass": 0,
@@ -316,7 +327,7 @@
       }
     },
     {
-      "seq": 15,
+      "seq": 16,
       "step": "fitText",
       "level": "decision",
       "pass": 0,
@@ -329,7 +340,7 @@
       }
     },
     {
-      "seq": 16,
+      "seq": 17,
       "step": "fitText",
       "level": "warn",
       "pass": 0,
@@ -337,15 +348,15 @@
       "subject": "badge",
       "data": {
         "minFontPx": 10,
-        "boxW": 57,
-        "boxH": 19,
+        "boxW": 56,
+        "boxH": 11.03,
         "renderedLines": 1,
         "maxLines": 1,
         "truncated": true
       }
     },
     {
-      "seq": 17,
+      "seq": 18,
       "step": "fitText",
       "level": "decision",
       "pass": 0,
@@ -358,7 +369,7 @@
       }
     },
     {
-      "seq": 18,
+      "seq": 19,
       "step": "fitText",
       "level": "warn",
       "pass": 0,
@@ -374,7 +385,7 @@
       }
     },
     {
-      "seq": 19,
+      "seq": 20,
       "step": "fitText",
       "level": "decision",
       "pass": 0,
@@ -387,20 +398,20 @@
       }
     },
     {
-      "seq": 20,
+      "seq": 21,
       "step": "degrade",
       "level": "decision",
       "pass": 0,
-      "message": "dropping badge + legal — priority 90 to recover 302px of unmet minimums",
+      "message": "dropping badge + legal — priority 90 to recover 347px of unmet minimums",
       "subject": "legal",
       "data": {
         "priority": 90,
-        "deficitPx": 302,
+        "deficitPx": 347,
         "group": 2
       }
     },
     {
-      "seq": 21,
+      "seq": 22,
       "step": "budget",
       "level": "info",
       "pass": 1,
@@ -411,7 +422,7 @@
       }
     },
     {
-      "seq": 22,
+      "seq": 23,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -427,7 +438,7 @@
       }
     },
     {
-      "seq": 23,
+      "seq": 24,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -443,7 +454,7 @@
       }
     },
     {
-      "seq": 24,
+      "seq": 25,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -459,7 +470,7 @@
       }
     },
     {
-      "seq": 25,
+      "seq": 26,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -475,7 +486,7 @@
       }
     },
     {
-      "seq": 26,
+      "seq": 27,
       "step": "fitText",
       "level": "decision",
       "pass": 1,
@@ -488,7 +499,7 @@
       }
     },
     {
-      "seq": 27,
+      "seq": 28,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -504,7 +515,7 @@
       }
     },
     {
-      "seq": 28,
+      "seq": 29,
       "step": "fitText",
       "level": "decision",
       "pass": 1,
@@ -517,7 +528,7 @@
       }
     },
     {
-      "seq": 29,
+      "seq": 30,
       "step": "degrade",
       "level": "decision",
       "pass": 1,
@@ -530,7 +541,7 @@
       }
     },
     {
-      "seq": 30,
+      "seq": 31,
       "step": "budget",
       "level": "info",
       "pass": 2,
@@ -541,7 +552,7 @@
       }
     },
     {
-      "seq": 31,
+      "seq": 32,
       "step": "fitText",
       "level": "warn",
       "pass": 2,
@@ -553,22 +564,6 @@
         "boxH": 42,
         "renderedLines": 2,
         "maxLines": 3,
-        "truncated": true
-      }
-    },
-    {
-      "seq": 32,
-      "step": "fitText",
-      "level": "warn",
-      "pass": 2,
-      "message": "\"cta\" does not fit at its 12px floor",
-      "subject": "cta",
-      "data": {
-        "minFontPx": 12,
-        "boxW": 67.56,
-        "boxH": 34,
-        "renderedLines": 1,
-        "maxLines": 1,
         "truncated": true
       }
     },
@@ -591,6 +586,22 @@
     {
       "seq": 34,
       "step": "fitText",
+      "level": "warn",
+      "pass": 2,
+      "message": "\"cta\" does not fit at its 12px floor",
+      "subject": "cta",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 67.56,
+        "boxH": 34,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 35,
+      "step": "fitText",
       "level": "decision",
       "pass": 2,
       "message": "capped \"cta\" at 11.2px so it does not outrank the copy above it",
@@ -602,7 +613,7 @@
       }
     },
     {
-      "seq": 35,
+      "seq": 36,
       "step": "degrade",
       "level": "decision",
       "pass": 2,
@@ -615,7 +626,7 @@
       }
     },
     {
-      "seq": 36,
+      "seq": 37,
       "step": "budget",
       "level": "info",
       "pass": 3,
@@ -626,7 +637,7 @@
       }
     },
     {
-      "seq": 37,
+      "seq": 38,
       "step": "fitText",
       "level": "warn",
       "pass": 3,
@@ -638,22 +649,6 @@
         "boxH": 42,
         "renderedLines": 2,
         "maxLines": 3,
-        "truncated": true
-      }
-    },
-    {
-      "seq": 38,
-      "step": "fitText",
-      "level": "warn",
-      "pass": 3,
-      "message": "\"cta\" does not fit at its 12px floor",
-      "subject": "cta",
-      "data": {
-        "minFontPx": 12,
-        "boxW": 84,
-        "boxH": 34,
-        "renderedLines": 1,
-        "maxLines": 1,
         "truncated": true
       }
     },
@@ -676,6 +671,22 @@
     {
       "seq": 40,
       "step": "fitText",
+      "level": "warn",
+      "pass": 3,
+      "message": "\"cta\" does not fit at its 12px floor",
+      "subject": "cta",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 84,
+        "boxH": 34,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 41,
+      "step": "fitText",
       "level": "decision",
       "pass": 3,
       "message": "capped \"cta\" at 11.2px so it does not outrank the copy above it",
@@ -687,7 +698,7 @@
       }
     },
     {
-      "seq": 41,
+      "seq": 42,
       "step": "degrade",
       "level": "decision",
       "pass": 3,
@@ -700,7 +711,7 @@
       }
     },
     {
-      "seq": 42,
+      "seq": 43,
       "step": "budget",
       "level": "info",
       "pass": 4,
@@ -711,7 +722,7 @@
       }
     },
     {
-      "seq": 43,
+      "seq": 44,
       "step": "fitText",
       "level": "info",
       "pass": 4,
@@ -726,7 +737,7 @@
       }
     },
     {
-      "seq": 44,
+      "seq": 45,
       "step": "fitText",
       "level": "info",
       "pass": 4,
@@ -741,14 +752,14 @@
       }
     },
     {
-      "seq": 45,
+      "seq": 46,
       "step": "degrade",
       "level": "warn",
       "pass": 4,
       "message": "nothing left to drop; only protected elements remain"
     },
     {
-      "seq": 46,
+      "seq": 47,
       "step": "degrade",
       "level": "warn",
       "pass": 4,
@@ -759,7 +770,7 @@
       }
     },
     {
-      "seq": 47,
+      "seq": 48,
       "step": "fingerprint",
       "level": "info",
       "pass": 4,

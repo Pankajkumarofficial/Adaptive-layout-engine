@@ -73,6 +73,8 @@ export const adElementSchema = z.object({
   content: elementContentSchema,
   /** Below this size the element carries no meaning and should be dropped instead. */
   minSize: z.object({ w: z.number().min(0), h: z.number().min(0) }).optional(),
+  /** Ceiling on the rendered frame, in px. Stops an element taking all the room there is. */
+  maxSize: z.object({ w: z.number().positive(), h: z.number().positive() }).optional(),
   /** width / height, enforced for logos and badges. */
   aspectLock: z.number().positive().optional(),
   pinTo: z.enum(['top', 'bottom', 'left', 'right', 'center']).optional(),

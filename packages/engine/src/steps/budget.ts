@@ -247,6 +247,16 @@ function fitInBand(el: NormalizedElement, band: Rect, klass: SurfaceClass, bleed
     w = Math.min(band.w, Math.max(el.minSize.w, band.h * 3));
   }
 
+  if (el.maxSize !== null) {
+    w = Math.min(w, el.maxSize.w);
+    h = Math.min(h, el.maxSize.h);
+    // Re-derive against the lock, or capping one axis would distort the other.
+    if (el.aspectLock !== null && el.aspectLock > 0) {
+      w = Math.min(w, h * el.aspectLock);
+      h = w / el.aspectLock;
+    }
+  }
+
   const x = alignCross(el, band, w);
   const y = band.y + (h < band.h ? (band.h - h) / 2 : 0);
   return containRect(rect(x, y, w, h), band);

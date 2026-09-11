@@ -3,7 +3,7 @@ import { insetRect, rect } from '../geometry.js';
 import type { NormalizedElement } from '../steps/normalize.js';
 import type { ElementRole, Rect, Surface } from '../types.js';
 import { BLEED_REGION, type Archetype, type ArchetypeContext, type Assignment } from './types.js';
-import { byReadingOrder, groupByRegion } from './shared.js';
+import { byReadingOrder, groupByRegion, pinnedRegion } from './shared.js';
 
 /**
  * `overlay` — full-bleed hero with the copy sitting on top of it.
@@ -43,7 +43,7 @@ const ROLE_REGION: Readonly<Record<ElementRole, RegionKey | 'media' | typeof BLE
 };
 
 export function overlayRegionKeyFor(el: NormalizedElement): string {
-  return ROLE_REGION[el.role];
+  return pinnedRegion(el, { top: 'header', bottom: 'footer' }) ?? ROLE_REGION[el.role];
 }
 
 export const overlayArchetype: Archetype = {

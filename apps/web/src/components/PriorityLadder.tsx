@@ -223,14 +223,13 @@ function Rung({ element, selected, dropReason, locked, onSelect, onPriority }: R
   }, []);
 
   const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (locked) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     const next = priorityFromEvent(event.clientX);
     if (next !== null) onPriority(next);
   };
 
   const drag = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (locked || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
     const next = priorityFromEvent(event.clientX);
     if (next !== null) onPriority(next);
   };
@@ -255,28 +254,34 @@ function Rung({ element, selected, dropReason, locked, onSelect, onPriority }: R
           {element.id}
         </span>
         <span className="text-tiny text-ink-3">{element.role}</span>
-        <span className="ml-auto tabular text-tiny tabular text-ink-2">
-          {locked ? 'held' : element.priority}
+        <span
+          className="ml-auto tabular text-tiny text-ink-2"
+          title={
+            locked
+              ? 'Priority 0 is never dropped. Drag the marker right to make it droppable again.'
+              : undefined
+          }
+        >
+          {element.priority}
+          {locked && <span className="ml-1.5 text-ink-3">held</span>}
         </span>
       </button>
 
       <div
         ref={trackRef}
         role="slider"
-        tabIndex={locked ? -1 : 0}
+        tabIndex={0}
         aria-label={`${element.id} priority`}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={element.priority}
-        aria-disabled={locked}
         onPointerDown={startDrag}
         onPointerMove={drag}
         onKeyDown={(e) => {
-          if (locked) return;
           if (e.key === 'ArrowLeft') onPriority(element.priority - (e.shiftKey ? 10 : 1));
           if (e.key === 'ArrowRight') onPriority(element.priority + (e.shiftKey ? 10 : 1));
         }}
-        className={`relative mt-2 h-4 ${locked ? 'cursor-default' : 'cursor-ew-resize'} focus:outline-none focus-visible:ring-1 focus-visible:ring-guide`}
+        className="relative mt-2 h-4 cursor-ew-resize focus:outline-none focus-visible:ring-1 focus-visible:ring-guide"
       >
         <span className="absolute top-1/2 h-2 w-px -translate-y-1/2 bg-rule-2" />
         <span className="absolute right-0 top-1/2 h-2 w-px -translate-y-1/2 bg-rule-2" />
