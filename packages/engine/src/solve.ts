@@ -3,11 +3,18 @@ import { fingerprint } from './fingerprint.js';
 import { roundRect, roundTo } from './geometry.js';
 import { Tracer } from './trace.js';
 import { classify, gutterFor } from './steps/classify.js';
-import { budget, compactRegion, type Shortfall } from './steps/budget.js';
+import { budget, compactRegion, compactRow, rowAlignOf, type Shortfall } from './steps/budget.js';
 import { chooseDrop } from './steps/degrade.js';
 import { enforceContrast } from './steps/contrast.js';
 import { enforceSafeArea } from './steps/safeArea.js';
-import { fitText, textBoxOf, textFrameFor, TYPE_RANK, type TextFit } from './steps/fitText.js';
+import {
+  ctaPadding,
+  fitText,
+  textBoxOf,
+  textFrameFor,
+  TYPE_RANK,
+  type TextFit,
+} from './steps/fitText.js';
 import { coverCrop, DEFAULT_FOCAL_POINT } from './steps/imageCrop.js';
 import { normalize, type NormalizedElement, type NormalizedSpec } from './steps/normalize.js';
 import { selectArchetype } from './steps/selectArchetype.js';
@@ -312,11 +319,34 @@ function runAttempt(
     if (list === undefined) byRegion.set(a.region, [{ id: a.elementId, frame }]);
     else list.push({ id: a.elementId, frame });
   }
+  const byId = new Map(active.map((el) => [el.id, el]));
   for (const [regionKey, items] of byRegion) {
     const region = regions[regionKey];
-    // Bleed regions are not compacted: their contents are meant to fill them,
-    // and a row is already positioned along the axis compaction would restack.
-    if (region === undefined || bleedRegions.has(regionKey) || rowRegions.has(regionKey)) continue;
+    // Bleed regions are not compacted: their contents are meant to fill them.
+    if (region === undefined || bleedRegions.has(regionKey)) continue;
+
+    // A row compacts across, a column down. Both exist for the same reason:
+    // the share each element was given is a competition for space, and once
+    // the real sizes are known the leftover belongs outside the group rather
+    // than inside it.
+    if (rowRegions.has(regionKey)) {
+      const rowItems = items.flatMap((it) => {
+        const el = byId.get(it.id);
+        if (el === undefined) return [];
+        const fit = fits.get(it.id);
+        const naturalW =
+          fit === undefined
+            ? it.frame.w
+            : el.role === 'cta'
+              ? fit.maxLineWidthPx + ctaPadding(gutter).x * 2
+              : fit.maxLineWidthPx;
+        return [{ id: it.id, frame: it.frame, naturalW, align: rowAlignOf(el) }];
+      });
+      const packed = compactRow(region, rowItems, gutter);
+      for (const [id, frame] of Object.entries(packed)) frames[id] = frame;
+      continue;
+    }
+
     const compacted = compactRegion(region, items, gutter);
     for (const [id, frame] of Object.entries(compacted)) frames[id] = frame;
   }

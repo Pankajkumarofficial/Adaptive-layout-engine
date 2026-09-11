@@ -149,9 +149,9 @@
     {
       "id": "badge",
       "frame": {
-        "x": 233.9,
+        "x": 261.24,
         "y": 23,
-        "w": 58.1,
+        "w": 30.76,
         "h": 12
       },
       "opacity": 1,
@@ -465,12 +465,12 @@
       "step": "fingerprint",
       "level": "info",
       "pass": 0,
-      "message": "layout hashes to fp_5004bd65",
+      "message": "layout hashes to fp_d8f0e8f0",
       "data": {
         "placed": 8,
         "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_5004bd65"
+  "fingerprint": "fp_d8f0e8f0"
 }

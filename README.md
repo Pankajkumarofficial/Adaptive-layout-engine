@@ -159,6 +159,25 @@ Reading it in order:
    reports that it is still 2px over and clamps, because it has nothing left it is allowed to give
    up. That warning is in `LayoutResult.warnings`, not swallowed.
 
+### A row's leftover space goes outside the group
+
+Regions divide space between the elements competing for it — a column by height, a row by width.
+That is right while they are competing and wrong the moment they are not: a 48px icon and a
+one-word badge each take half a header, then sit at opposite ends of their own half, and all the
+slack collects between them as a hole. On a 1002px header that hole was 317px wide, between a logo
+and the word beside it.
+
+`compactRegion` already re-stacked a column at measured heights. `compactRow` is its counterpart:
+once text is measured, a row re-packs at natural widths and the leftover goes to the outside of the
+group. A run of unpinned chrome packs from the leading edge with one gutter between members.
+
+The fix underneath it was a conflation. "This text is right-aligned in its frame" and "this frame
+belongs at the right of the header" are different statements, and a badge — which defaults to the
+first — was being read as the second. Along a row, position is now an explicit `pinTo` or it is
+reading order; text alignment stays inside the frame where it belongs. An author who does want the
+logo and badge at opposite ends says `pinTo: "right"`, and gets it on every surface. The demo spec
+does exactly that, which is why its header is unchanged.
+
 ### Degradation is not monotonic
 
 Worth knowing, because it cost a real bug. Removing an element does not always improve the fit

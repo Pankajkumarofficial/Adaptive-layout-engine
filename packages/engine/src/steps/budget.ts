@@ -265,15 +265,104 @@ function fitInBand(el: NormalizedElement, band: Rect, klass: SurfaceClass, bleed
   return containRect(rect(x, y, w, h), band);
 }
 
-function alignCross(el: NormalizedElement, band: Rect, w: number): number {
+export type CrossAlign = 'left' | 'center' | 'right';
+
+/**
+ * Where an element sits across its band, in a column.
+ *
+ * A narrower frame inside a full-width band follows the alignment of the copy
+ * it holds: a centred headline gets a centred frame. That is right for a
+ * column, where the band spans the region and the alignment is the only thing
+ * saying where the ink goes.
+ */
+export function crossAlignOf(el: NormalizedElement): CrossAlign {
   const pin = el.pinTo;
-  const align =
-    pin === 'left' || pin === 'right' || pin === 'center'
-      ? pin
-      : (el.text?.align ?? (el.role === 'logo' ? 'left' : 'center'));
+  if (pin === 'left' || pin === 'right' || pin === 'center') return pin;
+  return el.text?.align ?? (el.role === 'logo' ? 'left' : 'center');
+}
+
+/**
+ * Where an element sits along a row — a different question, and previously
+ * answered with the same value.
+ *
+ * "This text is right-aligned in its frame" and "this frame belongs at the
+ * right of the header" are not the same statement, but a badge defaults to the
+ * first and was being read as the second, so a logo and a badge flew apart to
+ * opposite ends of a header they were never asked to span. Along a row,
+ * position is an explicit `pinTo` or it is reading order.
+ */
+export function rowAlignOf(el: NormalizedElement): CrossAlign {
+  const pin = el.pinTo;
+  if (pin === 'left' || pin === 'right' || pin === 'center') return pin;
+  return 'left';
+}
+
+function alignCross(el: NormalizedElement, band: Rect, w: number): number {
+  const align = crossAlignOf(el);
   if (align === 'left') return band.x;
   if (align === 'right') return band.x + band.w - w;
   return band.x + (band.w - w) / 2;
+}
+
+export interface RowItem {
+  id: string;
+  frame: Rect;
+  /** Width the element actually needs, once its text has been measured. */
+  naturalW: number;
+  align: CrossAlign;
+}
+
+/**
+ * The horizontal counterpart of `compactRegion`, and for the same reason.
+ *
+ * A row divides its width into equal shares, which is right while the elements
+ * are competing for space and wrong once they are not: a 48px icon and a
+ * one-word badge each take half a header, then sit at opposite ends of their
+ * own half, so all the slack collects in the middle as a hole. On a 1002px
+ * header that hole was 317px wide — between a logo and the word beside it.
+ *
+ * So the leftover goes to the outside of the group rather than between its
+ * members. Elements keep the alignment they asked for: a run of left-aligned
+ * chrome packs from the leading edge, a right-aligned badge still hugs the
+ * trailing edge, and anything centred forms a group in the middle. An author
+ * who wants the logo and the badge at opposite ends says so with `pinTo`, and
+ * gets it on every surface — which is the point.
+ */
+export function compactRow(
+  region: Rect,
+  items: readonly RowItem[],
+  gutter: number,
+): Record<string, Rect> {
+  const out: Record<string, Rect> = {};
+  if (items.length < 2) return out;
+
+  const widthOf = (it: RowItem): number => Math.min(it.naturalW, it.frame.w);
+  const total = items.reduce((acc, it) => acc + widthOf(it), 0) + gutter * (items.length - 1);
+  // Nothing to give back. Leave the share-based layout alone rather than
+  // inventing an overlap.
+  if (total > region.w) return out;
+
+  const runs: CrossAlign[] = ['left', 'center', 'right'];
+  for (const run of runs) {
+    const members = items.filter((it) => it.align === run);
+    if (members.length === 0) continue;
+
+    const runWidth =
+      members.reduce((acc, it) => acc + widthOf(it), 0) + gutter * (members.length - 1);
+    let cursor =
+      run === 'left'
+        ? region.x
+        : run === 'right'
+          ? region.x + region.w - runWidth
+          : region.x + (region.w - runWidth) / 2;
+
+    for (const it of members) {
+      const w = widthOf(it);
+      out[it.id] = containRect({ x: cursor, y: it.frame.y, w, h: it.frame.h }, region);
+      cursor += w + gutter;
+    }
+  }
+  return out;
 }
 
 /**

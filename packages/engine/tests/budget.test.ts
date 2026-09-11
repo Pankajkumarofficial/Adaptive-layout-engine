@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { allocateBands, compactRegion } from '../src/steps/budget.js';
+import { allocateBands, compactRegion, compactRow } from '../src/steps/budget.js';
 import { rect } from '../src/geometry.js';
+import type { Rect } from '../src/types.js';
 
 const box = rect(0, 0, 100, 300);
 
@@ -127,5 +128,67 @@ describe('compactRegion', () => {
 
   it('is a no-op for an empty region', () => {
     expect(compactRegion(rect(0, 0, 10, 10), [], 4)).toEqual({});
+  });
+});
+
+describe('compactRow', () => {
+  const region: Rect = { x: 100, y: 0, w: 1000, h: 60 };
+  const item = (
+    id: string,
+    x: number,
+    w: number,
+    naturalW: number,
+    align: 'left' | 'center' | 'right',
+  ) => ({ id, frame: { x, y: 0, w, h: 60 }, naturalW, align });
+
+  it('packs a row so the leftover falls outside the group, not inside it', () => {
+    // The reported shape: a small logo and a one-word badge each holding half a
+    // header, then sitting at opposite ends of their own half.
+    const packed = compactRow(
+      region,
+      [item('logo', 100, 180, 180, 'left'), item('badge', 700, 400, 280, 'left')],
+      24,
+    );
+
+    expect(packed.logo?.x).toBe(100);
+    expect(packed.badge?.x).toBe(100 + 180 + 24);
+    // The gap between them is the gutter and nothing else.
+    const gap = packed.badge!.x - (packed.logo!.x + packed.logo!.w);
+    expect(gap).toBe(24);
+  });
+
+  it('keeps a pinned element on its edge, because that was asked for', () => {
+    const packed = compactRow(
+      region,
+      [item('logo', 100, 180, 180, 'left'), item('badge', 700, 400, 280, 'right')],
+      24,
+    );
+
+    expect(packed.logo?.x).toBe(100);
+    expect(packed.badge!.x + packed.badge!.w).toBeCloseTo(region.x + region.w, 5);
+  });
+
+  it('centres a centred run between the edges', () => {
+    const packed = compactRow(
+      region,
+      [item('a', 100, 200, 200, 'center'), item('b', 400, 200, 200, 'center')],
+      20,
+    );
+    const left = packed.a!.x;
+    const right = packed.b!.x + packed.b!.w;
+    expect(left - region.x).toBeCloseTo(region.x + region.w - right, 5);
+  });
+
+  it('leaves a full row alone rather than inventing an overlap', () => {
+    const packed = compactRow(
+      region,
+      [item('a', 100, 600, 600, 'left'), item('b', 700, 600, 600, 'left')],
+      24,
+    );
+    expect(packed).toEqual({});
+  });
+
+  it('does nothing to a row of one', () => {
+    expect(compactRow(region, [item('only', 100, 200, 200, 'left')], 24)).toEqual({});
   });
 });

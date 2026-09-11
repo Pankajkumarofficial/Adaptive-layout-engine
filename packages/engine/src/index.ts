@@ -28,7 +28,16 @@ export {
 } from './steps/classify.js';
 export { normalize, ROLE_DEFAULTS, type NormalizedElement } from './steps/normalize.js';
 export { selectArchetype, ARCHETYPE_TABLE } from './steps/selectArchetype.js';
-export { allocateBands, budget, compactRegion, minHeightOf, minWidthOf } from './steps/budget.js';
+export {
+  allocateBands,
+  budget,
+  compactRegion,
+  compactRow,
+  crossAlignOf,
+  rowAlignOf,
+  minHeightOf,
+  minWidthOf,
+} from './steps/budget.js';
 export { fitText, typeLadder, textFrameFor, TYPE_BASE_PX } from './steps/fitText.js';
 export { chooseDrop, pairClosure } from './steps/degrade.js';
 export { enforceSafeArea } from './steps/safeArea.js';
