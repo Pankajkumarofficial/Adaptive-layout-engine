@@ -101,13 +101,39 @@ export const usePlayground = create<PlaygroundState>()(
       setTheme: (patch) =>
         set((state) => ({ spec: { ...state.spec, theme: { ...state.spec.theme, ...patch } } })),
 
+      /**
+       * A background element created from the theme is painted with a copy of
+       * the theme's background colour, so changing the theme left the canvas
+       * showing the old one — the control looked broken, and the contrast step
+       * was reasoning about a colour nobody could see.
+       *
+       * Re-derive only what was derived: a fill still equal to the old theme
+       * background follows the new one, and a fill the author changed on
+       * purpose is left exactly as they set it.
+       */
       setPalette: (patch) =>
-        set((state) => ({
-          spec: {
-            ...state.spec,
-            theme: { ...state.spec.theme, palette: { ...state.spec.theme.palette, ...patch } },
-          },
-        })),
+        set((state) => {
+          const wasBg = state.spec.theme.palette.bg;
+          const nextBg = patch.bg;
+          const elements =
+            nextBg === undefined || nextBg === wasBg
+              ? state.spec.elements
+              : state.spec.elements.map((el) =>
+                  el.role === 'background' &&
+                  el.content.kind === 'shape' &&
+                  el.content.fill.toLowerCase() === wasBg.toLowerCase()
+                    ? { ...el, content: { ...el.content, fill: nextBg } }
+                    : el,
+                );
+
+          return {
+            spec: {
+              ...state.spec,
+              elements,
+              theme: { ...state.spec.theme, palette: { ...state.spec.theme.palette, ...patch } },
+            },
+          };
+        }),
 
       setSurface: (surface) => set({ surface }),
       setSurfaceSize: (width, height) => set({ surface: customSurface(width, height) }),

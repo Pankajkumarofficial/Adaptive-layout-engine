@@ -54,7 +54,7 @@ export function ElementInspector({ element }: { element: AdElement }) {
         <>
           <ImagePicker
             content={content}
-            onPick={(next) => updateElement(element.id, { content: { ...content, ...next } })}
+            onPick={(next) => updateElement(element.id, pictureChange(element, content, next))}
           />
           <SizeCap element={element} />
           <Field label="Focal point — click the image to set what must survive the crop">
@@ -128,6 +128,35 @@ export function ElementInspector({ element }: { element: AdElement }) {
  * travels with export and share; a URL is still accepted because pointing at a
  * CDN is the sane thing to do for anything real.
  */
+/**
+ * A new picture brings its own shape, and two values on the element describe
+ * the old one.
+ *
+ * `aspectLock` is the damaging one. A logo added from the palette is locked at
+ * 3:1 because the placeholder is a wordmark; drop a square icon into it and the
+ * engine dutifully reserves a 3:1 box — 270px of a 728px leaderboard, most of
+ * it empty. The lock has to follow the picture.
+ *
+ * `focalPoint` is the quieter one: a point chosen on the old photograph says
+ * nothing about this one, so it goes back to the middle.
+ */
+function pictureChange(
+  element: AdElement,
+  content: ImageContent,
+  next: Pick<ImageContent, 'url' | 'intrinsic'>,
+): Partial<AdElement> {
+  const kept: ImageContent = { ...content, ...next };
+  delete kept.focalPoint;
+  const patch: Partial<AdElement> = { content: kept };
+
+  // Only re-derive a lock that was already there. An element with no lock is
+  // one the author wants the engine to fit freely, and that should stay true.
+  if (element.aspectLock !== undefined && next.intrinsic.h > 0) {
+    patch.aspectLock = Math.round((next.intrinsic.w / next.intrinsic.h) * 1000) / 1000;
+  }
+  return patch;
+}
+
 function ImagePicker({
   content,
   onPick,
@@ -274,6 +303,18 @@ function SizeCap({ element }: { element: AdElement }) {
   // the far side of the screen — a long way from the field that caused it, and
   // easy to acquire by stopping halfway through typing "100". Say it here.
   const floor = element.minSize ?? ROLE_DEFAULTS[element.role].minSize;
+
+  // A lock inherited from a previous picture is the expensive kind of stale: it
+  // is the engine's instruction for how much room to reserve, so a square icon
+  // held at 3:1 takes a box three times as wide as the artwork and sits in the
+  // middle of it. Say so, and offer the one-click correction.
+  const picture = element.content.kind === 'image' ? element.content : null;
+  const trueAspect =
+    picture !== null && picture.intrinsic.h > 0 ? picture.intrinsic.w / picture.intrinsic.h : null;
+  const lockFightsPicture =
+    element.aspectLock !== undefined &&
+    trueAspect !== null &&
+    Math.abs(element.aspectLock - trueAspect) / trueAspect > 0.02;
   const under: string[] = [];
   if (max?.w !== undefined && max.w < floor.w) under.push(`${max.w}px wide is under ${floor.w}`);
   if (max?.h !== undefined && max.h < floor.h) under.push(`${max.h}px tall is under ${floor.h}`);
@@ -309,9 +350,26 @@ function SizeCap({ element }: { element: AdElement }) {
           className="w-full rounded-bench border border-rule bg-card px-2 py-1 tabular text-tiny text-ink focus:border-guide focus:outline-none"
         />
       </div>
-      {element.aspectLock !== undefined && (
+      {element.aspectLock !== undefined && !lockFightsPicture && (
         <p className="mt-1 text-micro text-ink-3">
           Held at {element.aspectLock}:1, so whichever limit binds first wins.
+        </p>
+      )}
+      {lockFightsPicture && trueAspect !== null && (
+        <p className="mt-1 text-micro leading-snug text-mark">
+          Held at {element.aspectLock}:1, but the picture is {trueAspect.toFixed(2)}:1 — the engine
+          reserves the shape it was told, not the shape of the artwork.{' '}
+          <button
+            type="button"
+            onClick={() =>
+              updateElement(element.id, {
+                aspectLock: Math.round(trueAspect * 1000) / 1000,
+              })
+            }
+            className="underline underline-offset-2 hover:text-ink"
+          >
+            Match the picture
+          </button>
         </p>
       )}
       {under.length > 0 && (

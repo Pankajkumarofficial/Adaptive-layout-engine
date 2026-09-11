@@ -495,3 +495,41 @@ describe('solve — pinTo binds on chrome only', () => {
     expect(b?.frame.y).toBeGreaterThan(a?.frame.y ?? 0);
   });
 });
+
+/**
+ * `aspectLock` governs the frame, whatever shape the picture happens to be.
+ *
+ * That is the right contract — the author is reserving a shape, and the engine
+ * should not second-guess it — but it makes a stale lock expensive: a square
+ * icon left on a 3:1 logo takes a box three times as wide as the artwork. The
+ * editor is what has to keep the lock honest when the picture changes, so this
+ * pins the behaviour it relies on.
+ */
+describe('solve — aspectLock drives the frame, not the picture', () => {
+  const logoWith = (aspectLock: number): AdSpec => ({
+    ...DEMO_SPEC,
+    elements: DEMO_SPEC.elements.map((el) =>
+      el.id === 'logo' && el.content.kind === 'image'
+        ? {
+            ...el,
+            aspectLock,
+            content: { ...el.content, intrinsic: { w: 400, h: 400 } },
+          }
+        : el,
+    ),
+  });
+
+  const leaderboard = presetSurface('leaderboard-728x90');
+
+  it('reserves the locked shape even when the artwork is square', () => {
+    const wide = solve(logoWith(3), leaderboard).placed.find((p) => p.id === 'logo');
+    const square = solve(logoWith(1), leaderboard).placed.find((p) => p.id === 'logo');
+
+    expect(wide).toBeDefined();
+    expect(square).toBeDefined();
+    expect(wide!.frame.w / wide!.frame.h).toBeCloseTo(3, 1);
+    expect(square!.frame.w / square!.frame.h).toBeCloseTo(1, 1);
+    // The whole point: the stale lock costs roughly three times the width.
+    expect(wide!.frame.w).toBeGreaterThan(square!.frame.w * 2);
+  });
+});
