@@ -118,14 +118,14 @@
       "id": "legal",
       "frame": {
         "x": 872.64,
-        "y": 925.49,
+        "y": 940.48,
         "w": 927.36,
-        "h": 50.78
+        "h": 20.8
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 39.06,
-      "lineHeightPx": 50.78,
+      "fontSizePx": 16,
+      "lineHeightPx": 20.8,
       "lines": [
         "Free returns within 30 days. Terms apply."
       ],
@@ -189,15 +189,15 @@
     {
       "id": "cta",
       "frame": {
-        "x": 886.7,
-        "y": 677.7,
-        "w": 899.24,
-        "h": 174.6
+        "x": 1031.19,
+        "y": 701.23,
+        "w": 610.26,
+        "h": 127.55
       },
       "opacity": 1,
       "z": 40,
-      "fontSizePx": 115.5,
-      "lineHeightPx": 138.6,
+      "fontSizePx": 76.29,
+      "lineHeightPx": 91.55,
       "lines": [
         "Shop the range"
       ],
@@ -345,6 +345,62 @@
     },
     {
       "seq": 11,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"cta\" set at 76.29px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 76.5,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 91.55
+      }
+    },
+    {
+      "seq": 12,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"cta\" at 76.3px so it does not outrank the copy above it",
+      "subject": "cta",
+      "data": {
+        "was": 115.5,
+        "now": 76.29,
+        "ceiling": 76.3
+      }
+    },
+    {
+      "seq": 13,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"legal\" set at 16px over 1 line",
+      "subject": "legal",
+      "data": {
+        "freeSizePx": 16,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 2,
+        "lineHeightPx": 20.8
+      }
+    },
+    {
+      "seq": 14,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"legal\" at 16px so it does not outrank the copy above it",
+      "subject": "legal",
+      "data": {
+        "was": 39.06,
+        "now": 16,
+        "ceiling": 16
+      }
+    },
+    {
+      "seq": 15,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -360,7 +416,7 @@
       }
     },
     {
-      "seq": 12,
+      "seq": 16,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -376,16 +432,16 @@
       }
     },
     {
-      "seq": 13,
+      "seq": 17,
       "step": "fingerprint",
       "level": "info",
       "pass": 0,
-      "message": "layout hashes to fp_3e82dda2",
+      "message": "layout hashes to fp_44139736",
       "data": {
         "placed": 8,
         "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_3e82dda2"
+  "fingerprint": "fp_44139736"
 }

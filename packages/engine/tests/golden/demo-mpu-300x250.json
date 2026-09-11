@@ -141,15 +141,15 @@
     {
       "id": "cta",
       "frame": {
-        "x": 147.76,
+        "x": 159.55,
         "y": 187.8,
-        "w": 133.92,
+        "w": 110.34,
         "h": 44
       },
       "opacity": 1,
       "z": 40,
-      "fontSizePx": 16,
-      "lineHeightPx": 19.2,
+      "fontSizePx": 12.8,
+      "lineHeightPx": 15.36,
       "lines": [
         "Shop the range"
       ],
@@ -310,6 +310,91 @@
     },
     {
       "seq": 11,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"cta\" set at 12.8px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 15,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 15.36
+      }
+    },
+    {
+      "seq": 12,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"cta\" at 15.2px so it does not outrank the copy above it",
+      "subject": "cta",
+      "data": {
+        "was": 16,
+        "now": 12.8,
+        "ceiling": 15.2
+      }
+    },
+    {
+      "seq": 13,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"badge\" does not fit at its 10px floor",
+      "subject": "badge",
+      "data": {
+        "minFontPx": 10,
+        "boxW": 56,
+        "boxH": 18,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 14,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"badge\" at 9.6px so it does not outrank the copy above it",
+      "subject": "badge",
+      "data": {
+        "was": 10,
+        "now": 10,
+        "ceiling": 9.6
+      }
+    },
+    {
+      "seq": 15,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"legal\" set at 8px over 2 lines",
+      "subject": "legal",
+      "data": {
+        "freeSizePx": 8,
+        "snapped": false,
+        "lines": 2,
+        "maxLines": 2,
+        "lineHeightPx": 10.4
+      }
+    },
+    {
+      "seq": 16,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"legal\" at 7.68px so it does not outrank the copy above it",
+      "subject": "legal",
+      "data": {
+        "was": 8.19,
+        "now": 8,
+        "ceiling": 7.68
+      }
+    },
+    {
+      "seq": 17,
       "step": "degrade",
       "level": "decision",
       "pass": 0,
@@ -322,7 +407,7 @@
       }
     },
     {
-      "seq": 12,
+      "seq": 18,
       "step": "budget",
       "level": "info",
       "pass": 1,
@@ -333,7 +418,7 @@
       }
     },
     {
-      "seq": 13,
+      "seq": 19,
       "step": "fitText",
       "level": "info",
       "pass": 1,
@@ -348,7 +433,7 @@
       }
     },
     {
-      "seq": 14,
+      "seq": 20,
       "step": "fitText",
       "level": "info",
       "pass": 1,
@@ -363,7 +448,7 @@
       }
     },
     {
-      "seq": 15,
+      "seq": 21,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -379,7 +464,35 @@
       }
     },
     {
-      "seq": 16,
+      "seq": 22,
+      "step": "fitText",
+      "level": "info",
+      "pass": 1,
+      "message": "\"cta\" set at 12.8px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 15,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 15.36
+      }
+    },
+    {
+      "seq": 23,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 1,
+      "message": "capped \"cta\" at 15.2px so it does not outrank the copy above it",
+      "subject": "cta",
+      "data": {
+        "was": 16,
+        "now": 12.8,
+        "ceiling": 15.2
+      }
+    },
+    {
+      "seq": 24,
       "step": "imageCrop",
       "level": "info",
       "pass": 1,
@@ -395,7 +508,7 @@
       }
     },
     {
-      "seq": 17,
+      "seq": 25,
       "step": "imageCrop",
       "level": "info",
       "pass": 1,
@@ -411,16 +524,16 @@
       }
     },
     {
-      "seq": 18,
+      "seq": 26,
       "step": "fingerprint",
       "level": "info",
       "pass": 1,
-      "message": "layout hashes to fp_e738e007",
+      "message": "layout hashes to fp_25de7698",
       "data": {
         "placed": 6,
         "dropped": 2
       }
     }
   ],
-  "fingerprint": "fp_e738e007"
+  "fingerprint": "fp_25de7698"
 }

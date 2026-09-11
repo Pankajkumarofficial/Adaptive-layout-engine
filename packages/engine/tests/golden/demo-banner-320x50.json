@@ -272,6 +272,122 @@
     },
     {
       "seq": 12,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"cta\" does not fit at its 12px floor",
+      "subject": "cta",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 67.56,
+        "boxH": 34,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 13,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"cta\" at 11.2px so it does not outrank the copy above it",
+      "subject": "cta",
+      "data": {
+        "was": 12,
+        "now": 12,
+        "ceiling": 11.2
+      }
+    },
+    {
+      "seq": 14,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"subhead\" does not fit at its 12px floor",
+      "subject": "subhead",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 49.72,
+        "boxH": 12.29,
+        "renderedLines": 1,
+        "maxLines": 2,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 15,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"subhead\" at 11.2px so it does not outrank the copy above it",
+      "subject": "subhead",
+      "data": {
+        "was": 12,
+        "now": 12,
+        "ceiling": 11.2
+      }
+    },
+    {
+      "seq": 16,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"badge\" does not fit at its 10px floor",
+      "subject": "badge",
+      "data": {
+        "minFontPx": 10,
+        "boxW": 57,
+        "boxH": 19,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 17,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"badge\" at 8.96px so it does not outrank the copy above it",
+      "subject": "badge",
+      "data": {
+        "was": 10,
+        "now": 10,
+        "ceiling": 8.96
+      }
+    },
+    {
+      "seq": 18,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 0,
+      "message": "\"legal\" does not fit at its 8px floor",
+      "subject": "legal",
+      "data": {
+        "minFontPx": 8,
+        "boxW": 49.72,
+        "boxH": 8.52,
+        "renderedLines": 1,
+        "maxLines": 2,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 19,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"legal\" at 7.17px so it does not outrank the copy above it",
+      "subject": "legal",
+      "data": {
+        "was": 8,
+        "now": 8,
+        "ceiling": 7.17
+      }
+    },
+    {
+      "seq": 20,
       "step": "degrade",
       "level": "decision",
       "pass": 0,
@@ -284,7 +400,7 @@
       }
     },
     {
-      "seq": 13,
+      "seq": 21,
       "step": "budget",
       "level": "info",
       "pass": 1,
@@ -295,7 +411,7 @@
       }
     },
     {
-      "seq": 14,
+      "seq": 22,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -311,7 +427,7 @@
       }
     },
     {
-      "seq": 15,
+      "seq": 23,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -327,7 +443,7 @@
       }
     },
     {
-      "seq": 16,
+      "seq": 24,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -343,7 +459,65 @@
       }
     },
     {
-      "seq": 17,
+      "seq": 25,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 1,
+      "message": "\"cta\" does not fit at its 12px floor",
+      "subject": "cta",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 67.56,
+        "boxH": 34,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 26,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 1,
+      "message": "capped \"cta\" at 11.2px so it does not outrank the copy above it",
+      "subject": "cta",
+      "data": {
+        "was": 12,
+        "now": 12,
+        "ceiling": 11.2
+      }
+    },
+    {
+      "seq": 27,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 1,
+      "message": "\"subhead\" does not fit at its 12px floor",
+      "subject": "subhead",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 49.72,
+        "boxH": 15.65,
+        "renderedLines": 1,
+        "maxLines": 2,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 28,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 1,
+      "message": "capped \"subhead\" at 11.2px so it does not outrank the copy above it",
+      "subject": "subhead",
+      "data": {
+        "was": 12,
+        "now": 12,
+        "ceiling": 11.2
+      }
+    },
+    {
+      "seq": 29,
       "step": "degrade",
       "level": "decision",
       "pass": 1,
@@ -356,7 +530,7 @@
       }
     },
     {
-      "seq": 18,
+      "seq": 30,
       "step": "budget",
       "level": "info",
       "pass": 2,
@@ -367,7 +541,7 @@
       }
     },
     {
-      "seq": 19,
+      "seq": 31,
       "step": "fitText",
       "level": "warn",
       "pass": 2,
@@ -383,7 +557,7 @@
       }
     },
     {
-      "seq": 20,
+      "seq": 32,
       "step": "fitText",
       "level": "warn",
       "pass": 2,
@@ -399,7 +573,36 @@
       }
     },
     {
-      "seq": 21,
+      "seq": 33,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 2,
+      "message": "\"cta\" does not fit at its 12px floor",
+      "subject": "cta",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 67.56,
+        "boxH": 34,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 34,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 2,
+      "message": "capped \"cta\" at 11.2px so it does not outrank the copy above it",
+      "subject": "cta",
+      "data": {
+        "was": 12,
+        "now": 12,
+        "ceiling": 11.2
+      }
+    },
+    {
+      "seq": 35,
       "step": "degrade",
       "level": "decision",
       "pass": 2,
@@ -412,7 +615,7 @@
       }
     },
     {
-      "seq": 22,
+      "seq": 36,
       "step": "budget",
       "level": "info",
       "pass": 3,
@@ -423,7 +626,7 @@
       }
     },
     {
-      "seq": 23,
+      "seq": 37,
       "step": "fitText",
       "level": "warn",
       "pass": 3,
@@ -439,7 +642,7 @@
       }
     },
     {
-      "seq": 24,
+      "seq": 38,
       "step": "fitText",
       "level": "warn",
       "pass": 3,
@@ -455,7 +658,36 @@
       }
     },
     {
-      "seq": 25,
+      "seq": 39,
+      "step": "fitText",
+      "level": "warn",
+      "pass": 3,
+      "message": "\"cta\" does not fit at its 12px floor",
+      "subject": "cta",
+      "data": {
+        "minFontPx": 12,
+        "boxW": 84,
+        "boxH": 34,
+        "renderedLines": 1,
+        "maxLines": 1,
+        "truncated": true
+      }
+    },
+    {
+      "seq": 40,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 3,
+      "message": "capped \"cta\" at 11.2px so it does not outrank the copy above it",
+      "subject": "cta",
+      "data": {
+        "was": 12,
+        "now": 12,
+        "ceiling": 11.2
+      }
+    },
+    {
+      "seq": 41,
       "step": "degrade",
       "level": "decision",
       "pass": 3,
@@ -468,7 +700,7 @@
       }
     },
     {
-      "seq": 26,
+      "seq": 42,
       "step": "budget",
       "level": "info",
       "pass": 4,
@@ -479,7 +711,7 @@
       }
     },
     {
-      "seq": 27,
+      "seq": 43,
       "step": "fitText",
       "level": "info",
       "pass": 4,
@@ -494,7 +726,7 @@
       }
     },
     {
-      "seq": 28,
+      "seq": 44,
       "step": "fitText",
       "level": "info",
       "pass": 4,
@@ -509,14 +741,14 @@
       }
     },
     {
-      "seq": 29,
+      "seq": 45,
       "step": "degrade",
       "level": "warn",
       "pass": 4,
       "message": "nothing left to drop; only protected elements remain"
     },
     {
-      "seq": 30,
+      "seq": 46,
       "step": "degrade",
       "level": "warn",
       "pass": 4,
@@ -527,7 +759,7 @@
       }
     },
     {
-      "seq": 31,
+      "seq": 47,
       "step": "fingerprint",
       "level": "info",
       "pass": 4,

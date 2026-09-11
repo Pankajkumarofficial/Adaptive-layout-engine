@@ -292,6 +292,62 @@
     },
     {
       "seq": 11,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"badge\" set at 10px over 1 line",
+      "subject": "badge",
+      "data": {
+        "freeSizePx": 10,
+        "snapped": false,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 12
+      }
+    },
+    {
+      "seq": 12,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"badge\" at 9.6px so it does not outrank the copy above it",
+      "subject": "badge",
+      "data": {
+        "was": 16,
+        "now": 10,
+        "ceiling": 9.6
+      }
+    },
+    {
+      "seq": 13,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"legal\" set at 8px over 1 line",
+      "subject": "legal",
+      "data": {
+        "freeSizePx": 8,
+        "snapped": false,
+        "lines": 1,
+        "maxLines": 2,
+        "lineHeightPx": 10.4
+      }
+    },
+    {
+      "seq": 14,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"legal\" at 7.68px so it does not outrank the copy above it",
+      "subject": "legal",
+      "data": {
+        "was": 8.19,
+        "now": 8,
+        "ceiling": 7.68
+      }
+    },
+    {
+      "seq": 15,
       "step": "degrade",
       "level": "decision",
       "pass": 0,
@@ -304,7 +360,7 @@
       }
     },
     {
-      "seq": 12,
+      "seq": 16,
       "step": "budget",
       "level": "info",
       "pass": 1,
@@ -315,7 +371,7 @@
       }
     },
     {
-      "seq": 13,
+      "seq": 17,
       "step": "fitText",
       "level": "info",
       "pass": 1,
@@ -330,7 +386,7 @@
       }
     },
     {
-      "seq": 14,
+      "seq": 18,
       "step": "fitText",
       "level": "info",
       "pass": 1,
@@ -345,7 +401,7 @@
       }
     },
     {
-      "seq": 15,
+      "seq": 19,
       "step": "fitText",
       "level": "warn",
       "pass": 1,
@@ -361,7 +417,7 @@
       }
     },
     {
-      "seq": 16,
+      "seq": 20,
       "step": "degrade",
       "level": "decision",
       "pass": 1,
@@ -374,7 +430,7 @@
       }
     },
     {
-      "seq": 17,
+      "seq": 21,
       "step": "budget",
       "level": "info",
       "pass": 2,
@@ -385,7 +441,7 @@
       }
     },
     {
-      "seq": 18,
+      "seq": 22,
       "step": "fitText",
       "level": "info",
       "pass": 2,
@@ -400,7 +456,7 @@
       }
     },
     {
-      "seq": 19,
+      "seq": 23,
       "step": "fitText",
       "level": "info",
       "pass": 2,
@@ -415,7 +471,7 @@
       }
     },
     {
-      "seq": 20,
+      "seq": 24,
       "step": "imageCrop",
       "level": "info",
       "pass": 2,
@@ -431,7 +487,7 @@
       }
     },
     {
-      "seq": 21,
+      "seq": 25,
       "step": "imageCrop",
       "level": "info",
       "pass": 2,
@@ -447,7 +503,7 @@
       }
     },
     {
-      "seq": 22,
+      "seq": 26,
       "step": "fingerprint",
       "level": "info",
       "pass": 2,

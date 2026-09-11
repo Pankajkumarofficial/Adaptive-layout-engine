@@ -7,7 +7,7 @@ import { budget, compactRegion, type Shortfall } from './steps/budget.js';
 import { chooseDrop } from './steps/degrade.js';
 import { enforceContrast } from './steps/contrast.js';
 import { enforceSafeArea } from './steps/safeArea.js';
-import { fitText, textBoxOf, textFrameFor, type TextFit } from './steps/fitText.js';
+import { fitText, textBoxOf, textFrameFor, TYPE_RANK, type TextFit } from './steps/fitText.js';
 import { coverCrop, DEFAULT_FOCAL_POINT } from './steps/imageCrop.js';
 import { normalize, type NormalizedElement, type NormalizedSpec } from './steps/normalize.js';
 import { selectArchetype } from './steps/selectArchetype.js';
@@ -209,12 +209,14 @@ function runAttempt(
 
   // Step 5 — fit text, then shrink each text frame onto its real line box.
   const fits = new Map<string, TextFit>();
+  const boxes = new Map<string, Rect>();
   const frames: Record<string, Rect> = { ...budgeted.frames };
   for (const el of active) {
     if (el.text === null) continue;
     const band = frames[el.id];
     if (band === undefined) continue;
     const box = textBoxOf(el, band, gutter);
+    boxes.set(el.id, box);
     const fit = fitText(el, box, norm.spec.theme, tracer);
     fits.set(el.id, fit);
     frames[el.id] = textFrameFor(el, band, fit, klass, gutter);
@@ -230,6 +232,64 @@ function runAttempt(
           : { elementId: el.id, axis: 'h', required: fit.neededHeightPx, available: box.h },
       );
     }
+  }
+
+  // Still step 5 — enforce the type hierarchy.
+  //
+  // Each element above was fitted to fill its own band, which on its own lets
+  // a two-word subhead outgrow a long headline: the copy with least to say
+  // wins the most room. Nothing may be set larger than a role ranked above it,
+  // so anything over its ceiling is fitted again against that ceiling.
+  const smallestByRank = new Map<number, number>();
+  for (const el of active) {
+    const rank = TYPE_RANK[el.role];
+    const fit = fits.get(el.id);
+    if (rank === undefined || fit === undefined) continue;
+    const current = smallestByRank.get(rank);
+    smallestByRank.set(
+      rank,
+      current === undefined ? fit.fontSizePx : Math.min(current, fit.fontSizePx),
+    );
+  }
+
+  for (const el of active) {
+    const rank = TYPE_RANK[el.role];
+    const fit = fits.get(el.id);
+    const box = boxes.get(el.id);
+    const band = frames[el.id];
+    if (rank === undefined || fit === undefined || box === undefined || band === undefined)
+      continue;
+
+    // A step down the theme's own typographic scale, not merely "no larger".
+    // Equal sizes read as two headlines competing; `scaleRatio` is the ratio
+    // the author chose for exactly this relationship. A ratio of 1 means they
+    // asked for no step, and gets none.
+    const ratio = Math.max(1, norm.spec.theme.scaleRatio);
+    let ceiling = Number.POSITIVE_INFINITY;
+    for (const [otherRank, size] of smallestByRank) {
+      if (otherRank < rank) ceiling = Math.min(ceiling, size / ratio ** (rank - otherRank));
+    }
+    if (!Number.isFinite(ceiling) || fit.fontSizePx <= ceiling + 0.01) continue;
+
+    const capped = fitText(el, box, norm.spec.theme, tracer, ceiling);
+    fits.set(el.id, capped);
+    // The band was sized from the original fit; re-derive the frame from the
+    // band the element was allocated, not from the shrink-wrapped one.
+    frames[el.id] = textFrameFor(
+      el,
+      { ...band, h: Math.max(band.h, capped.blockHeightPx) },
+      capped,
+      klass,
+      gutter,
+    );
+    tracer.decision(
+      'fitText',
+      `capped "${el.id}" at ${roundTo(ceiling, 2)}px so it does not outrank the copy above it`,
+      {
+        subject: el.id,
+        data: { was: fit.fontSizePx, now: capped.fontSizePx, ceiling: roundTo(ceiling, 2) },
+      },
+    );
   }
 
   // Second half of step 4 — restack each region now that heights are real.

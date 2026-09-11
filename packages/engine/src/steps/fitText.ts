@@ -1,6 +1,6 @@
 import { clamp, containRect, roundTo } from '../geometry.js';
 import { estimateWidth, wrap, WIDTH_SAFETY_FACTOR } from '../measure/textMetrics.js';
-import type { Rect, SurfaceClass, Theme } from '../types.js';
+import type { ElementRole, Rect, SurfaceClass, Theme } from '../types.js';
 import type { NormalizedElement } from './normalize.js';
 import type { Tracer } from '../trace.js';
 
@@ -26,6 +26,26 @@ export interface TextFit {
   /** Width the widest untruncated line would need, for the same reason. */
   neededWidthPx: number;
 }
+
+/**
+ * Typographic rank. Lower is larger.
+ *
+ * Each text element is fitted independently to fill the space it was given,
+ * which alone would let a two-word subhead outgrow a long headline — the copy
+ * with less to say wins the most room. Rank restores the hierarchy: nothing may
+ * be set larger than a role above it.
+ *
+ * Roles absent from this table (logo, hero, background) carry no type of their
+ * own and take part in no comparison.
+ */
+export const TYPE_RANK: Readonly<Partial<Record<ElementRole, number>>> = {
+  headline: 0,
+  subhead: 1,
+  cta: 1,
+  body: 2,
+  badge: 2,
+  legal: 3,
+};
 
 /** Ladder anchor. Everything snaps relative to a 16px base. */
 export const TYPE_BASE_PX = 16;
@@ -69,7 +89,14 @@ export function textBoxOf(el: NormalizedElement, frame: Rect, gutter: number): R
  * size, so there is nothing to invert. The predicate is monotone (bigger text
  * never fits when smaller text did not), which is all a bisection needs.
  */
-export function fitText(el: NormalizedElement, box: Rect, theme: Theme, tracer: Tracer): TextFit {
+export function fitText(
+  el: NormalizedElement,
+  box: Rect,
+  theme: Theme,
+  tracer: Tracer,
+  /** Hard ceiling from the type hierarchy, when a higher-ranked role is present. */
+  maxFontPx?: number,
+): TextFit {
   const text = el.text;
   if (text === null) {
     throw new Error(`fitText called on non-text element "${el.id}"`);
@@ -95,9 +122,10 @@ export function fitText(el: NormalizedElement, box: Rect, theme: Theme, tracer: 
   };
 
   const loUnits = Math.max(1, Math.round(text.minFontPx / SIZE_STEP));
+  const ceiling = Math.min(MAX_FONT_PX, maxFontPx ?? MAX_FONT_PX);
   const hiUnits = Math.max(
     loUnits,
-    Math.round(Math.min(MAX_FONT_PX, Math.max(text.minFontPx, box.h)) / SIZE_STEP),
+    Math.round(Math.min(ceiling, Math.max(text.minFontPx, box.h)) / SIZE_STEP),
   );
 
   let lo = loUnits;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { solve } from '../src/solve.js';
 import { SpecError } from '../src/errors.js';
-import { DEMO_SPEC, MINIMAL_SPEC, presetSurface } from '../src/fixtures/index.js';
+import { DEMO_SPEC, MINIMAL_SPEC, PRESET_SURFACES, presetSurface } from '../src/fixtures/index.js';
 import type { AdSpec, Surface } from '../src/types.js';
 
 const square = presetSurface('square-1080');
@@ -87,6 +87,60 @@ describe('solve — contract', () => {
     expect(result.dropped.find((d) => d.id === 'subhead')?.reason).toContain('no text');
     // Everything else still lays out.
     expect(result.placed.map((p) => p.id)).toContain('headline');
+  });
+
+  it('never sets a lower-ranked role larger than the copy above it', () => {
+    // Regression: each text element was fitted to fill its own band, so a
+    // two-word subhead outgrew a long headline — the copy with least to say
+    // won the most room, and the ad read upside down.
+    const shortSubhead: AdSpec = {
+      ...MINIMAL_SPEC,
+      elements: [
+        { id: 'bg', role: 'background', priority: 0, content: { kind: 'shape', fill: '#0f172a' } },
+        {
+          id: 'headline',
+          role: 'headline',
+          priority: 0,
+          content: {
+            kind: 'text',
+            value: 'A headline long enough to wrap twice',
+            maxLines: 3,
+            minFontPx: 14,
+          },
+        },
+        {
+          id: 'subhead',
+          role: 'subhead',
+          priority: 60,
+          content: { kind: 'text', value: 'Two words', maxLines: 3, minFontPx: 12 },
+        },
+        {
+          id: 'cta',
+          role: 'cta',
+          priority: 5,
+          content: { kind: 'text', value: 'Go', maxLines: 1, minFontPx: 12 },
+        },
+      ],
+    };
+
+    for (const preset of PRESET_SURFACES) {
+      const result = solve(shortSubhead, preset);
+      const size = (id: string) => result.placed.find((p) => p.id === id)?.fontSizePx ?? 0;
+      const headline = size('headline');
+      if (headline === 0) continue;
+      for (const id of ['subhead', 'cta']) {
+        const other = size(id);
+        if (other === 0) continue;
+        expect(other, `${id} on ${preset.label}`).toBeLessThanOrEqual(headline + 0.01);
+      }
+    }
+  });
+
+  it('steps the hierarchy down the theme type scale, not merely to equal', () => {
+    const result = solve(DEMO_SPEC, square);
+    const size = (id: string) => result.placed.find((p) => p.id === id)?.fontSizePx ?? 0;
+    // A subhead the same size as the headline reads as two headlines.
+    expect(size('subhead')).toBeLessThan(size('headline'));
   });
 
   it('lets the background bleed past the safe area', () => {

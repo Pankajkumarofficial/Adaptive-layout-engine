@@ -118,14 +118,14 @@
       "id": "legal",
       "frame": {
         "x": 48,
-        "y": 1661.33,
+        "y": 1671.12,
         "w": 984,
-        "h": 50.78
+        "h": 31.2
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 39.06,
-      "lineHeightPx": 50.78,
+      "fontSizePx": 24,
+      "lineHeightPx": 31.2,
       "lines": [
         "Free returns within 30 days. Terms apply."
       ],
@@ -189,15 +189,15 @@
     {
       "id": "cta",
       "frame": {
-        "x": 88.54,
-        "y": 1458,
-        "w": 902.93,
-        "h": 175.2
+        "x": 234.87,
+        "y": 1481.83,
+        "w": 610.26,
+        "h": 127.55
       },
       "opacity": 1,
       "z": 40,
-      "fontSizePx": 116,
-      "lineHeightPx": 139.2,
+      "fontSizePx": 76.29,
+      "lineHeightPx": 91.55,
       "lines": [
         "Shop the range"
       ],
@@ -345,6 +345,62 @@
     },
     {
       "seq": 11,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"cta\" set at 76.29px over 1 line",
+      "subject": "cta",
+      "data": {
+        "freeSizePx": 76.5,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 1,
+        "lineHeightPx": 91.55
+      }
+    },
+    {
+      "seq": 12,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"cta\" at 76.3px so it does not outrank the copy above it",
+      "subject": "cta",
+      "data": {
+        "was": 116,
+        "now": 76.29,
+        "ceiling": 76.3
+      }
+    },
+    {
+      "seq": 13,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"legal\" set at 24px over 1 line",
+      "subject": "legal",
+      "data": {
+        "freeSizePx": 24,
+        "snapped": false,
+        "lines": 1,
+        "maxLines": 2,
+        "lineHeightPx": 31.2
+      }
+    },
+    {
+      "seq": 14,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"legal\" at 24px so it does not outrank the copy above it",
+      "subject": "legal",
+      "data": {
+        "was": 39.06,
+        "now": 24,
+        "ceiling": 24
+      }
+    },
+    {
+      "seq": 15,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -360,7 +416,7 @@
       }
     },
     {
-      "seq": 12,
+      "seq": 16,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -376,16 +432,16 @@
       }
     },
     {
-      "seq": 13,
+      "seq": 17,
       "step": "fingerprint",
       "level": "info",
       "pass": 0,
-      "message": "layout hashes to fp_ac4211db",
+      "message": "layout hashes to fp_2529709a",
       "data": {
         "placed": 8,
         "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_ac4211db"
+  "fingerprint": "fp_2529709a"
 }
