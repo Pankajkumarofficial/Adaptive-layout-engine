@@ -31,35 +31,6 @@ reason they were dropped.
 
 ![Free resize reflowing a spec from 1080×1920 down to 320×50](docs/free-resize.gif)
 
-## Drag to edit — the spec, not the surface
-
-The obvious next feature is to let you drag a region into place on the canvas. I did not build that,
-because it is precisely the per-surface hand-authoring the engine exists to remove: you would nudge
-the logo on the story, and the other six surfaces would still be unexplained.
-
-So the gestures are there, and every one of them writes an authored-once property on the spec:
-
-| Gesture                               | Writes               | Effect                                                     |
-| ------------------------------------- | -------------------- | ---------------------------------------------------------- |
-| Drag a logo, badge, CTA or legal line | `pinTo`              | that element seeks the same edge on every surface          |
-| Drag a picture                        | `content.focalPoint` | every crop, on every surface, recentres                    |
-| Drag the corner handle                | `maxSize`            | a ceiling the element may not exceed anywhere, aspect held |
-
-The strip below the canvas re-solves all seven presets on the same frame, so a single drag is
-visible as seven simultaneous consequences rather than one. Nothing here computes a position: the
-editor reads frames the engine decided and writes back constraints, and the engine decides again.
-
-The handle stops at the element's own `minSize`, because a ceiling below a floor is a contradiction
-no surface can satisfy — and an expensive one: every budgeting pass reports the unmet minimum, and
-degradation drops healthy elements chasing space that would never have helped. A spec can still
-arrive with one (hand-edited JSON, an older document), so `normalize` raises such a cap back to the
-floor and warns; the gesture simply cannot express it.
-
-An axis with nothing to pan is locked rather than silently obeyed — on a surface where the picture
-is already full-bleed horizontally, a sideways drag would write a large `focalPoint` change that
-this canvas cannot show and the other six would lurch to. The cursor and the label say which axis
-is live.
-
 ---
 
 ## Drop rates
