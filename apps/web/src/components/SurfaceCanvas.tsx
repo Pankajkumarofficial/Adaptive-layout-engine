@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { LayoutResult } from '@ale/engine';
 import { AdRenderer } from '../renderer/AdRenderer';
+import { CanvasEditor } from './CanvasEditor';
 import { DebugOverlay } from '../renderer/DebugOverlay';
 import { usePlayground } from '../lib/store';
 import { CUSTOM_SURFACE_ID, fitScale, PRESETS } from '../lib/presets';
@@ -20,6 +21,7 @@ export function SurfaceCanvas({ result }: { result: LayoutResult | null }) {
 
   const stageRef = useRef<HTMLDivElement>(null);
   const [stage, setStage] = useState({ w: 800, h: 520 });
+  const [editOnCanvas, setEditOnCanvas] = useState(true);
 
   useLayoutEffect(() => {
     const node = stageRef.current;
@@ -98,6 +100,23 @@ export function SurfaceCanvas({ result }: { result: LayoutResult | null }) {
         >
           Regions
         </button>
+
+        {/* Direct manipulation edits the spec, not this surface's output, so it
+            is the same kind of control as Regions: a way of looking at the
+            engine rather than a way around it. */}
+        <button
+          type="button"
+          onClick={() => setEditOnCanvas((on) => !on)}
+          aria-pressed={editOnCanvas}
+          title="Drag elements here to set pinTo, focalPoint and maxSize on the spec"
+          className={`rounded-bench border px-2 py-1 text-tiny transition-colors ${
+            editOnCanvas
+              ? 'border-guide text-guide'
+              : 'border-rule text-ink-2 hover:border-guide hover:text-ink'
+          }`}
+        >
+          Drag to edit
+        </button>
       </div>
 
       <div
@@ -113,6 +132,7 @@ export function SurfaceCanvas({ result }: { result: LayoutResult | null }) {
               <AdRenderer spec={spec} surface={surface} result={result} scale={scale} />
             </div>
             {showDebug && <DebugOverlay spec={spec} result={result} scale={scale} />}
+            {editOnCanvas && <CanvasEditor spec={spec} result={result} scale={scale} />}
 
             <WidthCallout width={surface.width} scale={scale} />
             <HeightCallout height={surface.height} scale={scale} />
@@ -121,7 +141,7 @@ export function SurfaceCanvas({ result }: { result: LayoutResult | null }) {
               type="button"
               aria-label="Drag to resize the surface"
               onPointerDown={drag}
-              className="group absolute -bottom-3.5 -right-3.5 h-9 w-9 cursor-nwse-resize touch-none select-none"
+              className="group absolute -bottom-3.5 -right-3.5 z-20 h-9 w-9 cursor-nwse-resize touch-none select-none"
             >
               <span className="absolute bottom-3 right-3 block h-5 w-[2px] bg-guide transition-all group-hover:h-7 group-hover:bg-ink" />
               <span className="absolute bottom-3 right-3 block h-[2px] w-5 bg-guide transition-all group-hover:w-7 group-hover:bg-ink" />
