@@ -104,6 +104,7 @@ function Handle({ element, placed, scale, selected, onSelect, onUpdate, onGestur
       : { x: false, y: false };
   const canFocal = pan.x || pan.y;
   const draggable = canPin || canFocal;
+  const hint = describe(canPin, pan);
 
   const bodyDrag = (event: React.PointerEvent<HTMLDivElement>): void => {
     event.stopPropagation();
@@ -192,11 +193,11 @@ function Handle({ element, placed, scale, selected, onSelect, onUpdate, onGestur
     <div
       ref={ref}
       onPointerDown={bodyDrag}
-      onPointerEnter={() => setShowLabel(true)}
+      onPointerEnter={() => setShowLabel(draggable)}
       onPointerLeave={() => setShowLabel(false)}
       role="button"
       tabIndex={-1}
-      aria-label={`${element.id}, ${describe(canPin, pan)}`}
+      aria-label={hint === null ? `Select ${element.id}` : `${element.id}, ${hint}`}
       className={`pointer-events-auto absolute ${cursorFor(canPin, draggable, pan)} ${
         selected ? 'ring-2 ring-guide' : 'hover:ring-1 hover:ring-guide/60'
       }`}
@@ -208,9 +209,9 @@ function Handle({ element, placed, scale, selected, onSelect, onUpdate, onGestur
         zIndex: placed.z + 1,
       }}
     >
-      {showLabel && (
+      {showLabel && hint !== null && (
         <span className="pointer-events-none absolute -top-5 left-0 whitespace-nowrap bg-guide px-1 text-micro text-on-accent">
-          {element.id} &middot; {describe(canPin, pan)}
+          {element.id} &middot; {hint}
         </span>
       )}
       {selected && (
@@ -226,13 +227,18 @@ function Handle({ element, placed, scale, selected, onSelect, onUpdate, onGestur
   );
 }
 
-/** Says what this drag will do here, in the spec's terms, before you commit. */
-function describe(canPin: boolean, pan: PanAxes): string {
+/**
+ * What this drag will write, in the spec's own terms, before you commit — or
+ * null where a drag would do nothing. An element with no position to express is
+ * still worth clicking to select, but a hint saying so is a label covering the
+ * headline to tell you about something that is not going to happen.
+ */
+function describe(canPin: boolean, pan: PanAxes): string | null {
   if (canPin) return 'drag to pin';
   if (pan.x && pan.y) return 'drag to reframe';
   if (pan.x) return 'drag sideways to reframe';
   if (pan.y) return 'drag up or down to reframe';
-  return 'nothing to move here';
+  return null;
 }
 
 function cursorFor(canPin: boolean, draggable: boolean, pan: PanAxes): string {
