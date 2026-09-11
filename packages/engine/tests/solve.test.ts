@@ -414,3 +414,47 @@ describe('solve — invalid input', () => {
     expect(() => solve(MINIMAL_SPEC, bad)).toThrowError(SpecError);
   });
 });
+
+/**
+ * An author can write a ceiling below their own floor — a size handle dragged
+ * past `minSize` does it in one gesture. The element is then unsatisfiable at
+ * any size, and left alone it costs the rest of the layout: every pass reports
+ * an unmet minimum, and degradation drops healthy elements chasing space that
+ * would never have helped.
+ */
+describe('solve — a cap below the floor', () => {
+  const withCappedLogo = (maxSize: { w?: number; h?: number }): AdSpec => ({
+    ...DEMO_SPEC,
+    elements: DEMO_SPEC.elements.map((el) =>
+      el.id === 'logo' ? { ...el, minSize: { w: 48, h: 16 }, maxSize } : el,
+    ),
+  });
+
+  it('raises the cap to the floor rather than starving the layout', () => {
+    const result = solve(withCappedLogo({ w: 4, h: 4 }), story);
+    const logo = result.placed.find((p) => p.id === 'logo');
+
+    expect(logo).toBeDefined();
+    expect(logo?.frame.w).toBeGreaterThanOrEqual(48);
+    expect(logo?.frame.h).toBeGreaterThanOrEqual(16);
+  });
+
+  it('drops nothing that a sane cap would have kept', () => {
+    const sane = solve(withCappedLogo({ w: 240 }), story);
+    const absurd = solve(withCappedLogo({ w: 4, h: 4 }), story);
+
+    expect(ids(absurd.dropped)).toEqual(ids(sane.dropped));
+  });
+
+  it('says it made the correction', () => {
+    const result = solve(withCappedLogo({ h: 2 }), story);
+    expect(result.warnings.some((w) => w.includes('caps itself below its own minimum'))).toBe(true);
+  });
+
+  it('leaves a cap on one axis alone when only the other is impossible', () => {
+    const result = solve(withCappedLogo({ w: 240, h: 2 }), story);
+    const logo = result.placed.find((p) => p.id === 'logo');
+    expect(logo?.frame.w).toBeLessThanOrEqual(240.01);
+    expect(logo?.frame.h).toBeGreaterThanOrEqual(16);
+  });
+});

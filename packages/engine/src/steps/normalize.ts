@@ -205,6 +205,29 @@ export function normalize(spec: AdSpec, surface: Surface, tracer: Tracer): Norma
     .sort((a, b) => a.el.priority - b.el.priority || a.index - b.index)
     .map(({ el }) => normalizeElement(el));
 
+  // A cap below the floor is a contradiction, and one an author can write by
+  // accident — drag a size handle past a minSize and the element becomes
+  // unsatisfiable at any size. Left alone it poisons the whole layout: budget
+  // reports an unmet minimum every pass, and degrade drops perfectly healthy
+  // elements trying to recover space that would never have helped. The floor
+  // wins, because it is the promise: below it the element is not worth drawing.
+  for (const el of ordered) {
+    if (el.maxSize === null) continue;
+    const w = el.maxSize.w !== undefined && el.maxSize.w < el.minSize.w ? el.minSize.w : undefined;
+    const h = el.maxSize.h !== undefined && el.maxSize.h < el.minSize.h ? el.minSize.h : undefined;
+    if (w === undefined && h === undefined) continue;
+    const raised = {
+      ...el.maxSize,
+      ...(w !== undefined ? { w } : {}),
+      ...(h !== undefined ? { h } : {}),
+    };
+    tracer.warn('normalize', `"${el.id}" caps itself below its own minimum; raising the cap`, {
+      subject: el.id,
+      data: { maxSize: describeCap(el.maxSize), minSize: `${el.minSize.w}x${el.minSize.h}` },
+    });
+    el.maxSize = raised;
+  }
+
   // An element with no text is not content, whatever its priority says. Laying
   // one out would reserve space for an empty box; refusing the spec would make
   // the editor unusable while you clear a field to retype it.
@@ -281,6 +304,10 @@ function normalizeElement(el: AdElement): NormalizedElement {
     bleed: defaults.bleed,
     text,
   };
+}
+
+function describeCap(cap: SizeCap): string {
+  return `${cap.w ?? '-'}x${cap.h ?? '-'}`;
 }
 
 function toIssues(issues: readonly { path: (string | number)[]; message: string }[]): SpecIssue[] {
