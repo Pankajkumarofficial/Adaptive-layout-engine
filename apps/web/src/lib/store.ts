@@ -16,6 +16,8 @@ export interface PlaygroundState {
   resetSpec: () => void;
   updateElement: (id: string, patch: Partial<AdElement>) => void;
   setPriority: (id: string, priority: number) => void;
+  /** Adds or removes an element from `rules.neverDrop`. */
+  toggleNeverDrop: (id: string) => void;
   removeElement: (id: string) => void;
   addElement: (element: AdElement) => void;
   setTheme: (patch: Partial<AdSpec['theme']>) => void;
@@ -61,6 +63,20 @@ export const usePlayground = create<PlaygroundState>()(
             ),
           },
         })),
+
+      toggleNeverDrop: (id) =>
+        set((state) => {
+          const held = new Set(state.spec.rules?.neverDrop ?? []);
+          if (held.has(id)) held.delete(id);
+          else held.add(id);
+          const next = [...held];
+          return {
+            spec: {
+              ...state.spec,
+              rules: { ...state.spec.rules, neverDrop: next.length > 0 ? next : undefined },
+            },
+          };
+        }),
 
       removeElement: (id) =>
         set((state) => ({

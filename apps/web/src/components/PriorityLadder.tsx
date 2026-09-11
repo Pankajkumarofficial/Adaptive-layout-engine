@@ -15,6 +15,7 @@ export function PriorityLadder({ result }: { result: LayoutResult | null }) {
   const selectedId = usePlayground((s) => s.selectedElementId);
   const selectElement = usePlayground((s) => s.selectElement);
   const setPriority = usePlayground((s) => s.setPriority);
+  const toggleNeverDrop = usePlayground((s) => s.toggleNeverDrop);
 
   const droppedById = new Map((result?.dropped ?? []).map((d) => [d.id, d.reason]));
   const neverDrop = new Set(spec.rules?.neverDrop ?? []);
@@ -51,9 +52,11 @@ export function PriorityLadder({ result }: { result: LayoutResult | null }) {
             element={element}
             selected={selectedId === element.id}
             dropReason={droppedById.get(element.id)}
-            locked={neverDrop.has(element.id) || element.priority === 0}
+            heldByRule={neverDrop.has(element.id)}
+            heldByZero={element.priority === 0}
             onSelect={() => selectElement(selectedId === element.id ? null : element.id)}
             onPriority={(p) => setPriority(element.id, p)}
+            onToggleHold={() => toggleNeverDrop(element.id)}
           />
         ))}
       </ul>
@@ -206,12 +209,24 @@ interface RungProps {
   element: AdElement;
   selected: boolean;
   dropReason: string | undefined;
-  locked: boolean;
+  heldByRule: boolean;
+  heldByZero: boolean;
+  onToggleHold: () => void;
   onSelect: () => void;
   onPriority: (priority: number) => void;
 }
 
-function Rung({ element, selected, dropReason, locked, onSelect, onPriority }: RungProps) {
+function Rung({
+  element,
+  selected,
+  dropReason,
+  heldByRule,
+  heldByZero,
+  onSelect,
+  onPriority,
+  onToggleHold,
+}: RungProps) {
+  const locked = heldByRule || heldByZero;
   const trackRef = useRef<HTMLDivElement>(null);
   const dropped = dropReason !== undefined;
 
@@ -240,32 +255,49 @@ function Rung({ element, selected, dropReason, locked, onSelect, onPriority }: R
         selected ? 'border-guide bg-card' : 'border-transparent hover:bg-paper'
       }`}
     >
-      <button
-        type="button"
-        onClick={onSelect}
-        className="flex w-full items-baseline gap-2 text-left"
-        aria-expanded={selected}
-      >
-        <span
-          className={`text-sm font-semibold tracking-[-0.005em] ${
-            dropped ? 'text-ink-3 line-through decoration-reg decoration-2' : 'text-ink'
+      <div className="flex items-baseline gap-2">
+        <button
+          type="button"
+          onClick={onSelect}
+          className="flex min-w-0 flex-1 items-baseline gap-2 text-left"
+          aria-expanded={selected}
+        >
+          <span
+            className={`truncate text-sm font-semibold tracking-[-0.005em] ${
+              dropped ? 'text-ink-3 line-through decoration-reg decoration-2' : 'text-ink'
+            }`}
+          >
+            {element.id}
+          </span>
+          <span className="truncate text-tiny text-ink-3">{element.role}</span>
+        </button>
+
+        <span className="tabular text-tiny text-ink-2">{element.priority}</span>
+
+        {/* The hold is a rule in the spec, not a property of the marker.
+            Without a control for it the slider looks broken: you drag a
+            protected element away from 0 and it still never drops, for a
+            reason nothing on screen mentions. */}
+        <button
+          type="button"
+          onClick={onToggleHold}
+          aria-pressed={heldByRule}
+          title={
+            heldByZero
+              ? 'Priority 0 is never dropped whatever this says. Drag the marker right to release it.'
+              : heldByRule
+                ? 'Held by a rule: never dropped, whatever its priority. Click to release.'
+                : 'Click to hold this element: never dropped, whatever its priority.'
+          }
+          className={`shrink-0 border px-1.5 text-micro leading-[17px] transition-colors ${
+            locked
+              ? 'border-guide text-guide'
+              : 'border-rule/50 text-ink-3 hover:border-ink hover:text-ink'
           }`}
         >
-          {element.id}
-        </span>
-        <span className="text-tiny text-ink-3">{element.role}</span>
-        <span
-          className="ml-auto tabular text-tiny text-ink-2"
-          title={
-            locked
-              ? 'Priority 0 is never dropped. Drag the marker right to make it droppable again.'
-              : undefined
-          }
-        >
-          {element.priority}
-          {locked && <span className="ml-1.5 text-ink-3">held</span>}
-        </span>
-      </button>
+          {locked ? 'held' : 'hold'}
+        </button>
+      </div>
 
       <div
         ref={trackRef}
