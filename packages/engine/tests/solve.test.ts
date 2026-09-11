@@ -448,7 +448,7 @@ describe('solve — a cap below the floor', () => {
 
   it('says it made the correction', () => {
     const result = solve(withCappedLogo({ h: 2 }), story);
-    expect(result.warnings.some((w) => w.includes('caps itself below its own minimum'))).toBe(true);
+    expect(result.warnings.some((w) => w.includes('under its own 48x16 minimum'))).toBe(true);
   });
 
   it('leaves a cap on one axis alone when only the other is impossible', () => {

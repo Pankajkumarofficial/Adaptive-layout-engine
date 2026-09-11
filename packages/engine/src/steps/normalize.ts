@@ -221,10 +221,15 @@ export function normalize(spec: AdSpec, surface: Surface, tracer: Tracer): Norma
       ...(w !== undefined ? { w } : {}),
       ...(h !== undefined ? { h } : {}),
     };
-    tracer.warn('normalize', `"${el.id}" caps itself below its own minimum; raising the cap`, {
-      subject: el.id,
-      data: { maxSize: describeCap(el.maxSize), minSize: `${el.minSize.w}x${el.minSize.h}` },
-    });
+    tracer.warn(
+      'normalize',
+      `"${el.id}" is capped at ${describeCap(el.maxSize)}, under its own ` +
+        `${el.minSize.w}x${el.minSize.h} minimum; using the minimum`,
+      {
+        subject: el.id,
+        data: { cap: describeCap(el.maxSize), floor: `${el.minSize.w}x${el.minSize.h}` },
+      },
+    );
     el.maxSize = raised;
   }
 
@@ -306,8 +311,12 @@ function normalizeElement(el: AdElement): NormalizedElement {
   };
 }
 
+/** "240x80", "240 wide", "80 tall" — never "240x-", which reads as a typo. */
 function describeCap(cap: SizeCap): string {
-  return `${cap.w ?? '-'}x${cap.h ?? '-'}`;
+  if (cap.w !== undefined && cap.h !== undefined) return `${cap.w}x${cap.h}`;
+  if (cap.w !== undefined) return `${cap.w} wide`;
+  if (cap.h !== undefined) return `${cap.h} tall`;
+  return 'nothing';
 }
 
 function toIssues(issues: readonly { path: (string | number)[]; message: string }[]): SpecIssue[] {

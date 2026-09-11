@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import type { AdElement, ImageContent } from '@ale/engine';
-import { PINNABLE } from '@ale/engine';
+import { PINNABLE, ROLE_DEFAULTS } from '@ale/engine';
 import { usePlayground } from '../lib/store';
 import { importImageFile } from '../lib/importImage';
 import { Field, Swatch } from './Field';
@@ -269,10 +269,20 @@ function SizeCap({ element }: { element: AdElement }) {
   if (max?.w !== undefined && max.w >= surface.width) idle.push(`${max.w}px wide`);
   if (max?.h !== undefined && max.h >= surface.height) idle.push(`${max.h}px tall`);
 
+  // A cap under the element's own floor is a contradiction. The engine raises
+  // it and warns on every surface, which is honest but lands in the trace on
+  // the far side of the screen — a long way from the field that caused it, and
+  // easy to acquire by stopping halfway through typing "100". Say it here.
+  const floor = element.minSize ?? ROLE_DEFAULTS[element.role].minSize;
+  const under: string[] = [];
+  if (max?.w !== undefined && max.w < floor.w) under.push(`${max.w}px wide is under ${floor.w}`);
+  if (max?.h !== undefined && max.h < floor.h) under.push(`${max.h}px tall is under ${floor.h}`);
+
   return (
     <div className="mb-3">
       <span className="mb-1 block text-tiny leading-snug text-ink-3">
-        Largest it may be drawn, in px &mdash; leave either blank for no limit
+        Largest it may be drawn, in px &mdash; leave either blank for no limit. Never below{' '}
+        {floor.w}&times;{floor.h}.
       </span>
       <div className="flex items-center gap-2">
         <input
@@ -304,7 +314,13 @@ function SizeCap({ element }: { element: AdElement }) {
           Held at {element.aspectLock}:1, so whichever limit binds first wins.
         </p>
       )}
-      {idle.length > 0 && (
+      {under.length > 0 && (
+        <p className="mt-1 text-micro leading-snug text-reg">
+          {under.join(', and ')}. This {element.role} is never drawn smaller than {floor.w}&times;
+          {floor.h}, so the engine is using that instead.
+        </p>
+      )}
+      {under.length === 0 && idle.length > 0 && (
         <p className="mt-1 text-micro leading-snug text-mark">
           {idle.join(' and ')} {idle.length === 1 ? 'is' : 'are'} bigger than this {surface.width}
           &times;{surface.height} surface, so {idle.length === 1 ? 'it changes' : 'they change'}{' '}
