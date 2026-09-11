@@ -5,7 +5,7 @@ import { stripArchetype } from './strip.js';
 import type { Archetype } from './types.js';
 
 export * from './types.js';
-export { byReadingOrder, groupByRegion, ROLE_RANK } from './shared.js';
+export { byReadingOrder, groupByRegion, PINNABLE, ROLE_RANK } from './shared.js';
 export { overlayArchetype, splitArchetype, stackArchetype, stripArchetype };
 
 /** Every implemented archetype, keyed by id. */

@@ -458,3 +458,40 @@ describe('solve — a cap below the floor', () => {
     expect(logo?.frame.h).toBeGreaterThanOrEqual(16);
   });
 });
+
+/**
+ * `pinTo` re-homes chrome only. Copy and the hero keep their reading order, so
+ * setting it on them is inert — which is why the playground offers the control
+ * only where it does something. If this ever starts to bind, the inspector has
+ * to start offering it again.
+ */
+describe('solve — pinTo binds on chrome only', () => {
+  const pin = (id: string): AdSpec => ({
+    ...DEMO_SPEC,
+    elements: DEMO_SPEC.elements.map((el) => (el.id === id ? { ...el, pinTo: 'top' } : el)),
+  });
+
+  for (const surface of [story, square, banner]) {
+    it(`changes nothing for a hero or headline on ${surface.id}`, () => {
+      const base = solve(DEMO_SPEC, surface).fingerprint;
+      expect(solve(pin('hero'), surface).fingerprint).toBe(base);
+      expect(solve(pin('headline'), surface).fingerprint).toBe(base);
+    });
+  }
+
+  it('does bind on a logo, so the distinction is real', () => {
+    const base = solve(DEMO_SPEC, story);
+    const pinned = solve(
+      {
+        ...DEMO_SPEC,
+        elements: DEMO_SPEC.elements.map((el) =>
+          el.id === 'logo' ? { ...el, pinTo: 'bottom' as const } : el,
+        ),
+      },
+      story,
+    );
+    const a = base.placed.find((p) => p.id === 'logo');
+    const b = pinned.placed.find((p) => p.id === 'logo');
+    expect(b?.frame.y).toBeGreaterThan(a?.frame.y ?? 0);
+  });
+});

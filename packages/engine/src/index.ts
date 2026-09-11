@@ -11,6 +11,7 @@ export {
   splitArchetype,
   overlayArchetype,
   byReadingOrder,
+  PINNABLE,
   ROLE_RANK,
   type Archetype,
   type ArchetypeContext,

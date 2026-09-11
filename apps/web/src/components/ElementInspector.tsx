@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import type { AdElement, ImageContent } from '@ale/engine';
+import { PINNABLE } from '@ale/engine';
 import { usePlayground } from '../lib/store';
 import { importImageFile } from '../lib/importImage';
 import { Field, Swatch } from './Field';
@@ -79,25 +80,37 @@ export function ElementInspector({ element }: { element: AdElement }) {
       )}
 
       <div className="mt-3 flex items-center justify-between">
-        <label className="flex items-center gap-2 text-tiny text-ink-2">
-          Pin
-          <select
-            value={element.pinTo ?? ''}
-            onChange={(e) =>
-              updateElement(element.id, {
-                pinTo: e.target.value === '' ? undefined : (e.target.value as AdElement['pinTo']),
-              })
-            }
-            className="rounded-bench border border-rule bg-card px-1 py-0.5 text-tiny text-ink focus:border-guide focus:outline-none"
+        {/* Only chrome may be re-homed. Offering the select on a hero or a
+            headline made it look broken: you pick "top", the engine ignores it
+            because copy keeps its reading order, and nothing on screen says so. */}
+        {PINNABLE.has(element.role) ? (
+          <label className="flex items-center gap-2 text-tiny text-ink-2">
+            Pin
+            <select
+              value={element.pinTo ?? ''}
+              onChange={(e) =>
+                updateElement(element.id, {
+                  pinTo: e.target.value === '' ? undefined : (e.target.value as AdElement['pinTo']),
+                })
+              }
+              className="rounded-bench border border-rule bg-card px-1 py-0.5 text-tiny text-ink focus:border-guide focus:outline-none"
+            >
+              <option value="">auto</option>
+              <option value="top">top</option>
+              <option value="bottom">bottom</option>
+              <option value="left">left</option>
+              <option value="right">right</option>
+              <option value="center">center</option>
+            </select>
+          </label>
+        ) : (
+          <span
+            className="text-tiny text-ink-3"
+            title={`A ${element.role} keeps its place in the reading order on every surface. Only a logo, badge, CTA or legal line can be pinned to an edge.`}
           >
-            <option value="">auto</option>
-            <option value="top">top</option>
-            <option value="bottom">bottom</option>
-            <option value="left">left</option>
-            <option value="right">right</option>
-            <option value="center">center</option>
-          </select>
-        </label>
+            Placed by reading order
+          </span>
+        )}
         <button
           type="button"
           onClick={() => removeElement(element.id)}
@@ -221,8 +234,16 @@ function ImagePicker({
  * for a hero and wrong for a logo — "as large as it fits" is never what anyone
  * means by a logo. Blank means no cap, which is the previous behaviour.
  */
+/**
+ * Largest cap worth storing. Well past any surface anyone will proof here, and
+ * small enough that a stray keystroke cannot put a number in the document that
+ * only reads as a mistake.
+ */
+const MAX_CAP_PX = 8192;
+
 function SizeCap({ element }: { element: AdElement }) {
   const updateElement = usePlayground((s) => s.updateElement);
+  const surface = usePlayground((s) => s.surface);
   const max = element.maxSize;
 
   /**
@@ -232,7 +253,7 @@ function SizeCap({ element }: { element: AdElement }) {
    * height of 0 and invalidated the whole document mid-keystroke.
    */
   const set = (axis: 'w' | 'h', raw: string): void => {
-    const n = Number(raw);
+    const n = Math.min(MAX_CAP_PX, Math.round(Number(raw)));
     const valid = raw.trim() !== '' && Number.isFinite(n) && n > 0;
     const next: { w?: number; h?: number } = { ...max };
     if (valid) next[axis] = n;
@@ -241,6 +262,12 @@ function SizeCap({ element }: { element: AdElement }) {
       maxSize: next.w === undefined && next.h === undefined ? undefined : next,
     });
   };
+
+  // A cap wider than the surface is not wrong, it simply cannot bind here —
+  // and silently doing nothing is what makes the field feel broken.
+  const idle: string[] = [];
+  if (max?.w !== undefined && max.w >= surface.width) idle.push(`${max.w}px wide`);
+  if (max?.h !== undefined && max.h >= surface.height) idle.push(`${max.h}px tall`);
 
   return (
     <div className="mb-3">
@@ -251,6 +278,7 @@ function SizeCap({ element }: { element: AdElement }) {
         <input
           type="number"
           min={1}
+          max={MAX_CAP_PX}
           placeholder="any width"
           aria-label="Maximum width in pixels"
           value={max?.w ?? ''}
@@ -263,6 +291,7 @@ function SizeCap({ element }: { element: AdElement }) {
         <input
           type="number"
           min={1}
+          max={MAX_CAP_PX}
           placeholder="any height"
           aria-label="Maximum height in pixels"
           value={max?.h ?? ''}
@@ -273,6 +302,13 @@ function SizeCap({ element }: { element: AdElement }) {
       {element.aspectLock !== undefined && (
         <p className="mt-1 text-micro text-ink-3">
           Held at {element.aspectLock}:1, so whichever limit binds first wins.
+        </p>
+      )}
+      {idle.length > 0 && (
+        <p className="mt-1 text-micro leading-snug text-mark">
+          {idle.join(' and ')} {idle.length === 1 ? 'is' : 'are'} bigger than this {surface.width}
+          &times;{surface.height} surface, so {idle.length === 1 ? 'it changes' : 'they change'}{' '}
+          nothing here. Smaller surfaces below are still capped.
         </p>
       )}
     </div>
