@@ -301,7 +301,7 @@
       "message": "\"badge\" set at 10.24px over 1 line",
       "subject": "badge",
       "data": {
-        "freeSizePx": 11.5,
+        "freeSizePx": 11,
         "snapped": true,
         "lines": 1,
         "maxLines": 1,

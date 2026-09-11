@@ -51,6 +51,7 @@ export const overlayArchetype: Archetype = {
   rationale:
     'a very tall canvas cannot afford to divide image from type, so the type sits on the image',
   bleedRegions: [BLEED_REGION, 'media'],
+  rowRegions: ['header', 'footer'],
 
   regions(surface: Surface, ctx: ArchetypeContext): Record<string, Rect> {
     const full = rect(0, 0, surface.width, surface.height);

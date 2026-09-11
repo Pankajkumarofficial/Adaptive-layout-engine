@@ -34,6 +34,15 @@ export interface Archetype {
    * media region, because a full-bleed hero is the entire point of it.
    */
   bleedRegions: readonly string[];
+  /**
+   * Regions whose elements sit side by side rather than stacked.
+   *
+   * A header is a strip: a logo and a badge belong at either end of it, not
+   * one above the other. Stacking them halved the strip's height between them,
+   * and a logo locked to 3:1 in half a header comes out a seventh of the ad
+   * wide — small enough to read as a mistake.
+   */
+  rowRegions?: readonly string[];
   regions(surface: Surface, ctx: ArchetypeContext): Record<string, Rect>;
   assign(elements: readonly NormalizedElement[], regions: Record<string, Rect>): Assignment[];
 }

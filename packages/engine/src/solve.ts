@@ -204,7 +204,17 @@ function runAttempt(
     if (bleedRegions.has(a.region)) bleeding.add(a.elementId);
   }
 
-  const budgeted = budget(regions, assignments, active, klass, gutter, bleeding, tracer);
+  const rowRegions = new Set(archetype.rowRegions ?? []);
+  const budgeted = budget(
+    regions,
+    assignments,
+    active,
+    klass,
+    gutter,
+    bleeding,
+    rowRegions,
+    tracer,
+  );
   const shortfalls: Shortfall[] = [...budgeted.shortfalls];
 
   // Step 5 — fit text, then shrink each text frame onto its real line box.
@@ -304,8 +314,9 @@ function runAttempt(
   }
   for (const [regionKey, items] of byRegion) {
     const region = regions[regionKey];
-    // Bleed regions are not compacted: their contents are meant to fill them.
-    if (region === undefined || bleedRegions.has(regionKey)) continue;
+    // Bleed regions are not compacted: their contents are meant to fill them,
+    // and a row is already positioned along the axis compaction would restack.
+    if (region === undefined || bleedRegions.has(regionKey) || rowRegions.has(regionKey)) continue;
     const compacted = compactRegion(region, items, gutter);
     for (const [id, frame] of Object.entries(compacted)) frames[id] = frame;
   }

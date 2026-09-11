@@ -155,6 +155,7 @@ export function budget(
   klass: SurfaceClass,
   gutter: number,
   bleeding: ReadonlySet<string>,
+  rowRegions: ReadonlySet<string>,
   tracer: Tracer,
 ): BudgetResult {
   const byId = new Map(elements.map((el) => [el.id, el]));
@@ -192,12 +193,14 @@ export function budget(
       }
     }
 
+    // A row divides its width between elements; a column divides its height.
+    const axis: Axis = rowRegions.has(regionKey) ? 'horizontal' : 'vertical';
     const bands = stacked.map((el) => ({
       key: el.id,
       weight: el.bandWeight,
-      min: minHeightOf(el, klass, gutter),
+      min: axis === 'horizontal' ? minWidthOf(el, klass) : minHeightOf(el, klass, gutter),
     }));
-    const allocation = allocateBands(region, bands, gutter, 'vertical');
+    const allocation = allocateBands(region, bands, gutter, axis);
     if (allocation.shortfallPx > 0) {
       tracer.info('budget', `region "${regionKey}" is ${round1(allocation.shortfallPx)}px short`, {
         subject: regionKey,

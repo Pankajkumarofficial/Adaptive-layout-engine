@@ -44,6 +44,7 @@ export const stackArchetype: Archetype = {
   id: 'stack',
   rationale: 'vertical reading order suits portrait and square surfaces with room to breathe',
   bleedRegions: [BLEED_REGION],
+  rowRegions: ['header'],
 
   regions(surface: Surface, ctx: ArchetypeContext): Record<string, Rect> {
     const inner = insetRect(ctx.content, {

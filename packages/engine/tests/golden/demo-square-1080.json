@@ -111,14 +111,14 @@
       "id": "legal",
       "frame": {
         "x": 24,
-        "y": 1028.96,
+        "y": 1021.03,
         "w": 1032,
-        "h": 16.64
+        "h": 32.5
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 12.8,
-      "lineHeightPx": 16.64,
+      "fontSizePx": 25,
+      "lineHeightPx": 32.5,
       "lines": [
         "Free returns within 30 days. Terms apply."
       ],
@@ -146,15 +146,15 @@
     {
       "id": "badge",
       "frame": {
-        "x": 951.6,
-        "y": 526.44,
-        "w": 104.4,
-        "h": 19.2
+        "x": 775.2,
+        "y": 488.04,
+        "w": 280.8,
+        "h": 37.2
       },
       "opacity": 1,
       "z": 30,
-      "fontSizePx": 16,
-      "lineHeightPx": 19.2,
+      "fontSizePx": 31,
+      "lineHeightPx": 37.2,
       "lines": [
         "New season"
       ],
@@ -165,9 +165,9 @@
       "id": "logo",
       "frame": {
         "x": 24,
-        "y": 467.64,
-        "w": 104.4,
-        "h": 34.8
+        "y": 459.84,
+        "w": 280.8,
+        "h": 93.6
       },
       "opacity": 1,
       "z": 30,
@@ -310,14 +310,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"badge\" set at 16px over 1 line",
+      "message": "\"badge\" set at 39.06px over 1 line",
       "subject": "badge",
       "data": {
-        "freeSizePx": 17,
+        "freeSizePx": 45.5,
         "snapped": true,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 19.2
+        "lineHeightPx": 46.87
       }
     },
     {
@@ -368,14 +368,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"legal\" set at 12.8px over 1 line",
-      "subject": "legal",
+      "message": "\"badge\" set at 31px over 1 line",
+      "subject": "badge",
       "data": {
-        "freeSizePx": 13,
-        "snapped": true,
+        "freeSizePx": 31,
+        "snapped": false,
         "lines": 1,
-        "maxLines": 2,
-        "lineHeightPx": 16.64
+        "maxLines": 1,
+        "lineHeightPx": 37.2
       }
     },
     {
@@ -383,12 +383,12 @@
       "step": "fitText",
       "level": "decision",
       "pass": 0,
-      "message": "capped \"legal\" at 12.8px so it does not outrank the copy above it",
-      "subject": "legal",
+      "message": "capped \"badge\" at 31.25px so it does not outrank the copy above it",
+      "subject": "badge",
       "data": {
-        "was": 25,
-        "now": 12.8,
-        "ceiling": 12.8
+        "was": 39.06,
+        "now": 31,
+        "ceiling": 31.25
       }
     },
     {
@@ -428,12 +428,12 @@
       "step": "fingerprint",
       "level": "info",
       "pass": 0,
-      "message": "layout hashes to fp_2ce50acf",
+      "message": "layout hashes to fp_ace938d8",
       "data": {
         "placed": 8,
         "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_2ce50acf"
+  "fingerprint": "fp_ace938d8"
 }

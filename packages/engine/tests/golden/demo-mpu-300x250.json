@@ -38,19 +38,25 @@
       "x": 167.8,
       "y": 8,
       "w": 124.2,
-      "h": 34.68
+      "h": 42
     },
     "copy": {
       "x": 167.8,
-      "y": 50.68,
+      "y": 58,
       "w": 124.2,
-      "h": 118.91
+      "h": 93.77
     },
     "action": {
       "x": 167.8,
-      "y": 177.59,
+      "y": 159.77,
       "w": 124.2,
-      "h": 64.41
+      "h": 50.79
+    },
+    "footer": {
+      "x": 167.8,
+      "y": 218.56,
+      "w": 124.2,
+      "h": 23.44
     }
   },
   "placed": [
@@ -87,18 +93,36 @@
       "id": "headline",
       "frame": {
         "x": 167.8,
-        "y": 63.54,
+        "y": 68.63,
         "w": 124.2,
-        "h": 55.2
+        "h": 34.5
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 16,
-      "lineHeightPx": 18.4,
+      "fontSizePx": 15,
+      "lineHeightPx": 17.25,
       "lines": [
-        "Every trail",
-        "starts",
+        "Every trail starts",
         "somewhere"
+      ],
+      "textAlign": "center",
+      "color": "#f8fafc"
+    },
+    {
+      "id": "legal",
+      "frame": {
+        "x": 167.8,
+        "y": 219.88,
+        "w": 124.2,
+        "h": 20.8
+      },
+      "opacity": 1,
+      "z": 20,
+      "fontSizePx": 8,
+      "lineHeightPx": 10.4,
+      "lines": [
+        "Free returns within 30 days.",
+        "Terms apply."
       ],
       "textAlign": "center",
       "color": "#f8fafc"
@@ -107,7 +131,7 @@
       "id": "subhead",
       "frame": {
         "x": 167.8,
-        "y": 126.74,
+        "y": 111.13,
         "w": 124.2,
         "h": 30
       },
@@ -123,12 +147,30 @@
       "color": "#f8fafc"
     },
     {
+      "id": "badge",
+      "frame": {
+        "x": 233.9,
+        "y": 23,
+        "w": 58.1,
+        "h": 12
+      },
+      "opacity": 1,
+      "z": 30,
+      "fontSizePx": 10,
+      "lineHeightPx": 12,
+      "lines": [
+        "New…"
+      ],
+      "textAlign": "right",
+      "color": "#f8fafc"
+    },
+    {
       "id": "logo",
       "frame": {
         "x": 167.8,
-        "y": 8,
-        "w": 104.05,
-        "h": 34.68
+        "y": 19.32,
+        "w": 58.1,
+        "h": 19.37
       },
       "opacity": 1,
       "z": 30,
@@ -142,15 +184,15 @@
     {
       "id": "cta",
       "frame": {
-        "x": 174.73,
-        "y": 187.8,
-        "w": 110.34,
+        "x": 177.68,
+        "y": 163.16,
+        "w": 104.44,
         "h": 44
       },
       "opacity": 1,
       "z": 40,
-      "fontSizePx": 12.8,
-      "lineHeightPx": 15.36,
+      "fontSizePx": 12,
+      "lineHeightPx": 14.4,
       "lines": [
         "Shop the range"
       ],
@@ -159,18 +201,10 @@
       "fill": "#f97316"
     }
   ],
-  "dropped": [
-    {
-      "id": "badge",
-      "reason": "priority 70; bound to legal, dropped together to recover 16px of unmet minimums"
-    },
-    {
-      "id": "legal",
-      "reason": "priority 90; bound to badge, dropped together to recover 16px of unmet minimums"
-    }
-  ],
+  "dropped": [],
   "warnings": [
-    "\"subhead\" does not fit at its 12px floor"
+    "\"subhead\" does not fit at its 12px floor",
+    "\"badge\" does not fit at its 10px floor"
   ],
   "trace": [
     {
@@ -287,8 +321,8 @@
       "subject": "badge",
       "data": {
         "minFontPx": 10,
-        "boxW": 56,
-        "boxH": 18,
+        "boxW": 58.1,
+        "boxH": 42,
         "renderedLines": 1,
         "maxLines": 1,
         "truncated": true
@@ -346,8 +380,8 @@
       "subject": "badge",
       "data": {
         "minFontPx": 10,
-        "boxW": 56,
-        "boxH": 18,
+        "boxW": 58.1,
+        "boxH": 42,
         "renderedLines": 1,
         "maxLines": 1,
         "truncated": true
@@ -396,79 +430,9 @@
     },
     {
       "seq": 17,
-      "step": "degrade",
-      "level": "decision",
-      "pass": 0,
-      "message": "dropping badge + legal — priority 90 to recover 16px of unmet minimums",
-      "subject": "legal",
-      "data": {
-        "priority": 90,
-        "deficitPx": 16,
-        "group": 2
-      }
-    },
-    {
-      "seq": 18,
-      "step": "budget",
-      "level": "info",
-      "pass": 1,
-      "message": "6 frames placed",
-      "data": {
-        "deficitPx": 0,
-        "shortfalls": 0
-      }
-    },
-    {
-      "seq": 19,
-      "step": "fitText",
-      "level": "info",
-      "pass": 1,
-      "message": "\"headline\" set at 16px over 3 lines",
-      "subject": "headline",
-      "data": {
-        "freeSizePx": 18.5,
-        "snapped": true,
-        "lines": 3,
-        "maxLines": 3,
-        "lineHeightPx": 18.4
-      }
-    },
-    {
-      "seq": 20,
-      "step": "fitText",
-      "level": "info",
-      "pass": 1,
-      "message": "\"cta\" set at 12.8px over 1 line",
-      "subject": "cta",
-      "data": {
-        "freeSizePx": 14,
-        "snapped": true,
-        "lines": 1,
-        "maxLines": 1,
-        "lineHeightPx": 15.36
-      }
-    },
-    {
-      "seq": 21,
-      "step": "fitText",
-      "level": "warn",
-      "pass": 1,
-      "message": "\"subhead\" does not fit at its 12px floor",
-      "subject": "subhead",
-      "data": {
-        "minFontPx": 12,
-        "boxW": 124.2,
-        "boxH": 45.67,
-        "renderedLines": 2,
-        "maxLines": 2,
-        "truncated": true
-      }
-    },
-    {
-      "seq": 22,
       "step": "imageCrop",
       "level": "info",
-      "pass": 1,
+      "pass": 0,
       "message": "cropped \"hero\" to 2400x1600 around focal 0.62,0.38",
       "subject": "hero",
       "data": {
@@ -481,10 +445,10 @@
       }
     },
     {
-      "seq": 23,
+      "seq": 18,
       "step": "imageCrop",
       "level": "info",
-      "pass": 1,
+      "pass": 0,
       "message": "cropped \"logo\" to 480x160 around focal 0.5,0.5",
       "subject": "logo",
       "data": {
@@ -497,16 +461,16 @@
       }
     },
     {
-      "seq": 24,
+      "seq": 19,
       "step": "fingerprint",
       "level": "info",
-      "pass": 1,
-      "message": "layout hashes to fp_4316cd13",
+      "pass": 0,
+      "message": "layout hashes to fp_5004bd65",
       "data": {
-        "placed": 6,
-        "dropped": 2
+        "placed": 8,
+        "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_4316cd13"
+  "fingerprint": "fp_5004bd65"
 }

@@ -118,14 +118,14 @@
       "id": "legal",
       "frame": {
         "x": 1054.8,
-        "y": 940.48,
+        "y": 930.57,
         "w": 745.2,
-        "h": 20.8
+        "h": 40.63
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 16,
-      "lineHeightPx": 20.8,
+      "fontSizePx": 31.25,
+      "lineHeightPx": 40.63,
       "lines": [
         "Free returns within 30 days. Terms apply."
       ],
@@ -154,15 +154,15 @@
     {
       "id": "badge",
       "frame": {
-        "x": 1657.08,
-        "y": 161.46,
-        "w": 142.92,
-        "h": 24
+        "x": 1442.16,
+        "y": 114.24,
+        "w": 357.84,
+        "h": 46.8
       },
       "opacity": 1,
       "z": 30,
-      "fontSizePx": 20,
-      "lineHeightPx": 24,
+      "fontSizePx": 39,
+      "lineHeightPx": 46.8,
       "lines": [
         "New season"
       ],
@@ -173,9 +173,9 @@
       "id": "logo",
       "frame": {
         "x": 1054.8,
-        "y": 89.82,
-        "w": 142.92,
-        "h": 47.64
+        "y": 78,
+        "w": 357.84,
+        "h": 119.28
       },
       "opacity": 1,
       "z": 30,
@@ -318,14 +318,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"badge\" set at 20px over 1 line",
+      "message": "\"badge\" set at 58px over 1 line",
       "subject": "badge",
       "data": {
-        "freeSizePx": 23,
-        "snapped": true,
+        "freeSizePx": 58,
+        "snapped": false,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 24
+        "lineHeightPx": 69.6
       }
     },
     {
@@ -376,14 +376,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"legal\" set at 16px over 1 line",
-      "subject": "legal",
+      "message": "\"badge\" set at 39px over 1 line",
+      "subject": "badge",
       "data": {
-        "freeSizePx": 16,
-        "snapped": true,
+        "freeSizePx": 39,
+        "snapped": false,
         "lines": 1,
-        "maxLines": 2,
-        "lineHeightPx": 20.8
+        "maxLines": 1,
+        "lineHeightPx": 46.8
       }
     },
     {
@@ -391,16 +391,44 @@
       "step": "fitText",
       "level": "decision",
       "pass": 0,
-      "message": "capped \"legal\" at 16px so it does not outrank the copy above it",
-      "subject": "legal",
+      "message": "capped \"badge\" at 39.06px so it does not outrank the copy above it",
+      "subject": "badge",
       "data": {
-        "was": 39,
-        "now": 16,
-        "ceiling": 16
+        "was": 58,
+        "now": 39,
+        "ceiling": 39.06
       }
     },
     {
       "seq": 15,
+      "step": "fitText",
+      "level": "info",
+      "pass": 0,
+      "message": "\"legal\" set at 31.25px over 1 line",
+      "subject": "legal",
+      "data": {
+        "freeSizePx": 31.5,
+        "snapped": true,
+        "lines": 1,
+        "maxLines": 2,
+        "lineHeightPx": 40.63
+      }
+    },
+    {
+      "seq": 16,
+      "step": "fitText",
+      "level": "decision",
+      "pass": 0,
+      "message": "capped \"legal\" at 31.25px so it does not outrank the copy above it",
+      "subject": "legal",
+      "data": {
+        "was": 39,
+        "now": 31.25,
+        "ceiling": 31.25
+      }
+    },
+    {
+      "seq": 17,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -416,7 +444,7 @@
       }
     },
     {
-      "seq": 16,
+      "seq": 18,
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
@@ -432,16 +460,16 @@
       }
     },
     {
-      "seq": 17,
+      "seq": 19,
       "step": "fingerprint",
       "level": "info",
       "pass": 0,
-      "message": "layout hashes to fp_dbfb5478",
+      "message": "layout hashes to fp_8a1e4e21",
       "data": {
         "placed": 8,
         "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_dbfb5478"
+  "fingerprint": "fp_8a1e4e21"
 }

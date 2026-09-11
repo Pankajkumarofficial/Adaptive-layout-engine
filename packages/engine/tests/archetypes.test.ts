@@ -217,6 +217,38 @@ describe('overlay', () => {
   });
 });
 
+describe('header rows', () => {
+  it('puts a logo and a badge side by side, not one above the other', () => {
+    // Regression: the header band was divided vertically, so a logo and a
+    // badge each got half its height. A logo locked to 3:1 in half a header
+    // came out at 7% of the ad width — small enough to read as a mistake.
+    for (const preset of [presetSurface('tv-1920x1080'), presetSurface('square-1080')]) {
+      const placed = solve(DEMO_SPEC, preset).placed;
+      const logo = placed.find((p) => p.id === 'logo');
+      const badge = placed.find((p) => p.id === 'badge');
+      if (logo === undefined || badge === undefined) continue;
+
+      // Same row: their vertical spans overlap.
+      const overlap =
+        Math.min(logo.frame.y + logo.frame.h, badge.frame.y + badge.frame.h) -
+        Math.max(logo.frame.y, badge.frame.y);
+      expect(overlap, `${preset.label} put them on separate rows`).toBeGreaterThan(0);
+
+      // And they do not sit on top of each other horizontally.
+      const apart =
+        logo.frame.x + logo.frame.w <= badge.frame.x + 0.01 ||
+        badge.frame.x + badge.frame.w <= logo.frame.x + 0.01;
+      expect(apart, `${preset.label} overlapped them`).toBe(true);
+    }
+  });
+
+  it('gives the logo a share of the width worth calling a logo', () => {
+    const tv = presetSurface('tv-1920x1080');
+    const logo = solve(DEMO_SPEC, tv).placed.find((p) => p.id === 'logo');
+    expect(logo!.frame.w / tv.width).toBeGreaterThan(0.12);
+  });
+});
+
 describe('every archetype, every preset', () => {
   it('places at least the protected elements everywhere', () => {
     for (const s of PRESET_SURFACES) {

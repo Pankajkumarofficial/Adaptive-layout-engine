@@ -84,6 +84,7 @@ export const splitArchetype: Archetype = {
   rationale:
     'landscape surfaces have width to spare and height to protect, so the hero sits beside the copy',
   bleedRegions: [BLEED_REGION],
+  rowRegions: ['header', 'footer'],
 
   regions(surface: Surface, ctx: ArchetypeContext): Record<string, Rect> {
     const inner = insetRect(ctx.content, {
