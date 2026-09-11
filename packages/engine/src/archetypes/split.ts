@@ -1,4 +1,4 @@
-import { allocateBands, minHeightOf, minWidthOf } from '../steps/budget.js';
+import { allocateBands, minHeightOf } from '../steps/budget.js';
 import { insetRect, rect } from '../geometry.js';
 import type { NormalizedElement } from '../steps/normalize.js';
 import type { ElementRole, Rect, Surface } from '../types.js';
@@ -13,13 +13,48 @@ import { byReadingOrder, groupByRegion, pinnedRegion } from './shared.js';
  * keeps the type large enough to read at TV distance.
  */
 
-const COLUMN_ORDER = ['media', 'content'] as const;
 const CONTENT_ORDER = ['header', 'copy', 'action', 'footer'] as const;
 type ContentKey = (typeof CONTENT_ORDER)[number];
 
-/** The hero's share of the horizontal axis. */
-const MEDIA_WEIGHT = 0.44;
-const CONTENT_WEIGHT = 0.56;
+/**
+ * Bounds on the hero's share of the horizontal axis.
+ *
+ * Within these the image's own proportions choose: a landscape photograph
+ * wants a wide column because it needs little height, a portrait one wants a
+ * narrow column because it needs all of it. A single fixed split forced every
+ * image into the same slot, and a landscape photo in a full-height column is
+ * cover-cropped to a vertical sliver — half the picture thrown away on a 16:9
+ * surface, two thirds of it on an MPU.
+ */
+const MEDIA_MIN_SHARE = 0.3;
+const MEDIA_MAX_SHARE = 0.55;
+/** Used when the hero has no intrinsic aspect to reason about. */
+const MEDIA_DEFAULT_SHARE = 0.44;
+
+/** The hero's intrinsic aspect, when it has one. */
+function heroAspect(hero: NormalizedElement): number | null {
+  const content = hero.source.content;
+  if (content.kind !== 'image') return null;
+  const aspect = content.intrinsic.w / content.intrinsic.h;
+  return Number.isFinite(aspect) && aspect > 0 ? aspect : null;
+}
+
+/** Width the hero wants: enough to fill the height at its own proportions. */
+function mediaWidthFor(hero: NormalizedElement, height: number, available: number): number {
+  const aspect = heroAspect(hero);
+  if (aspect === null) return available * MEDIA_DEFAULT_SHARE;
+  return Math.max(
+    available * MEDIA_MIN_SHARE,
+    Math.min(available * MEDIA_MAX_SHARE, height * aspect),
+  );
+}
+
+/** Height that keeps the picture whole at the width it was given. */
+function mediaHeightFor(hero: NormalizedElement, width: number, available: number): number {
+  const aspect = heroAspect(hero);
+  if (aspect === null) return available;
+  return Math.min(available, width / aspect);
+}
 
 const CONTENT_WEIGHTS: Readonly<Record<ContentKey, number>> = {
   header: 0.14,
@@ -61,23 +96,30 @@ export const splitArchetype: Archetype = {
     const occupancy = groupByRegion(ctx.elements, splitRegionKeyFor, BLEED_REGION);
     const hero = ctx.elements.find((el) => splitRegionKeyFor(el) === 'media');
 
-    // With no hero there is nothing to split, so content takes the full width.
-    const columns = COLUMN_ORDER.filter((key) => key === 'content' || hero !== undefined).map(
-      (key) => ({
-        key,
-        weight: key === 'media' ? MEDIA_WEIGHT : CONTENT_WEIGHT,
-        min: key === 'media' && hero !== undefined ? minWidthOf(hero, ctx.klass) : 0,
-      }),
-    );
-
-    const columnAllocation = allocateBands(inner, columns, ctx.gutter, 'horizontal');
-    const media = columnAllocation.rects.media;
-    const content = columnAllocation.rects.content ?? inner;
+    // Two columns, laid out directly rather than by weight. The hero's own
+    // proportions choose the split, so the picture is shown whole instead of
+    // being sliced to fit a slot that was sized without looking at it.
+    const gap = hero === undefined ? 0 : ctx.gutter;
+    const available = Math.max(0, inner.w - gap);
+    const mediaWidth = hero === undefined ? 0 : mediaWidthFor(hero, inner.h, available);
+    const contentWidth = Math.max(0, available - mediaWidth);
+    const mediaHeight = hero === undefined ? 0 : mediaHeightFor(hero, mediaWidth, inner.h);
 
     // The hero honours `pinTo: 'right'`; otherwise it leads, as it would in print.
     const heroOnRight = hero?.pinTo === 'right';
-    const mediaRect = media !== undefined && heroOnRight ? { ...media, x: content.x } : media;
-    const contentRect = media !== undefined && heroOnRight ? { ...content, x: media.x } : content;
+    const mediaX = heroOnRight ? inner.x + contentWidth + gap : inner.x;
+    const contentX = heroOnRight ? inner.x : inner.x + mediaWidth + gap;
+
+    const mediaRect =
+      hero === undefined
+        ? undefined
+        : {
+            x: mediaX,
+            y: inner.y + (inner.h - mediaHeight) / 2,
+            w: mediaWidth,
+            h: mediaHeight,
+          };
+    const contentRect = { x: contentX, y: inner.y, w: contentWidth, h: inner.h };
 
     const contentBands = CONTENT_ORDER.filter((key) => occupancy.has(key)).map((key) => {
       const members = occupancy.get(key) ?? [];

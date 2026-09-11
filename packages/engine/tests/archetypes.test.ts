@@ -136,6 +136,49 @@ describe('split', () => {
     expect(headline.frame.w).toBeGreaterThan(1920 * 0.6);
   });
 
+  it('shapes the media column to the hero rather than slicing the hero to fit it', () => {
+    // Regression: the column was a fixed share of the width at full height —
+    // a portrait slot. A landscape photograph dropped into one was cover-
+    // cropped to a vertical sliver: half the picture gone on a 16:9 surface,
+    // two thirds of it on an MPU.
+    const withHero = (w: number, h: number): AdSpec => ({
+      ...DEMO_SPEC,
+      elements: DEMO_SPEC.elements.map((el) =>
+        el.id === 'hero' && el.content.kind === 'image'
+          ? { ...el, content: { ...el.content, intrinsic: { w, h } } }
+          : el,
+      ),
+    });
+
+    for (const [w, h] of [
+      [2000, 1300],
+      [1000, 1000],
+      [900, 1600],
+    ] as const) {
+      for (const preset of [presetSurface('tv-1920x1080'), presetSurface('mpu-300x250')]) {
+        const hero = solve(withHero(w, h), preset).placed.find((p) => p.id === 'hero');
+        if (hero?.imageCrop === undefined) continue;
+        const kept = (hero.imageCrop.sw * hero.imageCrop.sh) / (w * h);
+        expect(kept, `${w}x${h} on ${preset.label}`).toBeGreaterThan(0.98);
+      }
+    }
+  });
+
+  it('gives a landscape hero a wider column than a portrait one', () => {
+    const withHero = (w: number, h: number): AdSpec => ({
+      ...DEMO_SPEC,
+      elements: DEMO_SPEC.elements.map((el) =>
+        el.id === 'hero' && el.content.kind === 'image'
+          ? { ...el, content: { ...el.content, intrinsic: { w, h } } }
+          : el,
+      ),
+    });
+    const tv = presetSurface('tv-1920x1080');
+    const wide = solve(withHero(2000, 1000), tv).placed.find((p) => p.id === 'hero');
+    const tall = solve(withHero(900, 1600), tv).placed.find((p) => p.id === 'hero');
+    expect(wide!.frame.w).toBeGreaterThan(tall!.frame.w);
+  });
+
   it('meets the 64px remote target on TV', () => {
     const cta = result.placed.find((p) => p.id === 'cta')!;
     expect(cta.frame.h).toBeGreaterThanOrEqual(64);

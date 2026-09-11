@@ -36,32 +36,32 @@
     },
     "media": {
       "x": 120,
-      "y": 78,
-      "w": 728.64,
-      "h": 924
+      "y": 236.4,
+      "w": 910.8,
+      "h": 607.2
     },
     "header": {
-      "x": 872.64,
+      "x": 1054.8,
       "y": 78,
-      "w": 927.36,
+      "w": 745.2,
       "h": 119.28
     },
     "copy": {
-      "x": 872.64,
+      "x": 1054.8,
       "y": 221.28,
-      "w": 927.36,
+      "w": 745.2,
       "h": 408.96
     },
     "action": {
-      "x": 872.64,
+      "x": 1054.8,
       "y": 654.24,
-      "w": 927.36,
+      "w": 745.2,
       "h": 221.52
     },
     "footer": {
-      "x": 872.64,
+      "x": 1054.8,
       "y": 899.76,
-      "w": 927.36,
+      "w": 745.2,
       "h": 102.24
     }
   },
@@ -82,31 +82,31 @@
       "id": "hero",
       "frame": {
         "x": 120,
-        "y": 78,
-        "w": 728.64,
-        "h": 924
+        "y": 236.4,
+        "w": 910.8,
+        "h": 607.2
       },
       "opacity": 1,
       "z": 10,
       "imageCrop": {
-        "sx": 857.14,
+        "sx": 0,
         "sy": 0,
-        "sw": 1261.71,
+        "sw": 2400,
         "sh": 1600
       }
     },
     {
       "id": "headline",
       "frame": {
-        "x": 872.64,
-        "y": 227.78,
-        "w": 927.36,
-        "h": 219.36
+        "x": 1054.8,
+        "y": 247.49,
+        "w": 745.2,
+        "h": 210.46
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 95.37,
-      "lineHeightPx": 109.68,
+      "fontSizePx": 91.5,
+      "lineHeightPx": 105.23,
       "lines": [
         "Every trail starts",
         "somewhere"
@@ -117,9 +117,9 @@
     {
       "id": "legal",
       "frame": {
-        "x": 872.64,
+        "x": 1054.8,
         "y": 940.48,
-        "w": 927.36,
+        "w": 745.2,
         "h": 20.8
       },
       "opacity": 1,
@@ -135,15 +135,15 @@
     {
       "id": "subhead",
       "frame": {
-        "x": 872.64,
-        "y": 471.14,
-        "w": 927.36,
-        "h": 152.6
+        "x": 1054.8,
+        "y": 481.95,
+        "w": 745.2,
+        "h": 122.08
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 61.04,
-      "lineHeightPx": 76.3,
+      "fontSizePx": 48.83,
+      "lineHeightPx": 61.04,
       "lines": [
         "Boots, packs and layers built",
         "for the long way round."
@@ -172,7 +172,7 @@
     {
       "id": "logo",
       "frame": {
-        "x": 872.64,
+        "x": 1054.8,
         "y": 89.82,
         "w": 142.92,
         "h": 47.64
@@ -189,15 +189,15 @@
     {
       "id": "cta",
       "frame": {
-        "x": 1031.19,
-        "y": 701.23,
-        "w": 610.26,
-        "h": 127.55
+        "x": 1134.39,
+        "y": 703.2,
+        "w": 586.02,
+        "h": 123.6
       },
       "opacity": 1,
       "z": 40,
-      "fontSizePx": 76.29,
-      "lineHeightPx": 91.55,
+      "fontSizePx": 73,
+      "lineHeightPx": 87.6,
       "lines": [
         "Shop the range"
       ],
@@ -273,14 +273,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"headline\" set at 95.37px over 2 lines",
+      "message": "\"headline\" set at 91.5px over 2 lines",
       "subject": "headline",
       "data": {
-        "freeSizePx": 98,
-        "snapped": true,
+        "freeSizePx": 91.5,
+        "snapped": false,
         "lines": 2,
         "maxLines": 3,
-        "lineHeightPx": 109.68
+        "lineHeightPx": 105.23
       }
     },
     {
@@ -288,14 +288,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"cta\" set at 115.5px over 1 line",
+      "message": "\"cta\" set at 91.5px over 1 line",
       "subject": "cta",
       "data": {
-        "freeSizePx": 115.5,
+        "freeSizePx": 91.5,
         "snapped": false,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 138.6
+        "lineHeightPx": 109.8
       }
     },
     {
@@ -303,14 +303,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"subhead\" set at 61.04px over 2 lines",
+      "message": "\"subhead\" set at 48.83px over 2 lines",
       "subject": "subhead",
       "data": {
-        "freeSizePx": 63,
+        "freeSizePx": 53.5,
         "snapped": true,
         "lines": 2,
         "maxLines": 2,
-        "lineHeightPx": 76.3
+        "lineHeightPx": 61.04
       }
     },
     {
@@ -333,14 +333,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"legal\" set at 39.06px over 1 line",
+      "message": "\"legal\" set at 39px over 2 lines",
       "subject": "legal",
       "data": {
-        "freeSizePx": 45.5,
-        "snapped": true,
-        "lines": 1,
+        "freeSizePx": 39,
+        "snapped": false,
+        "lines": 2,
         "maxLines": 2,
-        "lineHeightPx": 50.78
+        "lineHeightPx": 50.7
       }
     },
     {
@@ -348,14 +348,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"cta\" set at 76.29px over 1 line",
+      "message": "\"cta\" set at 73px over 1 line",
       "subject": "cta",
       "data": {
-        "freeSizePx": 76.5,
-        "snapped": true,
+        "freeSizePx": 73,
+        "snapped": false,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 91.55
+        "lineHeightPx": 87.6
       }
     },
     {
@@ -363,12 +363,12 @@
       "step": "fitText",
       "level": "decision",
       "pass": 0,
-      "message": "capped \"cta\" at 76.3px so it does not outrank the copy above it",
+      "message": "capped \"cta\" at 73.2px so it does not outrank the copy above it",
       "subject": "cta",
       "data": {
-        "was": 115.5,
-        "now": 76.29,
-        "ceiling": 76.3
+        "was": 91.5,
+        "now": 73,
+        "ceiling": 73.2
       }
     },
     {
@@ -394,7 +394,7 @@
       "message": "capped \"legal\" at 16px so it does not outrank the copy above it",
       "subject": "legal",
       "data": {
-        "was": 39.06,
+        "was": 39,
         "now": 16,
         "ceiling": 16
       }
@@ -404,12 +404,12 @@
       "step": "imageCrop",
       "level": "info",
       "pass": 0,
-      "message": "cropped \"hero\" to 1262x1600 around focal 0.62,0.38",
+      "message": "cropped \"hero\" to 2400x1600 around focal 0.62,0.38",
       "subject": "hero",
       "data": {
-        "sx": 857.14,
+        "sx": 0,
         "sy": 0,
-        "sw": 1261.71,
+        "sw": 2400,
         "sh": 1600,
         "intrinsicW": 2400,
         "intrinsicH": 1600
@@ -436,12 +436,12 @@
       "step": "fingerprint",
       "level": "info",
       "pass": 0,
-      "message": "layout hashes to fp_44139736",
+      "message": "layout hashes to fp_dbfb5478",
       "data": {
         "placed": 8,
         "dropped": 0
       }
     }
   ],
-  "fingerprint": "fp_44139736"
+  "fingerprint": "fp_dbfb5478"
 }

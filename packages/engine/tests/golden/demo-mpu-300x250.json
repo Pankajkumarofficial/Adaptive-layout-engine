@@ -30,26 +30,26 @@
     },
     "media": {
       "x": 8,
-      "y": 8,
-      "w": 121.44,
-      "h": 234
+      "y": 74.4,
+      "w": 151.8,
+      "h": 101.2
     },
     "header": {
-      "x": 137.44,
+      "x": 167.8,
       "y": 8,
-      "w": 154.56,
+      "w": 124.2,
       "h": 34.68
     },
     "copy": {
-      "x": 137.44,
+      "x": 167.8,
       "y": 50.68,
-      "w": 154.56,
+      "w": 124.2,
       "h": 118.91
     },
     "action": {
-      "x": 137.44,
+      "x": 167.8,
       "y": 177.59,
-      "w": 154.56,
+      "w": 124.2,
       "h": 64.41
     }
   },
@@ -70,33 +70,34 @@
       "id": "hero",
       "frame": {
         "x": 8,
-        "y": 8,
-        "w": 121.44,
-        "h": 234
+        "y": 74.4,
+        "w": 151.8,
+        "h": 101.2
       },
       "opacity": 1,
       "z": 10,
       "imageCrop": {
-        "sx": 1072.82,
+        "sx": 0,
         "sy": 0,
-        "sw": 830.36,
+        "sw": 2400,
         "sh": 1600
       }
     },
     {
       "id": "headline",
       "frame": {
-        "x": 137.44,
-        "y": 69.29,
-        "w": 154.56,
-        "h": 43.7
+        "x": 167.8,
+        "y": 63.54,
+        "w": 124.2,
+        "h": 55.2
       },
       "opacity": 1,
       "z": 20,
-      "fontSizePx": 19,
-      "lineHeightPx": 21.85,
+      "fontSizePx": 16,
+      "lineHeightPx": 18.4,
       "lines": [
-        "Every trail starts",
+        "Every trail",
+        "starts",
         "somewhere"
       ],
       "textAlign": "center",
@@ -105,9 +106,9 @@
     {
       "id": "subhead",
       "frame": {
-        "x": 137.44,
-        "y": 120.99,
-        "w": 154.56,
+        "x": 167.8,
+        "y": 126.74,
+        "w": 124.2,
         "h": 30
       },
       "opacity": 1,
@@ -115,8 +116,8 @@
       "fontSizePx": 12,
       "lineHeightPx": 15,
       "lines": [
-        "Boots, packs and layers",
-        "built for the long way…"
+        "Boots, packs and",
+        "layers built for the…"
       ],
       "textAlign": "center",
       "color": "#f8fafc"
@@ -124,7 +125,7 @@
     {
       "id": "logo",
       "frame": {
-        "x": 137.44,
+        "x": 167.8,
         "y": 8,
         "w": 104.05,
         "h": 34.68
@@ -141,7 +142,7 @@
     {
       "id": "cta",
       "frame": {
-        "x": 159.55,
+        "x": 174.73,
         "y": 187.8,
         "w": 110.34,
         "h": 44
@@ -236,14 +237,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"headline\" set at 19px over 2 lines",
+      "message": "\"headline\" set at 15px over 2 lines",
       "subject": "headline",
       "data": {
-        "freeSizePx": 19,
+        "freeSizePx": 15,
         "snapped": false,
         "lines": 2,
         "maxLines": 3,
-        "lineHeightPx": 21.85
+        "lineHeightPx": 17.25
       }
     },
     {
@@ -251,14 +252,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"cta\" set at 16px over 1 line",
+      "message": "\"cta\" set at 12.8px over 1 line",
       "subject": "cta",
       "data": {
-        "freeSizePx": 18,
+        "freeSizePx": 14,
         "snapped": true,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 19.2
+        "lineHeightPx": 15.36
       }
     },
     {
@@ -270,7 +271,7 @@
       "subject": "subhead",
       "data": {
         "minFontPx": 12,
-        "boxW": 154.56,
+        "boxW": 124.2,
         "boxH": 35.32,
         "renderedLines": 2,
         "maxLines": 2,
@@ -313,14 +314,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 0,
-      "message": "\"cta\" set at 12.8px over 1 line",
+      "message": "\"cta\" set at 12px over 1 line",
       "subject": "cta",
       "data": {
-        "freeSizePx": 15,
-        "snapped": true,
+        "freeSizePx": 12,
+        "snapped": false,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 15.36
+        "lineHeightPx": 14.4
       }
     },
     {
@@ -328,12 +329,12 @@
       "step": "fitText",
       "level": "decision",
       "pass": 0,
-      "message": "capped \"cta\" at 15.2px so it does not outrank the copy above it",
+      "message": "capped \"cta\" at 12px so it does not outrank the copy above it",
       "subject": "cta",
       "data": {
-        "was": 16,
-        "now": 12.8,
-        "ceiling": 15.2
+        "was": 12.8,
+        "now": 12,
+        "ceiling": 12
       }
     },
     {
@@ -422,14 +423,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 1,
-      "message": "\"headline\" set at 19px over 2 lines",
+      "message": "\"headline\" set at 16px over 3 lines",
       "subject": "headline",
       "data": {
-        "freeSizePx": 19,
-        "snapped": false,
-        "lines": 2,
+        "freeSizePx": 18.5,
+        "snapped": true,
+        "lines": 3,
         "maxLines": 3,
-        "lineHeightPx": 21.85
+        "lineHeightPx": 18.4
       }
     },
     {
@@ -437,14 +438,14 @@
       "step": "fitText",
       "level": "info",
       "pass": 1,
-      "message": "\"cta\" set at 16px over 1 line",
+      "message": "\"cta\" set at 12.8px over 1 line",
       "subject": "cta",
       "data": {
-        "freeSizePx": 18,
+        "freeSizePx": 14,
         "snapped": true,
         "lines": 1,
         "maxLines": 1,
-        "lineHeightPx": 19.2
+        "lineHeightPx": 15.36
       }
     },
     {
@@ -456,7 +457,7 @@
       "subject": "subhead",
       "data": {
         "minFontPx": 12,
-        "boxW": 154.56,
+        "boxW": 124.2,
         "boxH": 45.67,
         "renderedLines": 2,
         "maxLines": 2,
@@ -465,50 +466,22 @@
     },
     {
       "seq": 22,
-      "step": "fitText",
-      "level": "info",
-      "pass": 1,
-      "message": "\"cta\" set at 12.8px over 1 line",
-      "subject": "cta",
-      "data": {
-        "freeSizePx": 15,
-        "snapped": true,
-        "lines": 1,
-        "maxLines": 1,
-        "lineHeightPx": 15.36
-      }
-    },
-    {
-      "seq": 23,
-      "step": "fitText",
-      "level": "decision",
-      "pass": 1,
-      "message": "capped \"cta\" at 15.2px so it does not outrank the copy above it",
-      "subject": "cta",
-      "data": {
-        "was": 16,
-        "now": 12.8,
-        "ceiling": 15.2
-      }
-    },
-    {
-      "seq": 24,
       "step": "imageCrop",
       "level": "info",
       "pass": 1,
-      "message": "cropped \"hero\" to 830x1600 around focal 0.62,0.38",
+      "message": "cropped \"hero\" to 2400x1600 around focal 0.62,0.38",
       "subject": "hero",
       "data": {
-        "sx": 1072.82,
+        "sx": 0,
         "sy": 0,
-        "sw": 830.36,
+        "sw": 2400,
         "sh": 1600,
         "intrinsicW": 2400,
         "intrinsicH": 1600
       }
     },
     {
-      "seq": 25,
+      "seq": 23,
       "step": "imageCrop",
       "level": "info",
       "pass": 1,
@@ -524,16 +497,16 @@
       }
     },
     {
-      "seq": 26,
+      "seq": 24,
       "step": "fingerprint",
       "level": "info",
       "pass": 1,
-      "message": "layout hashes to fp_25de7698",
+      "message": "layout hashes to fp_4316cd13",
       "data": {
         "placed": 6,
         "dropped": 2
       }
     }
   ],
-  "fingerprint": "fp_25de7698"
+  "fingerprint": "fp_4316cd13"
 }
