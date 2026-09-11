@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { DEMO_SPEC } from '@ale/engine';
+import { adSpecSchema } from '@ale/shared';
 import { useSearchParams } from 'react-router-dom';
 import { usePlayground } from '../lib/store';
 import { useSolve } from '../lib/useSolve';
@@ -380,6 +381,7 @@ function SpecFileBar() {
   const setSpec = usePlayground((s) => s.setSpec);
   const resetSpec = usePlayground((s) => s.resetSpec);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [importError, setImportError] = useState<string | null>(null);
 
   const exportSpec = () => {
     const blob = new Blob([JSON.stringify(spec, null, 2)], { type: 'application/json' });
@@ -390,52 +392,92 @@ function SpecFileBar() {
     URL.revokeObjectURL(link.href);
   };
 
+  // Import takes an ad spec, which is a JSON document — the same one Export
+  // writes and the API stores. Pictures are not specs: an element's image is
+  // chosen on that element, in the inspector, because the spec has to record
+  // which element the picture belongs to and how large it may be drawn.
   const importSpec = async (file: File) => {
+    let parsed: unknown;
     try {
-      setSpec(JSON.parse(await file.text()) as AdSpec);
-    } catch (err) {
-      console.error('[playground] could not read that file', err);
+      parsed = JSON.parse(await file.text());
+    } catch {
+      setImportError(`${file.name} is not valid JSON.`);
+      return;
     }
+
+    // Reading a file and quietly doing nothing is the worst of the options: the
+    // spec on screen is still the old one and nothing says why. Say what is
+    // wrong with the document, in the document's own vocabulary.
+    const result = adSpecSchema.safeParse(parsed);
+    if (!result.success) {
+      const issue = result.error.issues[0];
+      setImportError(
+        issue === undefined
+          ? `${file.name} is not an ad spec.`
+          : `${file.name} is not an ad spec: ${issue.path.join('.') || 'the document'} ${issue.message.toLowerCase()}.`,
+      );
+      return;
+    }
+
+    setImportError(null);
+    setSpec(result.data as AdSpec);
   };
 
   return (
-    <div className="flex gap-2 border-t border-rule px-4 py-2">
-      <button
-        type="button"
-        onClick={() => setSpec(blankSpec(spec.theme))}
-        title="Start a new ad from three elements"
-        className="text-tiny text-ink-3 hover:text-ink"
-      >
-        New
-      </button>
-      <button
-        type="button"
-        onClick={() => fileRef.current?.click()}
-        className="text-tiny text-ink-3 hover:text-ink"
-      >
-        Import
-      </button>
-      <button type="button" onClick={exportSpec} className="text-tiny text-ink-3 hover:text-ink">
-        Export
-      </button>
-      <button
-        type="button"
-        onClick={resetSpec}
-        className="ml-auto text-tiny text-ink-3 hover:text-ink"
-      >
-        Reset
-      </button>
-      <input
-        ref={fileRef}
-        type="file"
-        accept="application/json"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file !== undefined) void importSpec(file);
-          e.target.value = '';
-        }}
-      />
+    <div className="border-t border-rule">
+      <div className="flex gap-2 px-4 py-2">
+        <button
+          type="button"
+          onClick={() => setSpec(blankSpec(spec.theme))}
+          title="Start a new ad from three elements"
+          className="text-tiny text-ink-3 hover:text-ink"
+        >
+          New
+        </button>
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          title="Open an ad spec saved by Export. Pictures are chosen on an element, in the inspector."
+          className="text-tiny text-ink-3 hover:text-ink"
+        >
+          Import spec
+        </button>
+        <button
+          type="button"
+          onClick={exportSpec}
+          title="Save this ad spec as JSON"
+          className="text-tiny text-ink-3 hover:text-ink"
+        >
+          Export
+        </button>
+        <button
+          type="button"
+          onClick={resetSpec}
+          className="ml-auto text-tiny text-ink-3 hover:text-ink"
+        >
+          Reset
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/json,.json"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file !== undefined) void importSpec(file);
+            e.target.value = '';
+          }}
+        />
+      </div>
+
+      {importError !== null && (
+        <p
+          role="alert"
+          className="border-t border-reg/40 px-4 py-2 text-tiny leading-snug text-reg"
+        >
+          {importError}
+        </p>
+      )}
     </div>
   );
 }
