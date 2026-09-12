@@ -46,4 +46,6 @@ rows.push(
 );
 
 console.log(rows.join('\n'));
-console.log(`\nnode ${process.version}, ${SAMPLES} samples per surface after ${WARMUP} warmup runs`);
+console.log(
+  `\nnode ${process.version}, ${SAMPLES} samples per surface after ${WARMUP} warmup runs`,
+);

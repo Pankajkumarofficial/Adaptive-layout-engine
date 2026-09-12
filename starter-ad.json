@@ -94,10 +94,7 @@
     "cornerRadius": 6
   },
   "rules": {
-    "neverDrop": [
-      "headline",
-      "cta"
-    ],
+    "neverDrop": ["headline", "cta"],
     "minContrastRatio": 4.5
   }
 }
